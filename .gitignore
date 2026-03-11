@@ -3,6 +3,15 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Compiled Shader Object
+*.cso
+
+# External libraries
+!External/
+!External/**/[Dd]ebug/
+!External/**/[Rr]elease/
+!External/**/*.lib
+
 # User-specific files
 *.rsuser
 *.suo
