@@ -15,13 +15,24 @@ namespace basecross {
 	//ビューとライトの作成
 	void GameStage::CreateViewLight() {
 		// カメラの設定
+		//auto camera = ObjectFactory::Create<Camera>();
+		//camera->SetEye(Vec3(0.0f, 8.0f, -8.0f));
+		//camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
+
+		m_playerCameraView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
+		auto playerCamera = ObjectFactory::Create<PlayerCamera>();
+
 		auto camera = ObjectFactory::Create<Camera>();
-		camera->SetEye(Vec3(0.0f, 8.0f, -8.0f));
+		camera->SetEye(Vec3(0.0f, 8.0f, -15.0f));
 		camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 
-		// ビューにカメラを設定
-		auto view = CreateView<SingleView>();
-		view->SetCamera(camera);
+		m_playerCameraView->SetCamera(playerCamera);
+		SetView(m_playerCameraView);
+
+
+		//// ビューにカメラを設定
+		//auto view = CreateView<SingleView>();
+		//view->SetCamera(camera);
 
 		//マルチライトの作成
 		auto light = CreateLight<MultiLight>();
@@ -35,6 +46,8 @@ namespace basecross {
 			// JoltPhysicsを初期化する
 			m_jphManger.Initialize();
 			auto mainPlayer = AddGameObject<Player>(); // プレイヤーオブジェクトを追加
+			SetSharedGameObject(L"Player", mainPlayer);
+			mainPlayer->SetPosition(Vec3(0, 2, 0));
 			Vec3 center = mainPlayer->GetPosition();
 			Vec3 mainPlayerScale = mainPlayer->GetScale();
 			for (int i = 0; i < 10; i++)
@@ -49,6 +62,9 @@ namespace basecross {
 				m_sabPlayer.push_back(player);
 			}			//ビューとライトの作成
 			CreateViewLight();
+
+			auto ground = AddGameObject<Ground>();
+
 		}
 		catch (...) {
 			throw;

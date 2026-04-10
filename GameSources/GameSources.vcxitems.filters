@@ -57,6 +57,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)CharacterController.h">
       <Filter>JoltPhysics</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PlayerCamera.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Ground.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -97,6 +103,12 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)CharacterController.cpp">
       <Filter>JoltPhysics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PlayerCamera.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Ground.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

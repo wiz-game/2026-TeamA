@@ -19,11 +19,15 @@ namespace basecross{
 		//m_draw = AddComponent<PNTDXModelDraw>();
 		m_draw = AddComponent<PNTStaticDraw>();
 		m_draw->SetMeshResource(L"DEFAULT_CUBE");
+		//AddComponent<Gravity>();
+
+		
 	}
 
 	// プレイヤーの更新処理
 	void Player::OnUpdate()
 	{
+
 		// アプリケーションオブジェクトを取得
 		auto& app = App::GetApp();
 
@@ -43,7 +47,14 @@ namespace basecross{
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
 
-		
+
+	}
+
+	void Player::OnCollisionEnter(const shared_ptr<GameObject>& other)
+	{
+		if (other->FindTag(L"Ground"))
+		{
+		}
 	}
 }
 //end basecross

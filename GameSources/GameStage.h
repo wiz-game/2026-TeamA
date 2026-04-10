@@ -19,6 +19,8 @@ namespace basecross {
 		void CreateViewLight(); //ビューの作成
 
 		vector<std::shared_ptr<GameObject>> m_sabPlayer; // ゲームオブジェクトのリスト
+		std::shared_ptr<SingleView> m_playerCameraView;	
+
 	public:
 		//構築と破棄
 		GameStage() :Stage(){}
