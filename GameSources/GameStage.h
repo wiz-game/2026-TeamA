@@ -21,7 +21,6 @@ namespace basecross {
 		shared_ptr<Player> m_mainPlayer; // メインプレイヤー
 		Vec3 m_mainPlayerScale; // メインプレイヤーのスケーリング
 		vector<std::shared_ptr<Player>> m_sabPlayer; // ゲームオブジェクトのリスト
-		vector<std::shared_ptr<GameObject>> m_sabPlayer; // ゲームオブジェクトのリスト
 		std::shared_ptr<SingleView> m_playerCameraView;	
 
 	public:
