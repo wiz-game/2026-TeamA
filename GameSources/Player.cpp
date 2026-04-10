@@ -19,6 +19,7 @@ namespace basecross{
 		//m_draw = AddComponent<PNTDXModelDraw>();
 		m_draw = AddComponent<PNTStaticDraw>();
 		m_draw->SetMeshResource(L"DEFAULT_CUBE");
+		m_draw->SetDiffuse(Col4(1,0,0,1));
 		//AddComponent<Gravity>();
 
 		

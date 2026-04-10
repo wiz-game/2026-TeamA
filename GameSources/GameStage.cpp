@@ -45,11 +45,11 @@ namespace basecross {
 
 			// JoltPhysicsを初期化する
 			m_jphManger.Initialize();
-			auto mainPlayer = AddGameObject<Player>(); // プレイヤーオブジェクトを追加
-			SetSharedGameObject(L"Player", mainPlayer);
-			mainPlayer->SetPosition(Vec3(0, 2, 0));
-			Vec3 center = mainPlayer->GetPosition();
-			Vec3 mainPlayerScale = mainPlayer->GetScale();
+			m_mainPlayer = AddGameObject<Player>(); // プレイヤーオブジェクトを追加
+			SetSharedGameObject(L"Player", m_mainPlayer);
+			m_mainPlayer->SetPosition(Vec3(0, 2, 0));
+			Vec3 center = m_mainPlayer->GetPosition();
+			Vec3 mainPlayerScale = m_mainPlayer->GetScale();
 			for (int i = 0; i < 10; i++)
 			{
 				auto player = AddGameObject<Player>(mainPlayerScale*0.5f);
