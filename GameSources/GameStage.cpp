@@ -59,9 +59,15 @@ namespace basecross {
 	{
 		// アプリケーションオブジェクトを取得
 		auto& app = App::GetApp();
+		auto scene = App::GetApp()->GetScene<Scene>();
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
+		////デバック用
+		wstringstream wss(L"");
 
+
+
+		//scene->SetDebugString(wss.str());
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 		{
 			RemoveGameObject<GameObject>(m_sabPlayer[0]);
@@ -77,6 +83,19 @@ namespace basecross {
 
 			UpdateFormation(); 
 		}
+
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
+		{
+			wss<<L"ハンマー" << endl;;
+			scene->SetDebugString(wss.str());
+		}
+
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
+		{
+			wss << L"キューブ" << endl;;
+			scene->SetDebugString(wss.str());
+		}
+
 	}
 
 	void GameStage::OnUpdate2()
