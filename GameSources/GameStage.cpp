@@ -34,8 +34,20 @@ namespace basecross {
 
 			// JoltPhysicsを初期化する
 			m_jphManger.Initialize();
+			auto mainPlayer = AddGameObject<Player>(); // プレイヤーオブジェクトを追加
+			Vec3 center = mainPlayer->GetPosition();
+			Vec3 mainPlayerScale = mainPlayer->GetScale();
+			for (int i = 0; i < 10; i++)
+			{
+				auto player = AddGameObject<Player>(mainPlayerScale*0.5f);
 
-			//ビューとライトの作成
+				float angle = (2.0f * XM_PI / 10) * i;   // 10体を均等に配置
+				float radius =1.5f;                  // mainPlayer からの距離
+
+				Vec3 offset = Vec3(cos(angle) * radius, 0.0f, sin(angle) * radius);
+				player->SetPosition(center + offset);
+				m_sabPlayer.push_back(player);
+			}			//ビューとライトの作成
 			CreateViewLight();
 		}
 		catch (...) {
