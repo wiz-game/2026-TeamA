@@ -34,9 +34,9 @@ namespace basecross {
 
 			// JoltPhysicsを初期化する
 			m_jphManger.Initialize();
-			auto mainPlayer = AddGameObject<Player>(); // プレイヤーオブジェクトを追加
-			Vec3 center = mainPlayer->GetPosition();
-			Vec3 mainPlayerScale = mainPlayer->GetScale();
+			m_mainPlayer = AddGameObject<Player>(); // プレイヤーオブジェクトを追加
+			auto center = m_mainPlayer->GetPosition();
+			Vec3 mainPlayerScale = m_mainPlayer->GetScale();
 			for (int i = 0; i < 10; i++)
 			{
 				auto player = AddGameObject<Player>(mainPlayerScale*0.5f);
@@ -59,6 +59,42 @@ namespace basecross {
 	{
 		// アプリケーションオブジェクトを取得
 		auto& app = App::GetApp();
+		auto scene = App::GetApp()->GetScene<Scene>();
+		auto input = app->GetInputDevice();
+		auto pad = input.GetControlerVec()[0];
+		////デバック用
+		wstringstream wss(L"");
+
+
+
+		//scene->SetDebugString(wss.str());
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		{
+			RemoveGameObject<GameObject>(m_sabPlayer[0]);
+			m_sabPlayer.erase(m_sabPlayer.begin());
+
+			UpdateFormation();
+		}
+
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
+		{
+			auto player = AddGameObject<Player>(Vec3(0.5f));
+			m_sabPlayer.push_back(player);
+
+			UpdateFormation(); 
+		}
+
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
+		{
+			wss<<L"ハンマー" << endl;;
+			scene->SetDebugString(wss.str());
+		}
+
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
+		{
+			wss << L"キューブ" << endl;;
+			scene->SetDebugString(wss.str());
+		}
 
 	}
 
@@ -69,6 +105,23 @@ namespace basecross {
 
 	void GameStage::OnDraw()
 	{
+	}
+
+	void GameStage::UpdateFormation()
+	{
+		if (m_sabPlayer.empty()) return;
+
+		Vec3 center = m_mainPlayer->GetPosition();
+		int count = m_sabPlayer.size();
+		float radius = 1.5f;
+
+		for (int i = 0; i < count; i++)
+		{
+			float angle = (2.0f * XM_PI / count) * i;
+			Vec3 offset = Vec3(cos(angle) * radius, 0, sin(angle) * radius);
+
+			m_sabPlayer[i]->SetPosition(center + offset);
+		}
 	}
 }
 //end basecross

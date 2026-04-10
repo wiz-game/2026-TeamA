@@ -38,7 +38,7 @@ namespace basecross {
 		void OnCreate() override; // 初期設定用の関数(UnityのStartメソッドに相当)
 		void OnUpdate() override; // 毎フレーム実行される関数(UnityのUpdateメソッドに相当)
 
-		Vec3 GetPosition() const
+		Vec3 GetPosition()
 		{
 			return m_position;
 		}
@@ -47,7 +47,7 @@ namespace basecross {
 			m_position = pos;
 		}
 
-		Vec3 GetRotation() const
+		Vec3 GetRotation()
 		{
 			return m_rotation;
 		}
@@ -56,7 +56,7 @@ namespace basecross {
 			m_rotation = rot;
 		}
 
-		Vec3 GetScale() const
+		Vec3 GetScale()
 		{
 			return m_scale;
 		}
