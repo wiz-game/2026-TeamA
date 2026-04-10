@@ -18,6 +18,7 @@ namespace basecross {
 
 		void CreateViewLight(); //ビューの作成
 
+		vector<std::shared_ptr<GameObject>> m_sabPlayer; // ゲームオブジェクトのリスト
 	public:
 		//構築と破棄
 		GameStage() :Stage(){}
@@ -27,6 +28,7 @@ namespace basecross {
 		virtual void OnUpdate()override; //更新
 		virtual void OnUpdate2() override;
 		virtual void OnDraw()override; //描画
+
 	};
 }
 //end basecross
