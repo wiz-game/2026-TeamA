@@ -63,10 +63,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Ground.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BrokenObjs.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Wall.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -116,10 +113,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Ground.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BrokenObjs.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)Wall.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
