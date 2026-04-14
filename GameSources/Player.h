@@ -77,6 +77,11 @@ namespace basecross {
 	{
 		Vec3 m_targetPos;
 		shared_ptr<Transform> m_transComp;
+		Vec3 m_subPos;
+		float m_rotate;
+		float m_rad;
+		float m_len;
+
 	public:
 		// コンストラクタ
 		SubPlayer(const std::shared_ptr<Stage>& stage) :
@@ -94,6 +99,7 @@ namespace basecross {
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
 		void SetTargetPos(const Vec3& pos) { m_targetPos = pos; }
+		void SetRotate(float rotate) { m_rotate = rotate; }
 	};
 
 	//// 群れを管理するクラス

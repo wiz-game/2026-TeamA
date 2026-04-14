@@ -5,6 +5,7 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include "JoltRigidBody.h"
 
 namespace basecross{
 	// プレイヤーの初期設定
@@ -46,6 +47,13 @@ namespace basecross{
 		// 左スティックの入力を取得する
 		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
 
+		// プレイヤーの回転
+		if (LStick.length() > 0.1f)
+		{
+			m_rotation.y = -atan2f(LStick.y, LStick.x);
+			m_transform->SetRotation(m_rotation);
+		}
+
 		// 左スティックの入力に応じてプレイヤーを移動させる
 		float moveSpeed = 2.0f; // 移動速度
 		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
@@ -58,8 +66,11 @@ namespace basecross{
 			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
 			if (subPlayer)
 			{
-				subPlayer->SetTargetPos(m_position - moveVec);
-				subPlayer->OnUpdate();
+				{
+					subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 5.0f);
+					subPlayer->SetRotate(m_rotation.y);
+					subPlayer->OnUpdate();
+				}
 			}
 		}
 
@@ -91,6 +102,10 @@ namespace basecross{
 
 		m_transComp = GetComponent<Transform>();
 		m_transComp->SetPosition(m_targetPos);
+
+		m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
+		m_len = static_cast<float>(rand() % 10) / 10.0f * 4.0f;
+		m_subPos = Vec3(cosf(m_rad) * m_len, 0, sinf(m_rad) * m_len);
 	}
 
 	// 群れのキャラクターの更新
@@ -99,8 +114,11 @@ namespace basecross{
 		auto delta = App::GetApp()->GetElapsedTime();
 
 		auto pos = m_transComp->GetPosition();
-		Vec3 moveVec = Vec3(m_targetPos - pos).normalize();
-		pos += moveVec * delta * 2.0f;
+		m_subPos = Vec3(cosf(m_rad - m_rotate) * m_len, 0, sinf(m_rad - m_rotate) * m_len);
+		Vec3 moveVec = Vec3(m_targetPos + m_subPos - pos);
+		moveVec.normalize();
+		pos += moveVec * delta * 3.0f;
+		pos.y = 1.0f;
 		m_transComp->SetPosition(pos);
 	}
 }
