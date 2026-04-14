@@ -6,19 +6,30 @@ namespace basecross
 
 	void BrokenObjs::OnCreate()
 	{
-
+		AddTag(L"Brakable");
 	}
 
 	void BrokenObjs::OnUpdate()
 	{
-
+		if (hp <= 0)
+		{
+			auto stage = GetStage();
+			stage->RemoveGameObject<GameObject>(GetThis<GameObject>());
+			m_isBroken = true;
+		}
 	}
 
-	void BrokenObjs::RemoveItSelf()
+	void BrokenObjs::takeDamage()
 	{
-		auto stage = GetStage();
 
-		stage->RemoveGameObject<GameObject>(GetThis<GameObject>());
+		if (!m_isBroken)
+		{
+			hp -= damage;
+		}
+		else
+		{
+			return;
+		}
 	}
 
 }

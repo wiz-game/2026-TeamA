@@ -6,16 +6,35 @@ namespace basecross
 {
 	class BrokenObjs : public GameObject
 	{
+		bool m_isBroken;
+		int hp;
+		int damage;
 
 	public:
 		BrokenObjs(const shared_ptr<GameStage>& stage) :
-			GameObject(stage)
+			GameObject(stage),
+			m_isBroken(false)
 		{
 		}
 
-		void OnCreate()override;
-		void OnUpdate()override;
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
 
-		void RemoveItSelf();
+		virtual void takeDamage();
+
+		virtual void SetHP(int newHP)
+		{
+			hp = newHP;
+		}
+
+		int GetHP()
+		{
+			return hp;
+		}
+
+		virtual void SetDamage(int newDamage)
+		{
+			damage = newDamage;
+		}
 	};
 }
