@@ -13,5 +13,6 @@
 #include "Player.h"
 #include "Ground.h"
 #include "PlayerCamera.h"
+#include "BrokenObjs.h"
 
 #include "GameStage.h"
