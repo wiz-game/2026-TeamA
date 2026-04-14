@@ -18,6 +18,8 @@ namespace basecross {
 		Vec3 m_position; // プレイヤーの位置
 		Vec3 m_rotation; // プレイヤーの回転
 		Vec3 m_scale;    // プレイヤーのスケーリング
+
+		
 	public :
 		// ステージを引数にしたコンストラクタ【必須】
 		Player(const std::shared_ptr<Stage>& stage) :
@@ -64,6 +66,8 @@ namespace basecross {
 		{
 			m_scale = scale;
 		}
+
+		void OnCollisionEnter(const shared_ptr<GameObject>& other);
 	};
 }
 //end basecross
