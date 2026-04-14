@@ -22,7 +22,11 @@ namespace basecross{
 		m_draw->SetDiffuse(Col4(1,0,0,1));
 		//AddComponent<Gravity>();
 
-		
+		for (int i = 0; i < 50; i++)
+		{
+			auto subPlayer = ObjectFactory::Create<SubPlayer>(GetStage(), Vec3(i % 4, 0, i / 5));
+			m_subPlayers.push_back(subPlayer);
+		}
 	}
 
 	// プレイヤーの更新処理
@@ -48,6 +52,16 @@ namespace basecross{
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
 
+		// 群れに移動用の座標を送る
+		for (auto& obj : m_subPlayers)
+		{
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer)
+			{
+				subPlayer->SetTargetPos(m_position - moveVec);
+				subPlayer->OnUpdate();
+			}
+		}
 
 	}
 
@@ -56,6 +70,38 @@ namespace basecross{
 		if (other->FindTag(L"Ground"))
 		{
 		}
+	}
+
+	void Player::OnDraw()
+	{
+		GameObject::OnDraw();
+		for (auto& subPlayer : m_subPlayers)
+		{
+			subPlayer->OnDraw();
+		}
+	}
+
+	// 群れのキャラクターの初期化
+	void SubPlayer::OnCreate()
+	{
+		// ドローコンポーネントを追加
+		auto draw = AddComponent<PNTStaticDraw>();
+		draw->SetMeshResource(L"DEFAULT_SPHERE");
+		draw->SetDiffuse(Col4(1, 0, 0, 1));
+
+		m_transComp = GetComponent<Transform>();
+		m_transComp->SetPosition(m_targetPos);
+	}
+
+	// 群れのキャラクターの更新
+	void SubPlayer::OnUpdate()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+
+		auto pos = m_transComp->GetPosition();
+		Vec3 moveVec = Vec3(m_targetPos - pos).normalize();
+		pos += moveVec * delta * 2.0f;
+		m_transComp->SetPosition(pos);
 	}
 }
 //end basecross
