@@ -12,6 +12,7 @@ namespace basecross
 
 		damage = 2;
 
+		BrokenObjs::OnCreate();
 		BrokenObjs::SetHP(hp);
 
 	}
@@ -28,7 +29,7 @@ namespace basecross
 		auto stage = GetStage();
 
 		m_transComp = GetComponent<Transform>();
-		m_transComp->SetPosition(Vec3(0, 25, 5));
+		m_transComp->SetPosition(Vec3(0, 15, 5));
 		m_transComp->SetScale(Vec3(3, 10, 1));
 		m_transComp->SetRotation(Vec3(0));
 
@@ -39,19 +40,23 @@ namespace basecross
 
 	void Wall::OnUpdate()
 	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		wstringstream wss;
+
+		wss << L"WallHP" << BrokenObjs::GetHP() << endl;
+		scene->SetDebugString(wss.str());
+
+		BrokenObjs::OnUpdate();
+
 	}
 
-	void Wall::takeDamage()
-	{
-	}
-
-	void Wall::OnCollisionEnter(const shared_ptr<GameObject>& other)
+	void Wall::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
 		if (other->FindTag(L"Player"))
 		{
 			BrokenObjs::SetDamage(damage);
-			//BrokenObjs::takeDamage();
-			takeDamage();
+			BrokenObjs::takeDamage();
 		}
 	}
 }
