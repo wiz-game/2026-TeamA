@@ -14,5 +14,7 @@
 #include "Ground.h"
 #include "PlayerCamera.h"
 #include "BrokenObjs.h"
+#include "Wall.h"
+
 
 #include "GameStage.h"

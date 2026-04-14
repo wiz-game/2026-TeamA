@@ -11,7 +11,7 @@ namespace basecross
 		int damage;
 
 	public:
-		BrokenObjs(const shared_ptr<GameStage>& stage) :
+		BrokenObjs(const shared_ptr<Stage>& stage) :
 			GameObject(stage),
 			m_isBroken(false)
 		{
