@@ -146,8 +146,21 @@ namespace basecross{
 		}
 	}
 
-	void Player::EraseSubPlayer(int num)
+	bool Player::EraseSubPlayer(int num)
 	{
+		int rest = 0;
+		for (auto& obj : m_subPlayers)
+		{
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer->GetAlive())
+			{
+				rest++;
+			}
+		}
+		if (rest < num)
+		{
+			return false;
+		}
 		for (auto& obj : m_subPlayers)
 		{
 			if (num <= 0)
@@ -161,7 +174,8 @@ namespace basecross{
 				num--;
 			}
 		}
-
+		
+		return true;
 	}
 
 
@@ -258,18 +272,22 @@ namespace basecross{
 
 	void HammerFormation::Start(const Vec3& position, const Vec3& rotation)
 	{
+		bool b = true;
+		auto player = m_player.lock();
+		if (player)
+		{
+			b = player->EraseSubPlayer(20);
+		}
+		if (!b)
+		{
+			return;
+		}
 		m_rotation = rotation;
 		m_transComp->SetPosition(position);
 		m_transComp->SetRotation(m_rotation);
 		m_isActive = true;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
-		auto player = m_player.lock();
-		if (player)
-		{
-			player->EraseSubPlayer(20);
-		}
-
 	}
 
 	void CubeFormation::OnCreate()
@@ -304,6 +322,16 @@ namespace basecross{
 
 	void CubeFormation::Start(const Vec3& position, const Vec3& rotation)
 	{
+		bool b = true;
+		auto player = m_player.lock();
+		if (player)
+		{
+			b = player->EraseSubPlayer(15);
+		}
+		if (!b)
+		{
+			return;
+		}
 		m_time = 0.0f;
 		m_rotation = rotation;
 		m_transComp->SetPosition(position);
@@ -311,11 +339,6 @@ namespace basecross{
 		m_isActive = true;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
-		auto player = m_player.lock();
-		if (player)
-		{
-			player->EraseSubPlayer(15);
-		}
 
 	}
 

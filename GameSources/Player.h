@@ -71,7 +71,7 @@ namespace basecross {
 		}
 
 		void AddSubPlayer(int num);
-		void EraseSubPlayer(int num);
+		bool EraseSubPlayer(int num);
 
 		void OnCollisionEnter(const shared_ptr<GameObject>& other);
 	};
