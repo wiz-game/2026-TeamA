@@ -23,9 +23,17 @@ namespace basecross{
 		m_draw->SetDiffuse(Col4(1,0,0,1));
 		//AddComponent<Gravity>();
 
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 150; i++)
 		{
-			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(Vec3(i % 4, 0, i / 5));
+			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(Vec3(i % 8, 0, i / 10));
+			if (i < 50)
+			{
+				subPlayer->SetAlive(true);
+			}
+			else
+			{
+				subPlayer->SetAlive(false);
+			}
 			m_subPlayers.push_back(subPlayer);
 		}
 	}
@@ -67,13 +75,62 @@ namespace basecross{
 			if (subPlayer)
 			{
 				{
-					subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 5.0f);
+					subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
 					subPlayer->SetRotate(m_rotation.y);
 				}
 			}
 		}
 
+		// É{É^ÉìÇ≈åQÇÍÇÃêîÇïœçX
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		{
+			AddSubPlayer(1);
+		}
+
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
+		{
+			EraseSubPlayer(1);
+		}
+
+
 	}
+
+	void Player::AddSubPlayer(int num)
+	{
+		for (auto& obj : m_subPlayers)
+		{
+			if (num <= 0)
+			{
+				break;
+			}
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (!subPlayer->GetAlive())
+			{
+				subPlayer->SetAlive(true);
+				num--;
+			}
+		}
+	}
+
+	void Player::EraseSubPlayer(int num)
+	{
+		for (auto& obj : m_subPlayers)
+		{
+			if (num <= 0)
+			{
+				break;
+			}
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer->GetAlive())
+			{
+				subPlayer->SetAlive(false);
+				num--;
+			}
+		}
+
+	}
+
+
 
 	void Player::OnCollisionEnter(const shared_ptr<GameObject>& other)
 	{
@@ -103,7 +160,7 @@ namespace basecross{
 		m_transComp->SetPosition(m_targetPos);
 
 		m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
-		m_len = static_cast<float>(rand() % 10) / 10.0f * 4.0f;
+		m_len = static_cast<float>(rand() % 10) / 10.0f * 6.0f;
 		m_subPos = Vec3(cosf(m_rad) * m_len, 0, sinf(m_rad) * m_len);
 	}
 
@@ -120,6 +177,17 @@ namespace basecross{
 		pos.y = 1.0f;
 		m_transComp->SetPosition(pos);
 	}
+
+	void SubPlayer::SetAlive(bool isAlive)
+	{
+		SetUpdateActive(isAlive);
+		SetDrawActive(isAlive);
+	}
+	bool SubPlayer::GetAlive()
+	{
+		return GetUpdateActive() && GetDrawActive();
+	}
+
 }
 //end basecross
 

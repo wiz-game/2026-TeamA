@@ -69,6 +69,9 @@ namespace basecross {
 			m_scale = scale;
 		}
 
+		void AddSubPlayer(int num);
+		void EraseSubPlayer(int num);
+
 		void OnCollisionEnter(const shared_ptr<GameObject>& other);
 	};
 
@@ -86,12 +89,18 @@ namespace basecross {
 		// コンストラクタ
 		SubPlayer(const std::shared_ptr<Stage>& stage) :
 			GameObject(stage),
-			m_targetPos(Vec3(0))
+			m_targetPos(Vec3(0)),
+			m_rotate(0),
+			m_rad(0),
+			m_len(0)
 		{
 		}
 		SubPlayer(const std::shared_ptr<Stage>& stage, const Vec3& pos) :
 			GameObject(stage),
-			m_targetPos(pos)
+			m_targetPos(pos),
+			m_rotate(0),
+			m_rad(0),
+			m_len(0)
 		{
 		}
 
@@ -100,6 +109,8 @@ namespace basecross {
 		void OnUpdate() override; // 更新
 		void SetTargetPos(const Vec3& pos) { m_targetPos = pos; }
 		void SetRotate(float rotate) { m_rotate = rotate; }
+		void SetAlive(bool isAlive); // 生きているかどうかのセッター
+		bool GetAlive(); // 生きているかどうかのゲッター
 	};
 
 	//// 群れを管理するクラス
