@@ -40,7 +40,7 @@ namespace basecross {
 
 		void OnCreate() override; // 初期設定用の関数(UnityのStartメソッドに相当)
 		void OnUpdate() override; // 毎フレーム実行される関数(UnityのUpdateメソッドに相当)
-		void OnDraw() override;
+		//void OnDraw() override;
 
 		Vec3 GetPosition()
 		{

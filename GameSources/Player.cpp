@@ -25,7 +25,7 @@ namespace basecross{
 
 		for (int i = 0; i < 50; i++)
 		{
-			auto subPlayer = ObjectFactory::Create<SubPlayer>(GetStage(), Vec3(i % 4, 0, i / 5));
+			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(Vec3(i % 4, 0, i / 5));
 			m_subPlayers.push_back(subPlayer);
 		}
 	}
@@ -69,7 +69,6 @@ namespace basecross{
 				{
 					subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 5.0f);
 					subPlayer->SetRotate(m_rotation.y);
-					subPlayer->OnUpdate();
 				}
 			}
 		}
@@ -83,14 +82,14 @@ namespace basecross{
 		}
 	}
 
-	void Player::OnDraw()
-	{
-		GameObject::OnDraw();
-		for (auto& subPlayer : m_subPlayers)
-		{
-			subPlayer->OnDraw();
-		}
-	}
+	//void Player::OnDraw()
+	//{
+	//	GameObject::OnDraw();
+	//	for (auto& subPlayer : m_subPlayers)
+	//	{
+	//		subPlayer->OnDraw();
+	//	}
+	//}
 
 	// 群れのキャラクターの初期化
 	void SubPlayer::OnCreate()
