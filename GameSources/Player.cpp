@@ -23,6 +23,7 @@ namespace basecross{
 		m_draw->SetDiffuse(Col4(1,0,0,1));
 		//AddComponent<Gravity>();
 
+		// 群れのキャラクターの生成
 		for (int i = 0; i < 150; i++)
 		{
 			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(Vec3(i % 8, 0, i / 10));
@@ -36,6 +37,9 @@ namespace basecross{
 			}
 			m_subPlayers.push_back(subPlayer);
 		}
+
+		// ハンマーのオブジェクトの作成
+		GetStage()->AddGameObject<HammerFormation>();
 	}
 
 	// プレイヤーの更新処理
@@ -188,6 +192,25 @@ namespace basecross{
 		return GetUpdateActive() && GetDrawActive();
 	}
 
+
+	void HammerFormation::OnCreate()
+	{
+		// ドローコンポーネントを追加
+		auto draw = AddComponent<PNTStaticDraw>();
+		draw->SetMeshResource(L"DEFAULT_CUBE");
+		draw->SetDiffuse(Col4(1, 0, 0, 1));
+
+		m_transComp = GetComponent<Transform>();
+		Vec3 pos = m_transComp->GetPosition();
+		pos.y = 1;
+		m_transComp->SetPosition(pos);
+	}
+
+	void HammerFormation::OnUpdate()
+	{
+		m_rotation.x += 0.01;
+		m_transComp->SetRotation(m_rotation);
+	}
 }
 //end basecross
 

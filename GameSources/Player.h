@@ -113,18 +113,21 @@ namespace basecross {
 		bool GetAlive(); // 生きているかどうかのゲッター
 	};
 
-	//// 群れを管理するクラス
-	//class SubPlayersManager : public GameObject
-	//{
-	//	SubPlayersManager(const std::shared_ptr<Stage>& stage) :
-	//		GameObject(stage)
-	//	{
-	//	}
+	class HammerFormation : public GameObject
+	{
+		shared_ptr<Transform> m_transComp;
+		Vec3 m_rotation;
+	public:
+		HammerFormation(const std::shared_ptr<Stage>& stage) :
+			GameObject(stage)
+		{
 
-	//	void OnCreate() override; // 初期化
-	//	void OnUpdate() override; // 更新
+		}
 
-	//};
+		void OnCreate() override; // 初期化
+		void OnUpdate() override; // 更新
+
+	};
 }
 //end basecross
 
