@@ -21,6 +21,7 @@ namespace basecross {
 
 		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
 		shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
+		shared_ptr<GameObject> m_cube; // キューブのオブジェクト
 	public :
 		// ステージを引数にしたコンストラクタ【必須】
 		Player(const std::shared_ptr<Stage>& stage) :
@@ -132,6 +133,28 @@ namespace basecross {
 
 		void Start(const Vec3& position, const Vec3& rotation);
 		void SetPlayer(const shared_ptr<Player>& player) { m_player = player; }
+	};
+
+	class CubeFormation : public GameObject
+	{
+		shared_ptr<Transform> m_transComp;
+		weak_ptr<Player> m_player;
+		Vec3 m_rotation;
+		bool m_isActive;
+		float m_time;
+	public:
+		CubeFormation(const std::shared_ptr<Stage>& stage) :
+			GameObject(stage),
+			m_isActive(false)
+		{
+		}
+
+		void OnCreate() override; // 初期化
+		void OnUpdate() override; // 更新
+
+		void Start(const Vec3& position, const Vec3& rotation);
+		void SetPlayer(const shared_ptr<Player>& player) { m_player = player; }
+
 	};
 }
 //end basecross

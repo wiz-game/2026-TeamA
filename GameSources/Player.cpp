@@ -45,6 +45,14 @@ namespace basecross{
 		{
 			hammer->SetPlayer(GetThis<Player>());
 		}
+
+		m_cube = GetStage()->AddGameObject<CubeFormation>();
+		auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
+		if (cube)
+		{
+			cube->SetPlayer(GetThis<Player>());
+		}
+
 	}
 
 	// プレイヤーの更新処理
@@ -107,6 +115,15 @@ namespace basecross{
 			if (hammerFormation)
 			{
 				hammerFormation->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0));
+			}
+		}
+
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
+		{
+			auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
+			if (cube)
+			{
+				cube->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0));
 			}
 		}
 
@@ -254,6 +271,54 @@ namespace basecross{
 		}
 
 	}
+
+	void CubeFormation::OnCreate()
+	{
+		// ドローコンポーネントを追加
+		auto draw = AddComponent<PNTStaticDraw>();
+		draw->SetMeshResource(L"DEFAULT_CUBE");
+		draw->SetDiffuse(Col4(0, 1, 0, 1));
+
+		m_transComp = GetComponent<Transform>();
+		Vec3 pos = m_transComp->GetPosition();
+		pos.y = 1;
+		m_transComp->SetPosition(pos);
+		Vec3 scale = m_transComp->GetScale();
+	}
+
+	void CubeFormation::OnUpdate()
+	{
+		m_time += 0.001;
+		if (m_time > 3.0f)
+		{
+			m_isActive = false;
+			SetDrawActive(m_isActive);
+			SetUpdateActive(m_isActive);
+			auto player = m_player.lock();
+			if (player)
+			{
+				player->AddSubPlayer(15);
+			}
+		}
+	}
+
+	void CubeFormation::Start(const Vec3& position, const Vec3& rotation)
+	{
+		m_time = 0.0f;
+		m_rotation = rotation;
+		m_transComp->SetPosition(position);
+		m_transComp->SetRotation(m_rotation);
+		m_isActive = true;
+		SetDrawActive(m_isActive);
+		SetUpdateActive(m_isActive);
+		auto player = m_player.lock();
+		if (player)
+		{
+			player->EraseSubPlayer(15);
+		}
+
+	}
+
 
 }
 //end basecross
