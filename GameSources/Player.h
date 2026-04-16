@@ -20,7 +20,7 @@ namespace basecross {
 		Vec3 m_scale;    // プレイヤーのスケーリング
 
 		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
-		
+		shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
 	public :
 		// ステージを引数にしたコンストラクタ【必須】
 		Player(const std::shared_ptr<Stage>& stage) :
@@ -116,10 +116,13 @@ namespace basecross {
 	class HammerFormation : public GameObject
 	{
 		shared_ptr<Transform> m_transComp;
+		weak_ptr<Player> m_player;
 		Vec3 m_rotation;
+		bool m_isActive;
 	public:
 		HammerFormation(const std::shared_ptr<Stage>& stage) :
-			GameObject(stage)
+			GameObject(stage),
+			m_isActive(true)
 		{
 
 		}
@@ -127,6 +130,8 @@ namespace basecross {
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
 
+		void Start(const Vec3& position, const Vec3& rotation);
+		void SetPlayer(const shared_ptr<Player>& player) { m_player = player; }
 	};
 }
 //end basecross

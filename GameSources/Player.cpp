@@ -39,7 +39,12 @@ namespace basecross{
 		}
 
 		// ハンマーのオブジェクトの作成
-		GetStage()->AddGameObject<HammerFormation>();
+		m_hammer = GetStage()->AddGameObject<HammerFormation>();
+		auto hammer = dynamic_pointer_cast<HammerFormation>(m_hammer);
+		if (hammer)
+		{
+			hammer->SetPlayer(GetThis<Player>());
+		}
 	}
 
 	// プレイヤーの更新処理
@@ -96,6 +101,14 @@ namespace basecross{
 			EraseSubPlayer(1);
 		}
 
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
+		{
+			auto hammerFormation = dynamic_pointer_cast<HammerFormation>(m_hammer);
+			if (hammerFormation)
+			{
+				hammerFormation->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0));
+			}
+		}
 
 	}
 
@@ -198,19 +211,50 @@ namespace basecross{
 		// ドローコンポーネントを追加
 		auto draw = AddComponent<PNTStaticDraw>();
 		draw->SetMeshResource(L"DEFAULT_CUBE");
-		draw->SetDiffuse(Col4(1, 0, 0, 1));
+		draw->SetDiffuse(Col4(0, 1, 0, 1));
 
 		m_transComp = GetComponent<Transform>();
 		Vec3 pos = m_transComp->GetPosition();
 		pos.y = 1;
 		m_transComp->SetPosition(pos);
+		Vec3 scale = m_transComp->GetScale();
+		scale.y = 2.0f;
+		m_transComp->SetScale(scale);
 	}
 
 	void HammerFormation::OnUpdate()
 	{
 		m_rotation.x += 0.01;
+		if (m_rotation.x > XM_PIDIV2)
+		{
+			m_isActive = false;
+			SetDrawActive(m_isActive);
+			SetUpdateActive(m_isActive);
+			auto player = m_player.lock();
+			if(player)
+			{
+				player->AddSubPlayer(20);
+			}
+		}
 		m_transComp->SetRotation(m_rotation);
 	}
+
+	void HammerFormation::Start(const Vec3& position, const Vec3& rotation)
+	{
+		m_rotation = rotation;
+		m_transComp->SetPosition(position);
+		m_transComp->SetRotation(m_rotation);
+		m_isActive = true;
+		SetDrawActive(m_isActive);
+		SetUpdateActive(m_isActive);
+		auto player = m_player.lock();
+		if (player)
+		{
+			player->EraseSubPlayer(20);
+		}
+
+	}
+
 }
 //end basecross
 
