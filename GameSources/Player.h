@@ -19,6 +19,7 @@ namespace basecross {
 		Vec3 m_rotation; // プレイヤーの回転
 		Vec3 m_scale;    // プレイヤーのスケーリング
 
+		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
 		
 	public :
 		// ステージを引数にしたコンストラクタ【必須】
@@ -39,6 +40,7 @@ namespace basecross {
 
 		void OnCreate() override; // 初期設定用の関数(UnityのStartメソッドに相当)
 		void OnUpdate() override; // 毎フレーム実行される関数(UnityのUpdateメソッドに相当)
+		void OnDraw() override;
 
 		Vec3 GetPosition()
 		{
@@ -69,6 +71,49 @@ namespace basecross {
 
 		void OnCollisionEnter(const shared_ptr<GameObject>& other);
 	};
+
+	// 群れのキャラクター
+	class SubPlayer : public GameObject
+	{
+		Vec3 m_targetPos;
+		shared_ptr<Transform> m_transComp;
+		Vec3 m_subPos;
+		float m_rotate;
+		float m_rad;
+		float m_len;
+
+	public:
+		// コンストラクタ
+		SubPlayer(const std::shared_ptr<Stage>& stage) :
+			GameObject(stage),
+			m_targetPos(Vec3(0))
+		{
+		}
+		SubPlayer(const std::shared_ptr<Stage>& stage, const Vec3& pos) :
+			GameObject(stage),
+			m_targetPos(pos)
+		{
+		}
+
+
+		void OnCreate() override; // 初期化
+		void OnUpdate() override; // 更新
+		void SetTargetPos(const Vec3& pos) { m_targetPos = pos; }
+		void SetRotate(float rotate) { m_rotate = rotate; }
+	};
+
+	//// 群れを管理するクラス
+	//class SubPlayersManager : public GameObject
+	//{
+	//	SubPlayersManager(const std::shared_ptr<Stage>& stage) :
+	//		GameObject(stage)
+	//	{
+	//	}
+
+	//	void OnCreate() override; // 初期化
+	//	void OnUpdate() override; // 更新
+
+	//};
 }
 //end basecross
 
