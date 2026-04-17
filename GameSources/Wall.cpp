@@ -53,7 +53,7 @@ namespace basecross
 
 	void Wall::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
-		if (other->FindTag(L"Player"))
+		if (other->FindTag(L"Attack"))
 		{
 			BrokenObjs::SetDamage(damage);
 			BrokenObjs::takeDamage();
