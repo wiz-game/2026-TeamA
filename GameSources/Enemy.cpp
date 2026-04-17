@@ -17,6 +17,8 @@ namespace basecross
 
 		damage = 2;
 
+		timer = 0.0f;
+
 		isHit = false;
 		BrokenObjs::OnCreate();
 		BrokenObjs::SetHP(hp);
@@ -66,20 +68,19 @@ namespace basecross
 
 			float followRange = 5.0f; //追尾を開始する距離
 			float speed = 1.0f; //速度
+			float followSpeed = 1.5f;//追尾時の速度
 
-			//追尾していない場合の移動範囲(-10～10)
-			float rx = -10.0f + (float)rand() / RAND_MAX * 20.0f;
-			float rz = -10.0f + (float)rand() / RAND_MAX * 20.0f;
+			////追尾していない場合の移動範囲(-10～10)
+			//float rx = -10.0f + (float)rand() / RAND_MAX * 20.0f;
+			//float rz = -10.0f + (float)rand() / RAND_MAX * 20.0f;
 
-			Vec3 dir = Vec3(rx, 0, rz).normalize();
-
-			float delay = 0.02f;
+			//Vec3 dir = Vec3(rx, 0, rz).normalize();
 
 			if (distance < followRange)//一定距離以内
 			{
-				Vec3 dir = diff.normalize();
+				dir = diff.normalize();
 
-				enemyPos += dir * elapsedTime * speed;
+				enemyPos += dir * elapsedTime * followSpeed;
 				m_transComp->SetPosition(enemyPos);
 
 			}
@@ -89,22 +90,43 @@ namespace basecross
 
 				if (timer >= 0.0f)
 				{
-					timer = -1.0f + (float)rand() / RAND_MAX * -2.0f;
+					SetValue();
+					dir = Vec3(rx, 0, rz).normalize();
+					timer = -1.0f + (float)rand() / RAND_MAX * -4.0f;
 				}
 
-				enemyPos += dir * elapsedTime;
-				m_transComp->SetPosition(enemyPos);
+				auto ground = GetStage()->GetSharedGameObject<Ground>(L"Ground");
+				Vec3 groundPos = ground->GetComponent<Transform>()->GetPosition();
 
+				if (enemyPos.x < groundPos.x)
+				{
+					enemyPos += dir * elapsedTime * speed;
+					m_transComp->SetPosition(enemyPos);
+				}
+				else if (enemyPos.z < groundPos.z)
+				{
+					enemyPos += dir * elapsedTime * speed;
+					m_transComp->SetPosition(enemyPos);
+				}
 			}
+
 
 			wss << L"EnemyPos.x:" << enemyPos.x
 				<< L"\nEnemyPos.y:" << enemyPos.y
 				<< L"\nEnemyPos.z" << enemyPos.z
 				<< L"\nEnemyLife" << BrokenObjs::GetHP() << endl;
 			scene->SetDebugString(wss.str());
-		}
 
-		BrokenObjs::OnUpdate();
+			BrokenObjs::OnUpdate();
+
+		}
+	}
+
+	void Enemy::SetValue()
+	{
+		//追尾していない場合の移動範囲(-10～10)
+		rx = -10.0f + (float)rand() / RAND_MAX * 20.0f;
+		rz = -10.0f + (float)rand() / RAND_MAX * 20.0f;
 
 
 	}
@@ -114,7 +136,7 @@ namespace basecross
 		if (other->FindTag(L"Player"))
 		{
 			isHit = true;
-			BrokenObjs::SetDamage(1);
+			BrokenObjs::SetDamage(damage);
 			BrokenObjs::takeDamage();
 		}
 	}

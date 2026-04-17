@@ -20,10 +20,15 @@ namespace basecross
 		Vec3 playerScale;
 		Vec3 playerPos;
 
+		void SetValue();
 		void OnCollisionEnter(shared_ptr<GameObject>& other)override;
 
 		bool isHit;
 		float timer;
+
+		float rx;
+		float rz;
+		Vec3 dir;
 	public:
 		Enemy(const shared_ptr<Stage>& stage) :
 			BrokenObjs(stage),
