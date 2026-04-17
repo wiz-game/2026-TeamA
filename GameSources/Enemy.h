@@ -13,6 +13,7 @@ namespace basecross
 		void InitDrawComp();
 		int hp;
 
+		int damage;
 		weak_ptr<Player> m_player;
 		Vec3 enemyScale;
 		Vec3 enemyPos;
@@ -24,7 +25,7 @@ namespace basecross
 		bool isHit;
 		float timer;
 	public:
-		Enemy(const shared_ptr<GameStage>& stage) :
+		Enemy(const shared_ptr<Stage>& stage) :
 			BrokenObjs(stage),
 			hp(4)
 		{

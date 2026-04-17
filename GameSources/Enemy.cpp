@@ -15,6 +15,8 @@ namespace basecross
 
 		m_player = GetStage()->GetSharedGameObject<Player>(L"Player");
 
+		damage = 2;
+
 		isHit = false;
 		BrokenObjs::OnCreate();
 		BrokenObjs::SetHP(hp);
@@ -97,7 +99,8 @@ namespace basecross
 
 			wss << L"EnemyPos.x:" << enemyPos.x
 				<< L"\nEnemyPos.y:" << enemyPos.y
-				<< L"\nEnemyPos.z" << enemyPos.z << endl;
+				<< L"\nEnemyPos.z" << enemyPos.z
+				<< L"\nEnemyLife" << BrokenObjs::GetHP() << endl;
 			scene->SetDebugString(wss.str());
 		}
 
