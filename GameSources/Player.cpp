@@ -43,6 +43,8 @@ namespace basecross{
 		auto hammer = dynamic_pointer_cast<HammerFormation>(m_hammer);
 		if (hammer)
 		{
+			hammer->SetUpdateActive(false);
+			hammer->SetDrawActive(false);
 			hammer->SetPlayer(GetThis<Player>());
 		}
 
@@ -50,6 +52,8 @@ namespace basecross{
 		auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
 		if (cube)
 		{
+			cube->SetUpdateActive(false);
+			cube->SetDrawActive(false);
 			cube->SetPlayer(GetThis<Player>());
 		}
 
@@ -255,7 +259,8 @@ namespace basecross{
 
 	void HammerFormation::OnUpdate()
 	{
-		m_rotation.x += 0.01;
+		auto delta = App::GetApp()->GetElapsedTime();
+		m_rotation.x += delta;
 		if (m_rotation.x > XM_PIDIV2)
 		{
 			m_isActive = false;
@@ -266,6 +271,8 @@ namespace basecross{
 			{
 				player->AddSubPlayer(20);
 			}
+
+			GetStage()->AddGameObject<AttackCollisionObj>(m_transComp->GetPosition(), m_rotation.y);
 		}
 		m_transComp->SetRotation(m_rotation);
 	}
@@ -306,7 +313,8 @@ namespace basecross{
 
 	void CubeFormation::OnUpdate()
 	{
-		m_time += 0.001;
+		auto delta = App::GetApp()->GetElapsedTime();
+		m_time += delta;
 		if (m_time > 3.0f)
 		{
 			m_isActive = false;
@@ -342,6 +350,28 @@ namespace basecross{
 
 	}
 
+	void AttackCollisionObj::OnCreate()
+	{
+		auto col = AddComponent<CollisionObb>();
+		auto transComp = GetComponent<Transform>();
+		Vec3 adjust = Vec3(cosf(m_rotation - XM_PIDIV2), 0.0f, -sinf(m_rotation - XM_PIDIV2)) * 2.0f;
+		transComp->SetPosition(m_position + adjust);
+		transComp->SetRotation(Vec3(0.0f, m_rotation, 0.0f));
+		transComp->SetScale(Vec3(2.0f, 1.0f, 2.0f));
+		col->SetDrawActive(true);
+
+		AddTag(L"Attack");
+	}
+
+	void AttackCollisionObj::OnUpdate()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+		m_time += delta;
+		if (m_time > 1.0f)
+		{
+			GetStage()->RemoveGameObject<AttackCollisionObj>(GetThis<AttackCollisionObj>());
+		}
+	}
 
 }
 //end basecross

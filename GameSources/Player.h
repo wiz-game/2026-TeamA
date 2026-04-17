@@ -156,6 +156,25 @@ namespace basecross {
 		void SetPlayer(const shared_ptr<Player>& player) { m_player = player; }
 
 	};
+
+	class AttackCollisionObj : public GameObject
+	{
+		float m_time;
+		Vec3 m_position;
+		float m_rotation;
+	public:
+		AttackCollisionObj(const std::shared_ptr<Stage>& stage, const Vec3& pos, float rot) :
+			GameObject(stage),
+			m_time(0.0f),
+			m_position(pos),
+			m_rotation(rot)
+		{
+
+		}
+
+		void OnCreate() override; // ‰Šú‰»
+		void OnUpdate() override; // XV
+	};
 }
 //end basecross
 
