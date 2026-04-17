@@ -16,6 +16,8 @@ namespace basecross
 		m_player = GetStage()->GetSharedGameObject<Player>(L"Player");
 
 		isHit = false;
+		BrokenObjs::OnCreate();
+		BrokenObjs::SetHP(hp);
 	}
 
 	void Enemy::InitTransComp()
@@ -99,11 +101,18 @@ namespace basecross
 			scene->SetDebugString(wss.str());
 		}
 
+		BrokenObjs::OnUpdate();
+
+
 	}
 
 	void Enemy::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
-		if(other->FindTag(L"Player"))
-		isHit = true;
+		if (other->FindTag(L"Player"))
+		{
+			isHit = true;
+			BrokenObjs::SetDamage(1);
+			BrokenObjs::takeDamage();
+		}
 	}
 }

@@ -4,13 +4,14 @@
 
 namespace basecross
 {
-	class Enemy : public GameObject
+	class Enemy : public BrokenObjs
 	{
 
 		shared_ptr<Transform> m_transComp;
 		shared_ptr<PNTStaticDraw> m_drawComp;
 		void InitTransComp();
 		void InitDrawComp();
+		int hp;
 
 		weak_ptr<Player> m_player;
 		Vec3 enemyScale;
@@ -23,8 +24,9 @@ namespace basecross
 		bool isHit;
 		float timer;
 	public:
-		Enemy(const shared_ptr<Stage>& stage) :
-			GameObject(stage)
+		Enemy(const shared_ptr<GameStage>& stage) :
+			BrokenObjs(stage),
+			hp(4)
 		{
 		}
 
