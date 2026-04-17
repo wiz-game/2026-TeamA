@@ -133,7 +133,7 @@ namespace basecross
 
 	void Enemy::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
-		if (other->FindTag(L"Player"))
+		if (other->FindTag(L"Attack"))
 		{
 			isHit = true;
 			BrokenObjs::SetDamage(damage);
