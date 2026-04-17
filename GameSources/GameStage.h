@@ -19,8 +19,8 @@ namespace basecross {
 		void CreateViewLight(); //ビューの作成
 
 		shared_ptr<Player> m_mainPlayer; // メインプレイヤー
-		//Vec3 m_mainPlayerScale; // メインプレイヤーのスケーリング
-		//vector<std::shared_ptr<Player>> m_sabPlayer; // ゲームオブジェクトのリスト
+		Vec3 m_mainPlayerScale; // メインプレイヤーのスケーリング
+		vector<std::shared_ptr<Player>> m_sabPlayer; // ゲームオブジェクトのリスト
 		std::shared_ptr<SingleView> m_playerCameraView;	
 
 	public:
