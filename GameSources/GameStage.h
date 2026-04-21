@@ -20,7 +20,6 @@ namespace basecross {
 
 		shared_ptr<Player> m_mainPlayer; // メインプレイヤー
 		Vec3 m_mainPlayerScale; // メインプレイヤーのスケーリング
-		vector<std::shared_ptr<Player>> m_sabPlayer; // ゲームオブジェクトのリスト
 		std::shared_ptr<SingleView> m_playerCameraView;	
 
 	public:
@@ -33,7 +32,6 @@ namespace basecross {
 		virtual void OnUpdate2() override;
 		virtual void OnDraw()override; //描画
 
-		void UpdateFormation(); // フォーメーションの更新
 	};
 }
 //end basecross

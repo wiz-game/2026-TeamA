@@ -75,6 +75,12 @@ namespace basecross{
 		// 左スティックの入力を取得する
 		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
 
+		if (LStick.length() > 0.1f)
+		{
+			m_rotation.y = -atan2f(LStick.y, LStick.x);
+			m_transform->SetRotation(m_rotation);
+		}
+
 		// 左スティックの入力に応じてプレイヤーを移動させる
 		float moveSpeed = 2.0f; // 移動速度
 		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
