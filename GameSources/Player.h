@@ -43,14 +43,14 @@ namespace basecross {
 		// ステージを引数にしたコンストラクタ【必須】
 		Player(const std::shared_ptr<Stage>& stage) :
 			GameObject(stage), // ステージをGameObjectに渡す【必須】
-			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
+			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(1.0f)     // プレイヤーの初期スケーリングを設定
 		{
 		}
 		Player(const std::shared_ptr<Stage>& stage,Vec3 scale) :
 			GameObject(stage), // ステージをGameObjectに渡す【必須】
-			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
+			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(scale)     // プレイヤーの初期スケーリングを設定
 		{
