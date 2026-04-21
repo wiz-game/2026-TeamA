@@ -9,6 +9,11 @@
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
 #include "Scene.h"
+
+
+// Manager
+#include "StageManager.h"
+
 #include "Character.h"
 #include "Player.h"
 #include "Ground.h"
@@ -16,7 +21,9 @@
 #include "BrokenObjs.h"
 #include "Enemy.h"
 #include "Wall.h"
+#include "BreakWall.h"
 #include "Goal.h"
 
-
 #include "GameStage.h"
+
+
