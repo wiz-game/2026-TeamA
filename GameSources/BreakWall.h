@@ -4,7 +4,7 @@
 
 namespace basecross
 {
-	class Wall : public BrokenObjs
+	class BreakWall : public BrokenObjs
 	{
 		shared_ptr<Transform> m_transComp;
 		shared_ptr<PNTStaticDraw> m_drawComp;
@@ -18,7 +18,7 @@ namespace basecross
 		void OnCollisionEnter(shared_ptr<GameObject>& other)override;
 
 	public:
-		Wall(const shared_ptr<Stage>& stage):
+		BreakWall(const shared_ptr<Stage>& stage):
 		BrokenObjs(stage),
 			hp(3)
 		{

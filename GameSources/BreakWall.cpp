@@ -4,7 +4,7 @@
 
 namespace basecross
 {
-	void Wall::OnCreate()
+	void BreakWall::OnCreate()
 	{
 
 		InitDrawComp();
@@ -17,14 +17,14 @@ namespace basecross
 
 	}
 
-	void Wall::InitDrawComp()
+	void BreakWall::InitDrawComp()
 	{
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
 
 	}
 
-	void Wall::InitTransComp()
+	void BreakWall::InitTransComp()
 	{
 		auto stage = GetStage();
 
@@ -38,7 +38,7 @@ namespace basecross
 
 	}
 
-	void Wall::OnUpdate()
+	void BreakWall::OnUpdate()
 	{
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
@@ -51,7 +51,7 @@ namespace basecross
 
 	}
 
-	void Wall::OnCollisionEnter(shared_ptr<GameObject>& other)
+	void BreakWall::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
 		if (other->FindTag(L"Attack"))
 		{

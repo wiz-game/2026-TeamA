@@ -63,7 +63,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Ground.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Wall.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)BreakWall.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)BrokenObjs.h">
@@ -125,7 +125,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Ground.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Wall.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)BreakWall.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)BrokenObjs.cpp">
