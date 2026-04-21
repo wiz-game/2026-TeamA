@@ -6,6 +6,14 @@
 #pragma once
 #include "stdafx.h"
 #include "PNTDXModelDraw.h"
+#include "JoltRigidBody.h"
+
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Character/CharacterVirtual.h>
+#include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
+#include <Jolt/Physics/Collision/Shape/RotatedTranslatedShape.h>
+
 
 namespace basecross {
 	// GameObjectクラスを継承した「Player」クラスを定義
@@ -22,18 +30,27 @@ namespace basecross {
 		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
 		shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
 		shared_ptr<GameObject> m_cube; // キューブのオブジェクト
+
+		std::unique_ptr<JPH::CharacterVirtual> m_character;
+		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
+		Vec3 m_desiredVelocity;
+		JPH::ObjectLayer m_objectLayer;
+
+		void InitializeCharacter();
+		void UpdateCharacter(float deltaTime);
+
 	public :
 		// ステージを引数にしたコンストラクタ【必須】
 		Player(const std::shared_ptr<Stage>& stage) :
 			GameObject(stage), // ステージをGameObjectに渡す【必須】
-			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
+			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(1.0f)     // プレイヤーの初期スケーリングを設定
 		{
 		}
 		Player(const std::shared_ptr<Stage>& stage,Vec3 scale) :
 			GameObject(stage), // ステージをGameObjectに渡す【必須】
-			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
+			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(scale)     // プレイヤーの初期スケーリングを設定
 		{
@@ -142,6 +159,8 @@ namespace basecross {
 		Vec3 m_rotation;
 		bool m_isActive;
 		float m_time;
+
+		shared_ptr<JoltRigidBody> m_rigidBody;
 	public:
 		CubeFormation(const std::shared_ptr<Stage>& stage) :
 			GameObject(stage),
