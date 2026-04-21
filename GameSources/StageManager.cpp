@@ -82,28 +82,32 @@ namespace basecross
 	// CSV ファイルからステージデータを読み込む
 	void StageManager::LoadStageFromCSV(const std::wstring& filePath)
 	{
+		auto& app = App::GetApp();
+		wstring path = app->GetDataDirWString();
+		wstring levelPath = path + L"Levels/";
+		wstring wstrPath = levelPath + filePath;
+
+		// wstring → string に変換
+		std::string strPath(wstrPath.begin(), wstrPath.end());
+
 		try
 		{
-			ifstream file(filePath);
+			ifstream file(strPath);
 			if (!file.is_open())
 			{
-				throw BaseException
-				(
+				throw BaseException(
 					L"CSVファイルが開けませんでした",
-					L"ifstream file(filePath); if (!file.is_open())",
+					L"ifstream file(strPath); if (!file.is_open())",
 					L"StageManager::LoadStageFromCSV()"
 				);
 			}
 
 			string line;
 
-			// 1行目（ヘッダー）を読み飛ばす
-			if (getline(file, line))
-			{
-				// ここは何もしない（ヘッダー無視）
-			}
+			// ヘッダーをスキップ
+			getline(file, line);
 
-			// 2行目以降を処理
+			// 本体を読む
 			while (getline(file, line))
 			{
 				ParseCSVLine(line);
@@ -124,17 +128,28 @@ namespace basecross
 		{
 			stringstream ss(line);
 			string name;
-			float x, y, z;
-			if (getline(ss, name, ',') && ss >> x && ss.get() && ss >> y && ss.get() && ss >> z)
+			float px, py, pz;
+			float rx, ry, rz;
+			float sx, sy, sz;
+
+			if (getline(ss, name, ',') &&
+				ss >> px && ss.get() &&
+				ss >> py && ss.get() &&
+				ss >> pz && ss.get() &&
+				ss >> rx && ss.get() &&
+				ss >> ry && ss.get() &&
+				ss >> rz && ss.get() &&
+				ss >> sx && ss.get() &&
+				ss >> sy && ss.get() &&
+				ss >> sz)
 			{
-				CreateObjectFromCSV(wstring(name.begin(), name.end()), Vec3(x, y, z));
+				CreateObjectFromCSV(wstring(name.begin(), name.end()), Vec3(px, py, pz), Vec3(XMConvertToRadians(rx), XMConvertToRadians(ry), XMConvertToRadians(rz)), Vec3(sx, sy, sz));
 			}
 			else
 			{
-				throw BaseException
-				(
+				throw BaseException(
 					L"CSVの行の形式が不正です",
-					L"if (getline(ss, name, ',') && ss >> x && ss.get() && ss >> y && ss.get() && ss >> z)",
+					L"ParseCSVLine のパース失敗",
 					L"StageManager::ParseCSVLine()"
 				);
 			}
@@ -146,17 +161,26 @@ namespace basecross
 	}
 
 	// CSVの情報からステージオブジェクトを生成する
-	void StageManager::CreateObjectFromCSV(const std::wstring& name, const Vec3& pos)
+	void StageManager::CreateObjectFromCSV(const std::wstring& name, const Vec3& pos, const Vec3& rot, const Vec3& scale)
 	{
 		try
 		{
 			auto scene = App::GetApp()->GetScene<Scene>();
 			if (!scene)
 			{
-				throw BaseException
-				(
+				throw BaseException(
 					L"Scene が取得できません",
 					L"auto scene = App::GetApp()->GetScene<Scene>()",
+					L"StageManager::CreateObjectFromCSV()"
+				);
+			}
+
+			auto stage = scene->GetActiveTypeStage<GameStage>();
+			if (!stage)
+			{
+				throw BaseException(
+					L"アクティブなステージがありません",
+					L"scene->GetActiveTypeStage<GameStage>()",
 					L"StageManager::CreateObjectFromCSV()"
 				);
 			}
@@ -164,24 +188,33 @@ namespace basecross
 			// --- オブジェクト生成 ---
 			if (name == L"Wall")
 			{
-				auto wall = scene->AddGameObject<Wall>();
+				auto wall = stage->AddGameObject<Wall>();
 				wall->SetPosition(pos);
+				wall->SetRotation(rot);
+				wall->SetScale(scale);
+				return;
 			}
-			else if (name == L"Goal")
+			//else if (name == L"Goal")
+			//{
+			//	auto goal = stage->AddGameObject<Goal>();
+			//	goal->SetPosition(pos);
+			//	return;
+			//}
+			else if (name == L" Floor")
 			{
-				//auto goal = scene->AddGameObject<Goal>();
-				//goal->SetPosition(pos);
-			}
-			if (name == L"Floor")
-			{
-				auto floor = scene->AddGameObject<Wall>();
+				auto floor = stage->AddGameObject<Wall>();
 				floor->SetPosition(pos);
-
+				floor->SetRotation(rot);
+				floor->SetScale(scale);	
+				return;
+			}
+			else if (name == L"GameObject")
+			{
+				return;
 			}
 			else
 			{
-				throw BaseException
-				(
+				throw BaseException(
 					L"CSVのオブジェクト名が不正です",
 					L"不明なオブジェクト名: " + name,
 					L"StageManager::CreateObjectFromCSV()"

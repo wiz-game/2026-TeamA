@@ -10,6 +10,7 @@
 #include "ProjectBehavior.h"
 #include "Scene.h"
 
+
 // Manager
 #include "StageManager.h"
 
@@ -19,8 +20,10 @@
 #include "PlayerCamera.h"
 #include "BrokenObjs.h"
 #include "Enemy.h"
+#include "Wall.h"
 #include "BreakWall.h"
 #include "Goal.h"
 
-
 #include "GameStage.h"
+
+

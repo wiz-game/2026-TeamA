@@ -20,6 +20,7 @@ namespace basecross
 		StageManager();
 		virtual ~StageManager(){}
 
+		shared_ptr<Stage> m_stage;
 	public:
 		/*!
 		@brief ステージマネージャーを取得
@@ -58,18 +59,14 @@ namespace basecross
 		void Discard();
 
 		/*!
-		@brief ステージマネージャーを破棄
-		@return なし
-		*/
-		void Discard();
-
-		/*!
 		@brief CSVファイルからステージデータを読み込む
 		@param[in] filePath読み込むCSVファイルのパス
 		@return なし
 		*/
 		void LoadStageFromCSV(const std::wstring& filePath);
 
+
+	private:
 		/*!
 		@brief CSVの1行を解析する
 		@param[in] lineCSVの1行分の文字列
@@ -83,9 +80,8 @@ namespace basecross
 		@param[in] pos 生成位置（Vec3）
 		@return なし
 		*/
-		void CreateObjectFromCSV(const std::wstring& name, const Vec3& pos);
+		void CreateObjectFromCSV(const std::wstring& name, const Vec3& pos, const Vec3& rot, const Vec3& scale);
 
-	private:
 		//コピー禁止
 		StageManager(const StageManager&) = delete;
 		StageManager& operator=(const StageManager&) = delete;
