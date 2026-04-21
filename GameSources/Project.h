@@ -9,6 +9,10 @@
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
 #include "Scene.h"
+
+// Manager
+#include "StageManager.h"
+
 #include "Character.h"
 #include "Player.h"
 #include "Ground.h"

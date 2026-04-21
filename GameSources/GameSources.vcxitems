@@ -26,6 +26,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)JoltLayers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JoltManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JoltRigidBody.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PlayerCamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PNTDXModelDraw.h" />
@@ -50,6 +51,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Ground.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)JoltManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)JoltRigidBody.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PlayerCamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PNTDXModelDraw.cpp" />

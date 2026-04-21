@@ -1,0 +1,5 @@
+Name,PosX,PosY,PosZ,RotX,RotY,RotZ,ScaleX,ScaleY,ScaleZ
+GameObject,0,0,0,0,0,0,1,1,1
+ Floor,0,0,4.6,0,0,0,6,0.5,15
+ Floor,0,0,20,0,0,0,6,0.5,10
+Wall,0,1.76,27.47,0,0,0,6,4,5
