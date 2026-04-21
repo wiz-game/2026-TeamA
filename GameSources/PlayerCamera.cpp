@@ -21,8 +21,7 @@ namespace basecross
 		m_gameStage = App::GetApp()->GetScene<Scene>()->GetActiveStage()->GetThis<GameStage>();
 
 		auto gameStage = m_gameStage.lock();
-		if (gameStage)
-		{
+		if (!gameStage) return;
 			auto player = gameStage->GetSharedGameObject<Player>(L"Player");
 			if (player)
 			{
@@ -54,14 +53,12 @@ namespace basecross
 					SetAt(GetAt() + (at - GetAt()) * fixedDelta);
 				}
 			}
-		}
 	}
 
 	void PlayerCamera::SetCameraToPlayerPos()
 	{
 		auto gameStage = m_gameStage.lock();
-		if (gameStage)
-		{
+		if (!gameStage) return;
 			auto player = gameStage->GetSharedGameObject<Player>(L"Player");
 			if (player)
 			{
@@ -80,32 +77,52 @@ namespace basecross
 				//元の座標　＋　元と現在の座標を差を乗算した値　＋　オフセット
 				SetAt(at);
 			}
-		}
 	}
 
 	void PlayerCamera::ClarifyMovementDirection()
 	{
 		auto gameStage = m_gameStage.lock();
-		if (gameStage)
+		if (!gameStage) return;
+		auto player = gameStage->GetSharedGameObject<Player>(L"Player");
+		auto goal = gameStage->GetSharedGameObject<Goal>(L"Goal");
+
+		if (player && goal)
 		{
-			auto player = gameStage->GetSharedGameObject<Player>(L"Player");
 			auto playerTrans = player->GetComponent<Transform>();
-			auto goal = gameStage->GetSharedGameObject<Goal>(L"Goal");
 			auto goalTrans = goal->GetComponent<Transform>();
 			Vec3 playerPos = playerTrans->GetPosition();
 			Vec3 goalPos = goalTrans->GetPosition();
-			Vec3 diff = goalPos - GetEye();
-			float distance = diff.length();
-			float lookAheadOffset = 5.0f;
-			Vec3 dir = diff.normalize();
-			Vec3 at = playerPos + Vec3(dir);
 
-			if (distance < lookAheadOffset)
-			{
-				SetAt(at);
-			}
+			Vec3 toGoal = goalPos - playerPos;
+			float distanceToGoal = toGoal.length();
 
+			//ゴール方向に少しずらす
+			float bias = 0.25f;
+
+			Vec3 targetAt = playerPos + (toGoal * bias);
+
+			//補間
+			float delta = App::GetApp()->GetElapsedTime();
+			float fixedDelta = (std::min)(delta * 6.0f, 1.0f);
+
+			// 現在の注視点 (GetAt) から 目標の注視点 (targetAt) へ徐々に近づける
+			Vec3 currentAt = GetAt();
+			Vec3 nextAt = currentAt + (targetAt - currentAt) * fixedDelta;
+
+			SetAt(nextAt);
+
+			//Vec3 diff = goalPos - GetEye();
+			//float distance = diff.length();
+			//float lookAheadOffset = 5.0f;
+			//Vec3 dir = diff.normalize();
+			//Vec3 at = playerPos + Vec3(dir);
+
+			//if (distance < lookAheadOffset)
+			//{
+			//	SetAt(at);
+			//}
 		}
+
 	}
 
 
