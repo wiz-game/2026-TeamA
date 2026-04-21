@@ -55,7 +55,8 @@ namespace basecross {
 
 			auto ground = AddGameObject<Ground>();
 			SetSharedGameObject(L"Ground", ground);
-
+			auto goal = AddGameObject<Goal>();
+			SetSharedGameObject(L"Goal", goal);
 		}
 		catch (...) {
 			throw;
