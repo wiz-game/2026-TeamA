@@ -11,6 +11,8 @@ namespace basecross
 		std::weak_ptr<GameStage> m_gameStage;
 		bool m_isFirstFrame;
 
+		void ClarifyMovementDirection();
+
 	public:
 
 		PlayerCamera();

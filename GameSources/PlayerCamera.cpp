@@ -31,7 +31,7 @@ namespace basecross
 				float fixedDelta = delta * 6;
 				Vec3 playerPos = trans->GetPosition();
 
-				Vec3 eye = playerPos + Vec3(0.0f, 8.0f, -18.0f);
+				Vec3 eye = playerPos + Vec3(0.0f, 10.0f, -30.0f);
 				Vec3 at = playerPos + Vec3(0.0f, 0.0f, 0.0f);
 
 				if (m_isFirstFrame)
@@ -65,10 +65,10 @@ namespace basecross
 			auto player = gameStage->GetSharedGameObject<Player>(L"Player");
 			if (player)
 			{
-				auto trans = player->GetComponent<Transform>();
+				auto playerTrans = player->GetComponent<Transform>();
 				float delta = App::GetApp()->GetElapsedTime();
 				float fixedDelta = delta * 6;
-				Vec3 playerPos = trans->GetPosition();
+				Vec3 playerPos = playerTrans->GetPosition();
 				//Vec3 forward = player->GetForward();
 
 				Vec3 eye = playerPos + Vec3(0.0f, 3.0f, -18.0f);
@@ -80,6 +80,31 @@ namespace basecross
 				//元の座標　＋　元と現在の座標を差を乗算した値　＋　オフセット
 				SetAt(at);
 			}
+		}
+	}
+
+	void PlayerCamera::ClarifyMovementDirection()
+	{
+		auto gameStage = m_gameStage.lock();
+		if (gameStage)
+		{
+			auto player = gameStage->GetSharedGameObject<Player>(L"Player");
+			auto playerTrans = player->GetComponent<Transform>();
+			auto goal = gameStage->GetSharedGameObject<Goal>(L"Goal");
+			auto goalTrans = goal->GetComponent<Transform>();
+			Vec3 playerPos = playerTrans->GetPosition();
+			Vec3 goalPos = goalTrans->GetPosition();
+			Vec3 diff = goalPos - GetEye();
+			float distance = diff.length();
+			float lookAheadOffset = 5.0f;
+			Vec3 dir = diff.normalize();
+			Vec3 at = playerPos + Vec3(dir);
+
+			if (distance < lookAheadOffset)
+			{
+				SetAt(at);
+			}
+
 		}
 	}
 
