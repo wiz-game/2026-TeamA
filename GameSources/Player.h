@@ -8,6 +8,13 @@
 #include "PNTDXModelDraw.h"
 #include "JoltRigidBody.h"
 
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Character/CharacterVirtual.h>
+#include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
+#include <Jolt/Physics/Collision/Shape/RotatedTranslatedShape.h>
+
+
 namespace basecross {
 	// GameObjectクラスを継承した「Player」クラスを定義
 	class Player : public GameObject // GameObjectクラスの継承【必須】
@@ -23,6 +30,15 @@ namespace basecross {
 		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
 		shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
 		shared_ptr<GameObject> m_cube; // キューブのオブジェクト
+
+		std::unique_ptr<JPH::CharacterVirtual> m_character;
+		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
+		Vec3 m_desiredVelocity;
+		JPH::ObjectLayer m_objectLayer;
+
+		void InitializeCharacter();
+		void UpdateCharacter(float deltaTime);
+
 	public :
 		// ステージを引数にしたコンストラクタ【必須】
 		Player(const std::shared_ptr<Stage>& stage) :
