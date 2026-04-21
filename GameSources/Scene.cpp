@@ -24,6 +24,7 @@ namespace basecross{
 		// リソースの読込
 	}
 
+
 	void Scene::OnCreate(){
 		try {
 			JoltManager::StaticInitialize();
@@ -37,21 +38,29 @@ namespace basecross{
 			//自分自身にイベントを送る
 			//これによりゲームステージのオブジェクトがCreate時にシーンにアクセスできる
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+
+			//GameManager::CreateGameManager();
+
+
 		}
 		catch (...) {
 			throw;
 		}
 	}
-
-	Scene::~Scene() {
-		JoltManager::StaticTerminate();
-	}
-
+	
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToGameStage") {
 			//ゲームステージの設定
 			ResetActiveStage<GameStage>();
+
+			StageManager::CreateStageManager();
+
+			StageManager::GetStageManager()->LoadStageFromCSV(L"stage1.csv");
 		}
 	}
+	Scene::~Scene() {
+		JoltManager::StaticTerminate();
+	}
+
 }
 //end basecross
