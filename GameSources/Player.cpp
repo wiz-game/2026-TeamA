@@ -307,6 +307,21 @@ namespace basecross{
 		pos.y = 1;
 		m_transComp->SetPosition(pos);
 		Vec3 scale = m_transComp->GetScale();
+
+		// 箱形の当たり判定を作成
+		JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
+		JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
+
+		JoltRigidBody::Settings rbSettings;
+		rbSettings.shape = boxShape; // 共通の形状を使い回す
+		rbSettings.motionType = JPH::EMotionType::Kinematic; // 物理演算で動く設定
+		rbSettings.objectLayer = Layers::NON_MOVING; // レイヤー 1 (例: MOVING)
+		rbSettings.mass = 10.0f; // 重さ 10kg
+		rbSettings.restitution = 0.5f; // 反発係数 0.5 (弾む)
+		rbSettings.friction = 0.5f;
+		m_rigidBody = AddComponent<JoltRigidBody>();
+		m_rigidBody->Initialize(rbSettings);
+
 	}
 
 	void CubeFormation::OnUpdate()

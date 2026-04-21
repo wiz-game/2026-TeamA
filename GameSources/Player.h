@@ -6,6 +6,7 @@
 #pragma once
 #include "stdafx.h"
 #include "PNTDXModelDraw.h"
+#include "JoltRigidBody.h"
 
 namespace basecross {
 	// GameObjectクラスを継承した「Player」クラスを定義
@@ -142,6 +143,8 @@ namespace basecross {
 		Vec3 m_rotation;
 		bool m_isActive;
 		float m_time;
+
+		shared_ptr<JoltRigidBody> m_rigidBody;
 	public:
 		CubeFormation(const std::shared_ptr<Stage>& stage) :
 			GameObject(stage),
