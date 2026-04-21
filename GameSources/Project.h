@@ -16,6 +16,7 @@
 #include "BrokenObjs.h"
 #include "Enemy.h"
 #include "Wall.h"
+#include "Goal.h"
 
 
 #include "GameStage.h"
