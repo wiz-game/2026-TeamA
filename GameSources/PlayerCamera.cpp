@@ -33,26 +33,29 @@ namespace basecross
 				Vec3 eye = playerPos + Vec3(0.0f, 10.0f, -30.0f);
 				Vec3 at = playerPos + Vec3(0.0f, 0.0f, 0.0f);
 
-				if (m_isFirstFrame)
-				{
-					m_isFirstFrame = false;
-					SetEye(Vec3(eye.x,
-						eye.y,
-						eye.z
-					));
-					//元の座標　＋　元と現在の座標を差を乗算した値　＋　オフセット
-					SetAt(at);
-				}
-				else
-				{
-					SetEye(Vec3(GetEye().x + (eye.x - GetEye().x) * fixedDelta,
-						GetEye().y + (eye.y - GetEye().y) * fixedDelta,
-						GetEye().z + (eye.z - GetEye().z)
-					));
-					//元の座標　＋　元と現在の座標を差を乗算した値　＋　オフセット
-					SetAt(GetAt() + (at - GetAt()) * fixedDelta);
-				}
+				//if (m_isFirstFrame)
+				//{
+				//	m_isFirstFrame = false;
+				//	SetEye(Vec3(eye.x,
+				//		eye.y,
+				//		eye.z
+				//	));
+				//	//元の座標　＋　元と現在の座標を差を乗算した値　＋　オフセット
+				//	SetAt(at);
+				//}
+				//else
+				//{
+				//	SetEye(Vec3(eye.x - GetEye().x + (eye.x - GetEye().x) * fixedDelta,
+				//		GetEye().y + (eye.y - GetEye().y) * fixedDelta,
+				//		GetEye().z + (eye.z - GetEye().z)
+				//	));
+				//	//元の座標　＋　元と現在の座標を差を乗算した値　＋　オフセット
+				//	SetAt(GetAt() + (at - GetAt()) * fixedDelta);
+				//}
 			}
+
+			SetCameraToPlayerPos();
+
 	}
 
 	void PlayerCamera::SetCameraToPlayerPos()
@@ -64,11 +67,11 @@ namespace basecross
 			{
 				auto playerTrans = player->GetComponent<Transform>();
 				float delta = App::GetApp()->GetElapsedTime();
-				float fixedDelta = delta * 6;
+				//float fixedDelta = delta * 6;
 				Vec3 playerPos = playerTrans->GetPosition();
 				//Vec3 forward = player->GetForward();
 
-				Vec3 eye = playerPos + Vec3(0.0f, 3.0f, -18.0f);
+				Vec3 eye = playerPos + Vec3(-20.0f, 10.0f, 0.0f);
 				Vec3 at = playerPos + Vec3(0.0f, 0.0f, 0.0f);
 
 				SetEye(Vec3(eye.x,
@@ -105,7 +108,7 @@ namespace basecross
 			float delta = App::GetApp()->GetElapsedTime();
 			float fixedDelta = (std::min)(delta * 6.0f, 1.0f);
 
-			// 現在の注視点 (GetAt) から 目標の注視点 (targetAt) へ徐々に近づける
+			// 現在の注視点(GetAt)から目標の注視点(targetAt)へ徐々に近づける
 			Vec3 currentAt = GetAt();
 			Vec3 nextAt = currentAt + (targetAt - currentAt) * fixedDelta;
 
