@@ -63,8 +63,6 @@ namespace basecross {
 			}			//ビューとライトの作成
 			CreateViewLight();
 
-			auto ground = AddGameObject<Ground>();
-			SetSharedGameObject(L"Ground", ground);
 
 		}
 		catch (...) {
