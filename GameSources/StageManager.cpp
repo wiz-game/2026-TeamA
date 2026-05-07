@@ -200,13 +200,22 @@ namespace basecross
 			//	goal->SetPosition(pos);
 			//	return;
 			//}
-			else if (name == L" Floor")
+			else if (name == L"Floor")
 			{
 				auto floor = stage->AddGameObject<Wall>();
 				floor->SetPosition(pos);
 				floor->SetRotation(rot);
 				floor->SetScale(scale);	
 				return;
+			}
+			else if (name == L"Board")
+			{
+				auto board = stage->AddGameObject<Wall>();
+				board->SetPosition(pos);
+				board->SetRotation(rot);
+				board->SetScale(scale);
+				return;
+
 			}
 			else if (name == L"GameObject")
 			{
