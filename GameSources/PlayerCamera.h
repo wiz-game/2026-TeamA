@@ -12,7 +12,7 @@ namespace basecross
 		bool m_isFirstFrame;
 
 		void ClarifyMovementDirection();
-
+		Vec3 m_currentCameraForward; //現在のカメラ方向
 	public:
 
 		PlayerCamera();
