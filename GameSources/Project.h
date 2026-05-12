@@ -21,7 +21,7 @@
 #include "PlayerCamera.h"
 #include "BrokenObjs.h"
 #include "Enemy.h"
-#include "Wall.h"
+#include "Block.h"
 #include "BreakWall.h"
 #include "Goal.h"
 

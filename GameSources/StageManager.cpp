@@ -186,15 +186,7 @@ namespace basecross
 			}
 
 			// --- オブジェクト生成 ---
-			if (name == L"Wall")
-			{
-				auto wall = stage->AddGameObject<Wall>();
-				wall->SetPosition(pos);
-				wall->SetRotation(rot);
-				wall->SetScale(scale);
-				return;
-			}
-			else if (name == L"Goal")
+			if (name == L"Goal")
 			{
 				auto goal = stage->AddGameObject<Goal>();
 				goal->SetPosition(pos);
@@ -205,29 +197,41 @@ namespace basecross
 			}
 			else if (name == L"Floor")
 			{
-				auto floor = stage->AddGameObject<Wall>();
+				auto floor = stage->AddGameObject<Block>();
 				floor->SetPosition(pos);
 				floor->SetRotation(rot);
-				floor->SetScale(scale);	
+				floor->SetScale(scale);
+				floor->SetCollar(Col4(0.35f, 0.35f, 0.35f, 1.0f));
 				return;
 			}
 			else if (name == L"Scaffold")
 			{
-				auto floor = stage->AddGameObject<Wall>();
-				floor->SetPosition(pos);
-				floor->SetRotation(rot);
-				floor->SetScale(scale);
+				auto Scaffold = stage->AddGameObject<Block>();
+				Scaffold->SetPosition(pos);
+				Scaffold->SetRotation(rot);
+				Scaffold->SetScale(scale);
+				Scaffold->SetCollar(Col4(0.0f, 0.0f, 0.0f, 1.0f));
 				return;
 
 			}
 			else if (name == L"Board")
 			{
-				auto board = stage->AddGameObject<Wall>();
+				auto board = stage->AddGameObject<Block>();
 				board->SetPosition(pos);
 				board->SetRotation(rot);
 				board->SetScale(scale);
+				board->SetCollar(Col4(0.5f, 0.35f, 0.2f, 1.0f));
+
 				return;
 
+			}
+			else if (name == L"Wall")
+			{
+				auto board = stage->AddGameObject<Block>();
+				board->SetPosition(pos);
+				board->SetRotation(rot);
+				board->SetScale(scale);
+				board->SetCollar(Col4(0.35f, 0.35f, 0.35f, 1.0f));
 			}
 			else if (name == L"GameObject")
 			{

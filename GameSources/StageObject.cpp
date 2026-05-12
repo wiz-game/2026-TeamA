@@ -11,7 +11,10 @@ namespace basecross
 
 	// コンストラクタ
 	StageObject::StageObject(const std::shared_ptr<Stage>& stage) :
-		GameObject(stage)
+		GameObject(stage),
+		m_position(0.0f, 0.0f, 0.0f),
+		m_rotation(0.0f, 0.0f, 0.0f),
+		m_scale(1.0f, 1.0f, 1.0f)
 	{
 	}
 
@@ -34,7 +37,6 @@ namespace basecross
 	{
 
 	}
-
 
 	void StageObject::SetPosition(const Vec3& pos)
 	{

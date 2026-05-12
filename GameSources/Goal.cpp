@@ -7,7 +7,7 @@ namespace basecross
 	void Goal::OnCreate()
 	{
 		StageObject::OnCreate();
-		m_Stage = GetStage();
+		m_stage = GetStage();
 		//auto grv = AddComponent<Gravity>();
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");

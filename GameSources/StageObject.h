@@ -12,11 +12,12 @@ namespace basecross
 	{
 	protected:
 		shared_ptr<Transform> m_transComp;
-		shared_ptr<Stage> m_Stage;
+		shared_ptr<Stage> m_stage;
 
 		Vec3 m_position; // 位置
 		Vec3 m_rotation; // 回転
 		Vec3 m_scale;    // スケーリング
+
 	public:
 		StageObject(const std::shared_ptr<Stage>& stage);
 		virtual ~StageObject(){}
