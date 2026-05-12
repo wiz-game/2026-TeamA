@@ -194,12 +194,15 @@ namespace basecross
 				wall->SetScale(scale);
 				return;
 			}
-			//else if (name == L"Goal")
-			//{
-			//	auto goal = stage->AddGameObject<Goal>();
-			//	goal->SetPosition(pos);
-			//	return;
-			//}
+			else if (name == L"Goal")
+			{
+				auto goal = stage->AddGameObject<Goal>();
+				goal->SetPosition(pos);
+				goal->SetRotation(rot);
+				goal->SetScale(scale);
+				//m_stage->SetSharedGameObject(L"Goal", goal);
+				return;
+			}
 			else if (name == L"Floor")
 			{
 				auto floor = stage->AddGameObject<Wall>();
