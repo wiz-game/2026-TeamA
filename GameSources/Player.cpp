@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "Project.h"
 
-namespace basecross{
+namespace basecross {
 	// プレイヤーの初期設定
 	void Player::OnCreate()
 	{
@@ -19,23 +19,30 @@ namespace basecross{
 		//m_draw = AddComponent<PNTDXModelDraw>();
 		m_draw = AddComponent<PNTStaticDraw>();
 		m_draw->SetMeshResource(L"DEFAULT_CUBE");
-		m_draw->SetDiffuse(Col4(1,0,0,1));
+		m_draw->SetDiffuse(Col4(1, 0, 0, 1));
 		//AddComponent<Gravity>();
 
 		// 群れのキャラクターの生成
-		for (int i = 0; i < 150; i++)
+		int num[12] = { 10, 12, 12, 14, 14, 14, 14, 14, 12, 12, 12, 10 };
+		int n = 0;;
+		int sum = 0;
+		sum += num[n];
+		for (int i = 0; i < MAX_CHARACTER_NUM; i++)
 		{
-			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(Vec3(i % 8, 0, i / 10));
-			if (i < 50)
+			if (i >= sum)
 			{
-				subPlayer->SetAlive(true);
+				n++;
+				sum += num[n];
 			}
-			else
-			{
-				subPlayer->SetAlive(false);
-			}
+			float x = ((float)((i % num[n]) / 2) + 0.5f) * (float)(i % 2 == 0 ? 1 : -1) * 1.0f;
+			float z = n * 1.0f + 1;
+			m_characterPositions[i] = Vec3(x, 0, z);
+			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(m_characterPositions[i]);
+			subPlayer->SetAlive(false);
+			subPlayer->SetPlayer(GetThis<GameObject>());
 			m_subPlayers.push_back(subPlayer);
 		}
+		AddSubPlayer(150);
 
 		// ハンマーのオブジェクトの作成
 		m_hammer = GetStage()->AddGameObject<HammerFormation>();
@@ -84,7 +91,7 @@ namespace basecross{
 		}
 
 		// 左スティックの入力に応じてプレイヤーを移動させる
-		float moveSpeed = 2.0f; // 移動速度
+		float moveSpeed = 4.0f; // 移動速度
 		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
 		//m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		//m_transform->SetPosition(m_position); // プレイヤーを移動させる
@@ -118,11 +125,23 @@ namespace basecross{
 			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
 			if (subPlayer)
 			{
+				if (subPlayer->GetAlive())
 				{
-					subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
+					//subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
+					subPlayer->SetPlayerPos(m_position);
 					subPlayer->SetRotate(m_rotation.y);
 				}
 			}
+		}
+
+		// 群れの移動を管理
+		if (m_desiredVelocity.length() > 0.1f && m_allMove)
+		{
+			AllCharacterMove();
+		}
+		else if (m_desiredVelocity.length() < 0.1f)
+		{
+			m_allMove = false;
 		}
 
 		// ボタンで群れの数を変更
@@ -170,6 +189,8 @@ namespace basecross{
 			if (!subPlayer->GetAlive())
 			{
 				subPlayer->SetAlive(true);
+				subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
+				m_activeNum++;
 				num--;
 			}
 		}
@@ -200,10 +221,22 @@ namespace basecross{
 			if (subPlayer->GetAlive())
 			{
 				subPlayer->SetAlive(false);
+				m_activeNum--;
 				num--;
 			}
 		}
-		
+
+		// 場所をただす
+		int i = 0;
+		for (auto& obj : m_subPlayers)
+		{
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer->GetAlive())
+			{
+				subPlayer->SetTargetPos(m_characterPositions[i]);
+				i++;
+			}
+		}
 		return true;
 	}
 
@@ -260,7 +293,7 @@ namespace basecross{
 		characterSettings.mPredictiveContactDistance = predictiveContactDistance;
 		characterSettings.mPenetrationRecoverySpeed = penetrationRecoverySpeed;
 		characterSettings.mUp = JPH::Vec3::sAxisY();
-		characterSettings.mSupportingVolume = JPH::Plane(JPH::Vec3::sAxisY(), - radius);
+		characterSettings.mSupportingVolume = JPH::Plane(JPH::Vec3::sAxisY(), -radius);
 
 		// CharacterVirtualを作成
 		m_character = std::make_unique<JPH::CharacterVirtual>(
@@ -337,6 +370,19 @@ namespace basecross{
 
 	}
 
+	void Player::AllCharacterMove()
+	{
+		for (auto& obj : m_subPlayers)
+		{
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer->GetAlive())
+			{
+				subPlayer->SetFollow(true);
+			}
+		}
+
+	}
+
 	// 群れのキャラクターの初期化
 	void SubPlayer::OnCreate()
 	{
@@ -347,34 +393,104 @@ namespace basecross{
 
 		m_transComp = GetComponent<Transform>();
 		m_transComp->SetPosition(m_targetPos);
+		//m_transComp->SetScale(Vec3(0.5f));
 
-		m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
-		m_len = static_cast<float>(rand() % 10) / 10.0f * 6.0f;
-		m_subPos = Vec3(cosf(m_rad) * m_len, 0, sinf(m_rad) * m_len);
+		m_state.reset(new StateMachine<SubPlayer>(GetThis<SubPlayer>()));
+		m_state->ChangeState(SubPlayerFollowState::Instance());
+
+		m_dif = (float)(rand() % 10) * 0.03f + 0.05f;
 	}
 
 	// 群れのキャラクターの更新
 	void SubPlayer::OnUpdate()
 	{
-		auto delta = App::GetApp()->GetElapsedTime();
-
-		auto pos = m_transComp->GetPosition();
-		m_subPos = Vec3(cosf(m_rad - m_rotate) * m_len, 0, sinf(m_rad - m_rotate) * m_len);
-		Vec3 moveVec = Vec3(m_targetPos + m_subPos - pos);
-		moveVec.normalize();
-		pos += moveVec * delta * 3.0f;
-		pos.y = 1.0f;
-		m_transComp->SetPosition(pos);
+		m_state->Update();
 	}
 
 	void SubPlayer::SetAlive(bool isAlive)
 	{
 		SetUpdateActive(isAlive);
 		SetDrawActive(isAlive);
+
 	}
 	bool SubPlayer::GetAlive()
 	{
 		return GetUpdateActive() && GetDrawActive();
+	}
+
+	bool SubPlayer::Stay()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+
+		auto pos = m_transComp->GetPosition();
+		auto dis = m_playerPos - pos;
+		auto distance = Vec3(m_targetPos).length() + 1.0f;
+		if (dis.length() > 15)
+		{
+			m_follow = true;
+		}
+		if (m_follow)
+		{
+			m_stay += delta;
+			if (m_stay > m_dif)
+			{
+				m_stay = 0;
+				m_follow = false;
+				return true;
+			}
+		}
+		return false;
+	}
+	bool SubPlayer::FollowPlayer()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+
+		Vec3 playerVec = Vec3(0);
+		if (!m_player.expired())
+		{
+			auto obj = m_player.lock();
+			if (obj)
+			{
+				auto player = dynamic_pointer_cast<Player>(obj);
+				if (player)
+				{
+					playerVec = player->GetMoveVelocity();
+				}
+			}
+		}
+
+		auto pos = m_transComp->GetPosition();
+		auto rotate = -m_rotate + XM_PIDIV2;
+		auto subPos = Vec3(m_targetPos.x * cosf(rotate) - m_targetPos.z * sinf(rotate), 0, m_targetPos.x * sinf(rotate) + m_targetPos.z * cosf(rotate)) + m_playerPos;
+		Vec3 moveVec = Vec3(subPos - pos);
+		moveVec.normalize();
+		float speed = playerVec.length() < 0.1f ? 2.0f : playerVec.length();
+		pos += moveVec * delta * speed;
+		pos.y = 1.0f;
+		m_transComp->SetPosition(pos);
+
+
+		auto dis = subPos - pos;
+		if (dis.length() < 1.0f && playerVec.length() < 0.1f)
+		{
+			return true;
+		}
+
+
+		return false;
+	}
+
+	shared_ptr<GameObject> SubPlayer::GetPlayer()
+	{
+		if (!m_player.expired())
+		{
+			auto player = m_player.lock();
+			if (player)
+			{
+				return player;
+			}
+		}
+		return nullptr;
 	}
 
 
@@ -404,7 +520,7 @@ namespace basecross{
 			SetDrawActive(m_isActive);
 			SetUpdateActive(m_isActive);
 			auto player = m_player.lock();
-			if(player)
+			if (player)
 			{
 				player->AddSubPlayer(20);
 			}
@@ -543,6 +659,55 @@ namespace basecross{
 		{
 			GetStage()->RemoveGameObject<AttackCollisionObj>(GetThis<AttackCollisionObj>());
 		}
+	}
+
+	shared_ptr<SubPlayerStayState> SubPlayerStayState::Instance()
+	{
+		static shared_ptr<SubPlayerStayState> instance(new SubPlayerStayState);
+		return instance;
+	}
+
+	void SubPlayerStayState::Enter(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+	void SubPlayerStayState::Execute(const shared_ptr<SubPlayer>& obj)
+	{
+		if (obj->Stay())
+		{
+			obj->GetStateMachine()->ChangeState(SubPlayerFollowState::Instance());
+		}
+	}
+	void SubPlayerStayState::Exit(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+
+	shared_ptr<SubPlayerFollowState> SubPlayerFollowState::Instance()
+	{
+		static shared_ptr<SubPlayerFollowState> instance(new SubPlayerFollowState);
+		return instance;
+	}
+
+	void SubPlayerFollowState::Enter(const shared_ptr<SubPlayer>& obj)
+	{
+		auto gameObj = obj->GetPlayer();
+		auto player = dynamic_pointer_cast<Player>(gameObj);
+		if (player)
+		{
+			player->SetAllMove(true);
+		}
+	}
+	void SubPlayerFollowState::Execute(const shared_ptr<SubPlayer>& obj)
+	{
+		if (obj->FollowPlayer())
+		{
+			obj->GetStateMachine()->ChangeState(SubPlayerStayState::Instance());
+		}
+	}
+	void SubPlayerFollowState::Exit(const shared_ptr<SubPlayer>& obj)
+	{
+
 	}
 
 }
