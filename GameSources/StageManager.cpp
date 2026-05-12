@@ -211,6 +211,15 @@ namespace basecross
 				floor->SetScale(scale);	
 				return;
 			}
+			else if (name == L"Scaffold")
+			{
+				auto floor = stage->AddGameObject<Wall>();
+				floor->SetPosition(pos);
+				floor->SetRotation(rot);
+				floor->SetScale(scale);
+				return;
+
+			}
 			else if (name == L"Board")
 			{
 				auto board = stage->AddGameObject<Wall>();
