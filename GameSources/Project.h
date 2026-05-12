@@ -15,6 +15,7 @@
 #include "StageManager.h"
 
 #include "Character.h"
+#include "StageObject.h"
 #include "Player.h"
 #include "Ground.h"
 #include "PlayerCamera.h"
