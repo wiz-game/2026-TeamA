@@ -46,7 +46,6 @@ namespace basecross
 		if(!m_changeAngle)
 		{
 			SetCameraToPlayerPos();
-			//ClarifyMovementDirection();
 		}
 		else
 		{
@@ -89,7 +88,6 @@ namespace basecross
 		{
 			SetEye(eye);
 			SetAt(at);
-			m_isFirstFrame = false;
 		}
 		else
 		{
@@ -138,8 +136,17 @@ namespace basecross
 		Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
 		Vec3 at = Vec3(playerPos.x + 5.0f, playerPos.y, playerPos.z);
 
-		SetEye(eye);
-		SetAt(at);
+		if (!m_isFirstFrame)
+		{
+			SetEye(eye);
+			SetAt(at);
+		}
+		else
+		{
+			float speed = (std::min)(delta * 5.0f, 1.0f);
+			SetEye(GetEye() + (eye - GetEye()) * speed);
+			SetAt(GetAt() + (at - GetAt()) * speed * 2.0f);
+		}
 
 	}
 
