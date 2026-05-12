@@ -10,7 +10,10 @@ namespace basecross
 	{
 		std::weak_ptr<GameStage> m_gameStage;
 		bool m_isFirstFrame;
+		bool m_changeAngle;
 
+		void ClarifyMovementDirection();
+		Vec3 m_currentCameraForward; //現在のカメラ方向
 	public:
 
 		PlayerCamera();
@@ -18,6 +21,7 @@ namespace basecross
 		virtual ~PlayerCamera();
 
 		void SetCameraToPlayerPos();
+		void ChangeAngle();
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
