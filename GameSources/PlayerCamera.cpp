@@ -27,41 +27,31 @@ namespace basecross
 
 		auto gameStage = m_gameStage.lock();
 		if (!gameStage) return;
-			//auto player = gameStage->GetSharedGameObject<Player>(L"Player");
-			//if (player)
-			//{
-			//	auto trans = player->GetComponent<Transform>();
-			//	float delta = App::GetApp()->GetElapsedTime();
-			//	float fixedDelta = delta * 6;
-			//	Vec3 playerPos = trans->GetPosition();
+		auto player = gameStage->GetSharedGameObject<Player>(L"Player");
+		if (!player) return;
+		auto playerTrans = player->GetComponent<Transform>();
+		Vec3 playerPos = playerTrans->GetPosition();
 
-			//	Vec3 eye = playerPos + Vec3(0.0f, 10.0f, -30.0f);
-			//	Vec3 at = playerPos + Vec3(0.0f, 0.0f, 0.0f);
+		bool isOK = playerPos.x >= 10.0f ? true : false;
 
-			//	if (m_isFirstFrame)
-			//	{
-			//		m_isFirstFrame = false;
-			//		SetEye(Vec3(eye.x,
-			//			eye.y,
-			//			eye.z
-			//		));
-			//		////元の座標　＋　元と現在の座標を差を乗算した値　＋　オフセット
-			//		SetAt(at);
-			//	}
-			//	else
-			//	{
-			//		SetEye(Vec3(eye.x - GetEye().x + (eye.x - GetEye().x) * fixedDelta,
-			//			GetEye().y + (eye.y - GetEye().y) * fixedDelta,
-			//			GetEye().z + (eye.z - GetEye().z)
-			//		));
-			//		////元の座標　＋　元と現在の座標を差を乗算した値　＋　オフセット
-			//		SetAt(GetAt() + (at - GetAt()) * fixedDelta);
-			//	}
-			//}
+		if (!m_changeAngle && isOK)
+		{
+			m_changeAngle = true;
+		}
+		else if (m_changeAngle && !isOK)
+		{
+			m_changeAngle = false;
+		}
 
+		if(!m_changeAngle)
+		{
 			SetCameraToPlayerPos();
 			//ClarifyMovementDirection();
-
+		}
+		else
+		{
+			ChangeAngle();
+		}
 	}
 
 	void PlayerCamera::SetCameraToPlayerPos()
@@ -95,7 +85,7 @@ namespace basecross
 		Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
 		//Vec3 at = playerPos /*+ (up * 2.0f)*/;
 		Vec3 at = Vec3(playerPos.x,playerPos.y,playerPos.z + 8.0f);
-		if (m_isFirstFrame)
+		if (!m_isFirstFrame)
 		{
 			SetEye(eye);
 			SetAt(at);
@@ -128,6 +118,29 @@ namespace basecross
 		//		GetEye().z + (eye.z - GetEye().z)));
 		//	SetAt(GetAt() + (at - GetAt()) * fixedDelta);
 		//}
+	}
+
+	void PlayerCamera::ChangeAngle()
+	{
+		auto gameStage = m_gameStage.lock();
+		if (!gameStage) return;
+		auto player = gameStage->GetSharedGameObject<Player>(L"Player");
+		if (!player) return;
+		auto playerTrans = player->GetComponent<Transform>();
+		Vec3 playerPos = playerTrans->GetPosition();
+		Vec3 forward = playerTrans->GetForward();
+		Vec3 up = Vec3(0.5f, 1, -0.5); // カメラをずらす方向
+		float distance = 15.0f; // カメラのz方向の距離
+		float height = 10.0f;   // upの補間
+		float delta = App::GetApp()->GetElapsedTime();
+		float fixedDelta = (std::min)(delta * 4.0f, 1.0f);
+
+		Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
+		Vec3 at = Vec3(playerPos.x + 5.0f, playerPos.y, playerPos.z);
+
+		SetEye(eye);
+		SetAt(at);
+
 	}
 
 	void PlayerCamera::ClarifyMovementDirection()
