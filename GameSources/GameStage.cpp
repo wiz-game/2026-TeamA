@@ -52,8 +52,7 @@ namespace basecross {
 			Vec3 mainPlayerScale = m_mainPlayer->GetScale();
 			//ビューとライトの作成
 			CreateViewLight();
-			auto goal = AddGameObject<Goal>();
-			SetSharedGameObject(L"Goal", goal);
+
 
 		}
 		catch (...) {

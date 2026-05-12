@@ -6,33 +6,17 @@ namespace basecross
 {
 	void Goal::OnCreate()
 	{
-		InitTransComp();
-		InitDrawComp();
-	}
-
-	void Goal::InitTransComp()
-	{
-		auto stage = GetStage();
-
-		m_transComp = GetComponent<Transform>();
-		m_transComp->SetPosition(Vec3(0, 2, 10));
-		m_transComp->SetScale(Vec3(1, 1, 1));
-		m_transComp->SetRotation(Vec3(0));
-
-		auto col = AddComponent<CollisionObb>();
-		auto grv = AddComponent<Gravity>();
-	}
-
-	void Goal::InitDrawComp()
-	{
+		StageObject::OnCreate();
+		m_stage = GetStage();
+		//auto grv = AddComponent<Gravity>();
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
-		m_drawComp->SetDiffuse(Col4(1, 0, 1, 0));
-
+		m_drawComp->SetDiffuse(Col4(1, 0, 1, 1));
 	}
 
 	void Goal::OnUpdate()
 	{
+		StageObject::OnUpdate();
 
 	}
 
