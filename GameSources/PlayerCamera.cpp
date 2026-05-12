@@ -49,7 +49,8 @@ namespace basecross
 		}
 		else
 		{
-			ChangeAngle();
+			//ChangeAngle();
+			SetCameraToPlayerPos();
 		}
 	}
 
