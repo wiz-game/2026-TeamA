@@ -28,5 +28,6 @@
 
 #include "GameStage.h"
 #include "GameClearStage.h"
+#include "GameOverStage.h"
 
 
