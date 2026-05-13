@@ -63,7 +63,12 @@ namespace basecross {
 			cube->SetPlayer(GetThis<Player>());
 		}
 
-		InitializeCharacter();
+		//InitializeCharacter();
+
+		auto col = AddComponent<CollisionCapsule>();
+		col->SetMakedDiameter(0.5f);
+		col->SetMakedHeight(1.0f);
+		AddComponent<Gravity>();
 
 	}
 
@@ -93,31 +98,32 @@ namespace basecross {
 		// 左スティックの入力に応じてプレイヤーを移動させる
 		float moveSpeed = 4.0f; // 移動速度
 		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
-		//m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
-		//m_transform->SetPosition(m_position); // プレイヤーを移動させる
-		m_desiredVelocity = moveVec * moveSpeed;
-
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
-		{
-			// 直接CharacterVirtualの速度を設定
-			auto velocity = JPH::Vec3(m_desiredVelocity.x, 5.0f, m_desiredVelocity.z);
-			m_character->SetLinearVelocity(velocity);
-		}
-
-		if (!m_pPhysicsSystem || !m_character) return;
-
-		UpdateCharacter(delta);
-
-		// Transformを更新
-		if (m_transform) {
-			JPH::RVec3 joltPos = m_character->GetPosition();
-			m_transform->SetPosition(
-				static_cast<float>(joltPos.GetX()),
-				static_cast<float>(joltPos.GetY()),
-				static_cast<float>(joltPos.GetZ())
-			);
-		}
 		m_position = m_transform->GetPosition();
+		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
+		m_transform->SetPosition(m_position); // プレイヤーを移動させる
+		//m_desiredVelocity = moveVec * moveSpeed;
+
+		//if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		//{
+		//	// 直接CharacterVirtualの速度を設定
+		//	auto velocity = JPH::Vec3(m_desiredVelocity.x, 5.0f, m_desiredVelocity.z);
+		//	m_character->SetLinearVelocity(velocity);
+		//}
+
+		//if (!m_pPhysicsSystem || !m_character) return;
+
+		//UpdateCharacter(delta);
+
+		//// Transformを更新
+		//if (m_transform) {
+		//	JPH::RVec3 joltPos = m_character->GetPosition();
+		//	m_transform->SetPosition(
+		//		static_cast<float>(joltPos.GetX()),
+		//		static_cast<float>(joltPos.GetY()),
+		//		static_cast<float>(joltPos.GetZ())
+		//	);
+		//}
+		//m_position = m_transform->GetPosition();
 
 		// 群れに移動用の座標を送る
 		for (auto& obj : m_subPlayers)
@@ -135,7 +141,7 @@ namespace basecross {
 		}
 
 		// 群れの移動を管理
-		if (m_desiredVelocity.length() > 0.1f && m_allMove)
+		if ((m_desiredVelocity.length() > 0.1f || LStick.length())&& m_allMove)
 		{
 			AllCharacterMove();
 		}
@@ -575,6 +581,10 @@ namespace basecross {
 		m_transComp->SetPosition(pos);
 		Vec3 scale = m_transComp->GetScale();
 
+		auto col = AddComponent<CollisionObb>();
+		col->SetMakedSize(0.5f);
+		col->SetDrawActive(true);
+
 		// 箱形の当たり判定を作成
 		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
 		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
@@ -600,8 +610,9 @@ namespace basecross {
 			m_isActive = false;
 			SetDrawActive(m_isActive);
 			SetUpdateActive(m_isActive);
-			RemoveComponent<JoltRigidBody>();
-			m_rigidBody.reset();
+			GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
+			//RemoveComponent<JoltRigidBody>();
+			//m_rigidBody.reset();
 			auto player = m_player.lock();
 			if (player)
 			{
@@ -633,20 +644,21 @@ namespace basecross {
 		m_isActive = true;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
+		GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
 
 		// 箱形の当たり判定を再設定
-		JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
-		JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
+		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
+		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
 
-		JoltRigidBody::Settings rbSettings;
-		rbSettings.shape = boxShape; // 共通の形状を使い回す
-		rbSettings.motionType = JPH::EMotionType::Kinematic; // 物理演算で動く設定
-		rbSettings.objectLayer = Layers::MOVING; // レイヤー 1 (例: MOVING)
-		rbSettings.mass = 10.0f; // 重さ 10kg
-		rbSettings.restitution = 0.5f; // 反発係数 0.5 (弾む)
-		rbSettings.friction = 0.5f;
-		m_rigidBody = AddComponent<JoltRigidBody>();
-		m_rigidBody->Initialize(rbSettings);
+		//JoltRigidBody::Settings rbSettings;
+		//rbSettings.shape = boxShape; // 共通の形状を使い回す
+		//rbSettings.motionType = JPH::EMotionType::Kinematic; // 物理演算で動く設定
+		//rbSettings.objectLayer = Layers::MOVING; // レイヤー 1 (例: MOVING)
+		//rbSettings.mass = 10.0f; // 重さ 10kg
+		//rbSettings.restitution = 0.5f; // 反発係数 0.5 (弾む)
+		//rbSettings.friction = 0.5f;
+		//m_rigidBody = AddComponent<JoltRigidBody>();
+		//m_rigidBody->Initialize(rbSettings);
 
 	}
 
