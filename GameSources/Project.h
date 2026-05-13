@@ -24,7 +24,9 @@
 #include "Block.h"
 #include "BreakWall.h"
 #include "Goal.h"
+#include "Sprite.h"
 
 #include "GameStage.h"
+#include "GameClearStage.h"
 
 
