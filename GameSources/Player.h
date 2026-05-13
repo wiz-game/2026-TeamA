@@ -85,13 +85,15 @@ namespace basecross {
 	// 群れのキャラクター
 	class SubPlayer : public GameObject
 	{
-		Vec3 m_targetPos;
+		//Vec3 m_targetPos;
 		Vec3 m_playerPos;
 		shared_ptr<Transform> m_transComp;
 		float m_rotate;
 		float m_dif;
 		float m_stay;
 		bool m_follow;
+		float m_rad;
+		float m_len;
 		unique_ptr<StateMachine<SubPlayer>> m_state;
 		weak_ptr<GameObject> m_player;
 
@@ -99,7 +101,7 @@ namespace basecross {
 		// コンストラクタ
 		SubPlayer(const std::shared_ptr<Stage>& stage) :
 			GameObject(stage),
-			m_targetPos(Vec3(0)),
+			//m_targetPos(Vec3(0)),
 			m_playerPos(Vec3(0)),
 			m_rotate(0),
 			m_dif(0),
@@ -109,7 +111,7 @@ namespace basecross {
 		}
 		SubPlayer(const std::shared_ptr<Stage>& stage, const Vec3& pos) :
 			GameObject(stage),
-			m_targetPos(pos),
+			//m_targetPos(pos),
 			m_playerPos(Vec3(0)),
 			m_rotate(0),
 			m_dif(0),
@@ -121,7 +123,7 @@ namespace basecross {
 
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
-		void SetTargetPos(const Vec3& pos) { m_targetPos = pos; }
+		//void SetTargetPos(const Vec3& pos) { m_targetPos = pos; }
 		void SetPlayerPos(const Vec3& pos) { m_playerPos = pos; }
 		void SetRotate(float rotate) { m_rotate = rotate; }
 		void SetAlive(bool isAlive); // 生きているかどうかのセッター

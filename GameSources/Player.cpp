@@ -189,7 +189,7 @@ namespace basecross {
 			if (!subPlayer->GetAlive())
 			{
 				subPlayer->SetAlive(true);
-				subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
+				//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
 				m_activeNum++;
 				num--;
 			}
@@ -227,16 +227,16 @@ namespace basecross {
 		}
 
 		// 場所をただす
-		int i = 0;
-		for (auto& obj : m_subPlayers)
-		{
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer->GetAlive())
-			{
-				subPlayer->SetTargetPos(m_characterPositions[i]);
-				i++;
-			}
-		}
+		//int i = 0;
+		//for (auto& obj : m_subPlayers)
+		//{
+		//	auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+		//	if (subPlayer->GetAlive())
+		//	{
+		//		subPlayer->SetTargetPos(m_characterPositions[i]);
+		//		i++;
+		//	}
+		//}
 		return true;
 	}
 
@@ -392,11 +392,14 @@ namespace basecross {
 		draw->SetDiffuse(Col4(1, 0, 0, 1));
 
 		m_transComp = GetComponent<Transform>();
-		m_transComp->SetPosition(m_targetPos);
+		//m_transComp->SetPosition(m_targetPos);
 		//m_transComp->SetScale(Vec3(0.5f));
 
 		m_state.reset(new StateMachine<SubPlayer>(GetThis<SubPlayer>()));
 		m_state->ChangeState(SubPlayerFollowState::Instance());
+
+		m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
+		m_len = static_cast<float>(rand() % 10) / 10.0f * 6.0f;
 
 		m_dif = (float)(rand() % 10) * 0.03f + 0.05f;
 	}
@@ -424,7 +427,7 @@ namespace basecross {
 
 		auto pos = m_transComp->GetPosition();
 		auto dis = m_playerPos - pos;
-		auto distance = Vec3(m_targetPos).length() + 1.0f;
+		//auto distance = Vec3(m_targetPos).length() + 1.0f;
 		if (dis.length() > 15)
 		{
 			m_follow = true;
@@ -459,18 +462,27 @@ namespace basecross {
 			}
 		}
 
+		//auto pos = m_transComp->GetPosition();
+		//auto rotate = -m_rotate + XM_PIDIV2;
+		//auto subPos = Vec3(m_targetPos.x * cosf(rotate) - m_targetPos.z * sinf(rotate), 0, m_targetPos.x * sinf(rotate) + m_targetPos.z * cosf(rotate)) + m_playerPos;
+		//Vec3 moveVec = Vec3(subPos - pos);
+		//moveVec.normalize();
+		//float speed = playerVec.length() < 0.1f ? 2.0f : playerVec.length();
+		//pos += moveVec * delta * speed;
+		//pos.y = 1.0f;
+		//m_transComp->SetPosition(pos);
+
 		auto pos = m_transComp->GetPosition();
-		auto rotate = -m_rotate + XM_PIDIV2;
-		auto subPos = Vec3(m_targetPos.x * cosf(rotate) - m_targetPos.z * sinf(rotate), 0, m_targetPos.x * sinf(rotate) + m_targetPos.z * cosf(rotate)) + m_playerPos;
-		Vec3 moveVec = Vec3(subPos - pos);
+		auto subPos = Vec3(cosf(m_rad - m_rotate) * m_len, 0, sinf(m_rad - m_rotate) * m_len);
+		auto playerBack = Vec3(-cosf(m_rotate), 0, sinf(m_rotate)) * 8.0f;
+		Vec3 moveVec = Vec3(m_playerPos + subPos + playerBack - pos);
 		moveVec.normalize();
-		float speed = playerVec.length() < 0.1f ? 2.0f : playerVec.length();
-		pos += moveVec * delta * speed;
+		pos += moveVec * delta * 3.0f;
 		pos.y = 1.0f;
 		m_transComp->SetPosition(pos);
 
 
-		auto dis = subPos - pos;
+		auto dis = m_playerPos + subPos + playerBack - pos;
 		if (dis.length() < 1.0f && playerVec.length() < 0.1f)
 		{
 			return true;
