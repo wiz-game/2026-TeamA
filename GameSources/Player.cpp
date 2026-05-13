@@ -96,7 +96,7 @@ namespace basecross {
 		}
 
 		// 左スティックの入力に応じてプレイヤーを移動させる
-		float moveSpeed = 4.0f; // 移動速度
+		float moveSpeed = 8.0f; // 移動速度
 		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
 		m_position = m_transform->GetPosition();
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
@@ -166,7 +166,7 @@ namespace basecross {
 			auto hammerFormation = dynamic_pointer_cast<HammerFormation>(m_hammer);
 			if (hammerFormation)
 			{
-				hammerFormation->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0));
+				hammerFormation->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0), 20);
 			}
 		}
 
@@ -176,8 +176,11 @@ namespace basecross {
 			if (cube)
 			{
 				auto pos = m_position;
-				pos.x += 1.0f;
-				cube->Start(pos, Vec3(0, m_rotation.y + XM_PIDIV2, 0));
+				//auto rot = cube->GetComponent<Transform>()->GetQuaternion().toRotVec();
+				pos.x += cosf(-m_rotation.y) * 3.0f;
+				pos.z += sinf(-m_rotation.y) * 3.0f;
+				pos.y -= 0.5f;
+				cube->Start(pos, Vec3(0, m_rotation.y - XM_PIDIV2, 0), 15);
 			}
 		}
 
@@ -483,7 +486,7 @@ namespace basecross {
 		auto playerBack = Vec3(-cosf(m_rotate), 0, sinf(m_rotate)) * 8.0f;
 		Vec3 moveVec = Vec3(m_playerPos + subPos + playerBack - pos);
 		moveVec.normalize();
-		pos += moveVec * delta * 3.0f;
+		pos += moveVec * delta * 8.0f;
 		pos.y = 1.0f;
 		m_transComp->SetPosition(pos);
 
@@ -511,6 +514,18 @@ namespace basecross {
 		return nullptr;
 	}
 
+	void CharacterFormation::Finish()
+	{
+		m_isActive = false;
+		SetDrawActive(m_isActive);
+		SetUpdateActive(m_isActive);
+		auto player = m_player.lock();
+		if (player)
+		{
+			player->AddSubPlayer(m_characterNum);
+		}
+
+	}
 
 	void HammerFormation::OnCreate()
 	{
@@ -534,27 +549,29 @@ namespace basecross {
 		m_rotation.x += delta;
 		if (m_rotation.x > XM_PIDIV2)
 		{
-			m_isActive = false;
-			SetDrawActive(m_isActive);
-			SetUpdateActive(m_isActive);
-			auto player = m_player.lock();
-			if (player)
-			{
-				player->AddSubPlayer(20);
-			}
+			//m_isActive = false;
+			//SetDrawActive(m_isActive);
+			//SetUpdateActive(m_isActive);
+			//auto player = m_player.lock();
+			//if (player)
+			//{
+			//	player->AddSubPlayer(20);
+			//}
+			Finish();
 
 			GetStage()->AddGameObject<AttackCollisionObj>(m_transComp->GetPosition(), m_rotation.y);
 		}
 		m_transComp->SetRotation(m_rotation);
 	}
 
-	void HammerFormation::Start(const Vec3& position, const Vec3& rotation)
+	void HammerFormation::Start(const Vec3& position, const Vec3& rotation, int num)
 	{
 		bool b = true;
 		auto player = m_player.lock();
 		if (player)
 		{
-			b = player->EraseSubPlayer(20);
+			b = player->EraseSubPlayer(num);
+			m_characterNum = num;
 		}
 		if (!b)
 		{
@@ -579,12 +596,14 @@ namespace basecross {
 		Vec3 pos = m_transComp->GetPosition();
 		pos.x = 1;
 		m_transComp->SetPosition(pos);
+		m_transComp->SetRotation(Vec3(XM_PIDIV2 / 3, 0, 0));
+		m_transComp->SetScale(Vec3(2.0f, 1.0f, 5.0f));
 		Vec3 scale = m_transComp->GetScale();
 
 		auto col = AddComponent<CollisionObb>();
-		col->SetMakedSize(0.5f);
+		//col->SetMakedSize(0.5f);
 		col->SetDrawActive(true);
-
+		col->SetFixed(true);
 		// 箱形の当たり判定を作成
 		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
 		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
@@ -607,21 +626,22 @@ namespace basecross {
 		m_time += delta;
 		if (m_time > 3.0f)
 		{
-			m_isActive = false;
-			SetDrawActive(m_isActive);
-			SetUpdateActive(m_isActive);
-			GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
-			//RemoveComponent<JoltRigidBody>();
-			//m_rigidBody.reset();
-			auto player = m_player.lock();
-			if (player)
-			{
-				player->AddSubPlayer(15);
-			}
+			//m_isActive = false;
+			//SetDrawActive(m_isActive);
+			//SetUpdateActive(m_isActive);
+			////GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
+			////RemoveComponent<JoltRigidBody>();
+			////m_rigidBody.reset();
+			//auto player = m_player.lock();
+			//if (player)
+			//{
+			//	player->AddSubPlayer(15);
+			//}
+			Finish();
 		}
 	}
 
-	void CubeFormation::Start(const Vec3& position, const Vec3& rotation)
+	void CubeFormation::Start(const Vec3& position, const Vec3& rotation, int num)
 	{
 		if (m_isActive)
 		{
@@ -631,7 +651,8 @@ namespace basecross {
 		auto player = m_player.lock();
 		if (player)
 		{
-			b = player->EraseSubPlayer(15);
+			b = player->EraseSubPlayer(num);
+			m_characterNum = num;
 		}
 		if (!b)
 		{
@@ -639,12 +660,14 @@ namespace basecross {
 		}
 		m_time = 0.0f;
 		m_rotation = rotation;
+		auto rot = rotation;
+		rot.x = XM_PIDIV2 / 3;
 		m_transComp->SetPosition(position);
-		m_transComp->SetRotation(m_rotation);
+		m_transComp->SetRotation(rot);
 		m_isActive = true;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
-		GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
+		//GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
 
 		// 箱形の当たり判定を再設定
 		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
