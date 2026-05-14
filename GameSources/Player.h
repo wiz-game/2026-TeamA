@@ -29,11 +29,13 @@ namespace basecross {
 
 		const static int MAX_CHARACTER_NUM = 150;
 		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
-		shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
-		shared_ptr<GameObject> m_cube; // キューブのオブジェクト
+		//shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
+		//shared_ptr<GameObject> m_cube; // キューブのオブジェクト
+		shared_ptr<GameObject> m_formation[4]; // 隊列のオブジェクト
 		Vec3 m_characterPositions[MAX_CHARACTER_NUM]; // 
 		int m_activeNum; // 
 		bool m_allMove; // すべての群れを動かすためのフラグ
+		int m_formationNumber;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
@@ -51,7 +53,9 @@ namespace basecross {
 			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(1.0f),     // プレイヤーの初期スケーリングを設定
-			m_activeNum(0)
+			m_activeNum(0),     // 
+			m_allMove(false),
+			m_formationNumber(0)
 		{
 		}
 		Player(const std::shared_ptr<Stage>& stage, Vec3 scale) :
@@ -59,7 +63,9 @@ namespace basecross {
 			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(scale),     // プレイヤーの初期スケーリングを設定
-			m_activeNum(0)     // プレイヤーの初期スケーリングを設定
+			m_activeNum(0),     // 
+			m_allMove(false),
+			m_formationNumber(0)
 		{
 		}
 
@@ -144,6 +150,7 @@ namespace basecross {
 	protected:
 		shared_ptr<Transform> m_transComp;
 		weak_ptr<Player> m_player;
+		Vec3 m_rotation;
 		float m_time;
 		bool m_isActive;
 		int m_characterNum;
@@ -157,7 +164,7 @@ namespace basecross {
 
 		}
 
-		virtual void Start(const Vec3& position, const Vec3& rotation, int num) {}
+		virtual void Start(const Vec3& position, const Vec3& rotation) {}
 		virtual void Finish();
 		void SetPlayer(const shared_ptr<Player>& player) { m_player = player; }
 
@@ -165,7 +172,6 @@ namespace basecross {
 
 	class HammerFormation : public CharacterFormation
 	{
-		Vec3 m_rotation;
 	public:
 		HammerFormation(const std::shared_ptr<Stage>& stage) :
 			CharacterFormation(stage)
@@ -176,13 +182,11 @@ namespace basecross {
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
 
-		void Start(const Vec3& position, const Vec3& rotation, int num) override;
+		void Start(const Vec3& position, const Vec3& rotation) override;
 	};
 
 	class CubeFormation : public CharacterFormation
 	{
-		Vec3 m_rotation;
-
 		shared_ptr<JoltRigidBody> m_rigidBody;
 
 	public:
@@ -194,9 +198,42 @@ namespace basecross {
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
 
-		void Start(const Vec3& position, const Vec3& rotation, int num);
+		void Start(const Vec3& position, const Vec3& rotation);
 
 	};
+
+	class SpearFormation : public CharacterFormation
+	{
+		Vec3 m_position;
+	public:
+		SpearFormation(const std::shared_ptr<Stage>& stage) :
+			CharacterFormation(stage)
+		{
+
+		}
+
+		void OnCreate() override; // 初期化
+		void OnUpdate() override; // 更新
+
+		void Start(const Vec3& position, const Vec3& rotation) override;
+	};
+
+	class BridgeFormation : public CharacterFormation
+	{
+		Vec3 m_position;
+	public:
+		BridgeFormation(const std::shared_ptr<Stage>& stage) :
+			CharacterFormation(stage)
+		{
+
+		}
+
+		void OnCreate() override; // 初期化
+		void OnUpdate() override; // 更新
+
+		void Start(const Vec3& position, const Vec3& rotation) override;
+	};
+
 
 	class AttackCollisionObj : public GameObject
 	{
