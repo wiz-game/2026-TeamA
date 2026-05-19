@@ -42,6 +42,8 @@ namespace basecross {
 	void GameStage::OnCreate() {
 		try {
 			auto& app = App::GetApp();
+			LoadTextures();
+			AddGameObject<SkyBox>();
 
 			// JoltPhysicsを初期化する
 			m_jphManger.Initialize();
@@ -52,8 +54,6 @@ namespace basecross {
 			Vec3 mainPlayerScale = m_mainPlayer->GetScale();
 			//ビューとライトの作成
 			CreateViewLight();
-			LoadTextures();
-			AddGameObject<SkyBox>();
 
 			auto XAPtr = app->GetXAudio2Manager();
 			XAPtr->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, 1.0f);
