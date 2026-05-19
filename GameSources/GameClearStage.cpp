@@ -49,7 +49,7 @@ namespace basecross
 	{
 		auto& app = App::GetApp();
 		auto mediaPath = app->GetDataDirWString();
-		auto texPath = mediaPath + L"Tetures\\";
+		auto texPath = mediaPath + L"Textures\\";
 
 		app->RegisterTexture(L"TEX_GameClear", texPath + L"GameClear.png");
 	}

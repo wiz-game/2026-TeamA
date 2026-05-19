@@ -52,6 +52,8 @@ namespace basecross {
 			Vec3 mainPlayerScale = m_mainPlayer->GetScale();
 			//ビューとライトの作成
 			CreateViewLight();
+			LoadTextures();
+			AddGameObject<SkyBox>();
 
 
 		}
@@ -94,6 +96,19 @@ namespace basecross {
 
 	void GameStage::OnDraw()
 	{
+	}
+
+	void GameStage::LoadTextures()
+	{
+		auto& app = App::GetApp();
+		auto mediaPath = app->GetDataDirWString();
+		auto texPath = mediaPath + L"Textures\\";
+
+		app->RegisterTexture(L"SkyBoxBelow", texPath + L"SkyBoxBelow.png");
+		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.png");
+		app->RegisterTexture(L"SkyBoxTop", texPath + L"SkyBoxTop.png");
+
+
 	}
 
 }

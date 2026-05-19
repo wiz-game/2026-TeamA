@@ -17,6 +17,8 @@ namespace basecross {
 		JoltManager m_jphManger; // Jolt Physics マネージャー
 
 		void CreateViewLight(); //ビューの作成
+		void LoadTextures();
+
 
 		shared_ptr<Player> m_mainPlayer; // メインプレイヤー
 		Vec3 m_mainPlayerScale; // メインプレイヤーのスケーリング
