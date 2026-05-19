@@ -24,6 +24,8 @@ namespace basecross {
 		Vec3 m_mainPlayerScale; // メインプレイヤーのスケーリング
 		std::shared_ptr<SingleView> m_playerCameraView;	
 
+		shared_ptr<SoundItem> m_BGM; // サウンド用ポインタ
+
 	public:
 		//構築と破棄
 		GameStage() :Stage(){}

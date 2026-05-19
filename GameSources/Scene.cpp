@@ -20,6 +20,14 @@ namespace basecross{
 
 		// メディアフォルダーのパスを取得する
 		auto mediaPath = app->GetDataDirWString();
+		// テクスチャフォルダーのパスを取得する
+		auto texPath = mediaPath + L"Textures\\";
+		// オーディオフォルダーのパスを取得する
+		auto audioPath = mediaPath + L"Sounds\\";
+
+
+		//オーディオの登録
+		app->RegisterWav(L"StageBGM", audioPath + L"stagebgm.wav");
 
 		// リソースの読込
 
