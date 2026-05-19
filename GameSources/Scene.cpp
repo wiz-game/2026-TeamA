@@ -23,12 +23,17 @@ namespace basecross{
 
 		// リソースの読込
 
-		// playerモデルの読み込む
+		// playerモデルの読み込み
 		app->RegisterTexture(L"TEX_PLAYER", mediaPath + L"Models\\Player\\Sample_Player.png");
 		auto playerModel = MeshResource::CreateStaticModelMesh(mediaPath + L"Models\\Player\\",L"Sample_Player.bmf");
 		playerModel->SetTextureResource(L"TEX_PLAYER");
 		app->RegisterResource(L"MODEL_PLAYER", playerModel);
 
+		// Blockモデルの読み込み
+		app->RegisterTexture(L"TEX_GRAND", mediaPath + L"Models\\Block\\T_Grand.png");
+		auto blockModel = MeshResource::CreateStaticModelMesh(mediaPath + L"Models\\Block\\", L"M_Grand.bmf");
+		blockModel->SetTextureResource(L"TEX_GRAND");
+		app->RegisterResource(L"MODEL_BLOCK", blockModel);
 	}
 
 
