@@ -14,7 +14,8 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------
 	///	ゲームシーン
 	//--------------------------------------------------------------------------------------
-	void Scene::CreateResourses() {
+	void Scene::CreateResourses() 
+	{
 		// アプリケーションオブジェクトを取得する
 		auto& app = App::GetApp();
 
@@ -45,7 +46,8 @@ namespace basecross{
 	}
 
 
-	void Scene::OnCreate(){
+	void Scene::OnCreate()
+	{
 		try {
 			JoltManager::StaticInitialize();
 
@@ -68,7 +70,8 @@ namespace basecross{
 		}
 	}
 	
-	void Scene::OnEvent(const shared_ptr<Event>& event) {
+	void Scene::OnEvent(const shared_ptr<Event>& event) 
+	{
 		if (event->m_MsgStr == L"ToGameStage") {
 			//ゲームステージの設定
 			ResetActiveStage<GameStage>();
@@ -76,6 +79,14 @@ namespace basecross{
 			StageManager::CreateStageManager();
 
 			StageManager::GetStageManager()->LoadStageFromCSV(L"stage1.csv");
+		}
+		if (event->m_MsgStr == L"ToGameClearStage")
+		{
+			ResetActiveStage<GameClearStage>();
+		}
+		if (event->m_MsgStr == L"ToGameOverStage")
+		{
+			ResetActiveStage<GameOverStage>();
 		}
 	}
 	Scene::~Scene() {
