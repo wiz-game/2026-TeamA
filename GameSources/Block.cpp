@@ -9,8 +9,20 @@ namespace basecross
 		StageObject::OnCreate();
 		m_stage = GetStage();
 		//auto grv = AddComponent<Gravity>();
+
+		Mat4x4 spanMat;
+
+		spanMat.affineTransformation(
+			Vec3(0.5f, 0.5f, 0.5f), // scale
+			Vec3(0.0f, 0.0f, 0.0f), // rotation
+			Vec3(0.0f, 0.0f, 0.0f), // rotation
+			Vec3(0.0f, -0.5f, 0.0f)  // position
+		);
+
 		m_drawComp = AddComponent<PNTStaticDraw>();
-		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		m_drawComp->SetMeshResource(L"MODEL_BLOCK");
+		m_drawComp->SetMeshToTransformMatrix(spanMat);
+
 	}
 
 	void Block::OnUpdate()
