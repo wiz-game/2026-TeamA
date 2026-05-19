@@ -33,7 +33,17 @@ namespace basecross
 
 	void GameOverStage::OnUpdate()
 	{
+		// アプリケーションオブジェクトを取得
+		auto& app = App::GetApp();
 
+		// 入力デバイスを取得する
+		auto input = app->GetInputDevice();
+		auto pad = input.GetControlerVec()[0];
+
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		{
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");//ゲームシーンを移動する
+		}
 	}
 
 	void GameOverStage::CreateUI()
