@@ -22,6 +22,13 @@ namespace basecross{
 		auto mediaPath = app->GetDataDirWString();
 
 		// リソースの読込
+
+		// playerモデルの読み込む
+		app->RegisterTexture(L"TEX_PLAYER", mediaPath + L"Models\\Player\\Sample_Player.png");
+		auto playerModel = MeshResource::CreateStaticModelMesh(mediaPath + L"Models\\Player\\",L"Sample_Player.bmf");
+		playerModel->SetTextureResource(L"TEX_PLAYER");
+		app->RegisterResource(L"MODEL_PLAYER", playerModel);
+
 	}
 
 

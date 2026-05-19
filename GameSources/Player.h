@@ -26,14 +26,17 @@ namespace basecross {
 		Vec3 m_position; // プレイヤーの位置
 		Vec3 m_rotation; // プレイヤーの回転
 		Vec3 m_scale;    // プレイヤーのスケーリング
+		Vec3 m_velocity; // プレイヤーの移動ベクトル
 
 		const static int MAX_CHARACTER_NUM = 150;
 		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
-		shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
-		shared_ptr<GameObject> m_cube; // キューブのオブジェクト
+		//shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
+		//shared_ptr<GameObject> m_cube; // キューブのオブジェクト
+		shared_ptr<GameObject> m_formation[4]; // 隊列のオブジェクト
 		Vec3 m_characterPositions[MAX_CHARACTER_NUM]; // 
 		int m_activeNum; // 
 		bool m_allMove; // すべての群れを動かすためのフラグ
+		int m_formationNumber;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
@@ -51,7 +54,9 @@ namespace basecross {
 			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(1.0f),     // プレイヤーの初期スケーリングを設定
-			m_activeNum(0)
+			m_activeNum(0),     // 
+			m_allMove(false),
+			m_formationNumber(0)
 		{
 		}
 		Player(const std::shared_ptr<Stage>& stage, Vec3 scale) :
@@ -59,7 +64,9 @@ namespace basecross {
 			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(scale),     // プレイヤーの初期スケーリングを設定
-			m_activeNum(0)     // プレイヤーの初期スケーリングを設定
+			m_activeNum(0),     // 
+			m_allMove(false),
+			m_formationNumber(0)
 		{
 		}
 
@@ -80,6 +87,8 @@ namespace basecross {
 		bool EraseSubPlayer(int num);
 
 		void OnCollisionEnter(const shared_ptr<GameObject>& other);
+		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
+
 	};
 
 	// 群れのキャラクター
@@ -139,16 +148,36 @@ namespace basecross {
 		}
 	};
 
-	class HammerFormation : public GameObject
+	class CharacterFormation : public GameObject
 	{
+	protected:
 		shared_ptr<Transform> m_transComp;
 		weak_ptr<Player> m_player;
 		Vec3 m_rotation;
+		float m_time;
 		bool m_isActive;
+		int m_characterNum;
+	public:
+		CharacterFormation(const std::shared_ptr<Stage>& stage) :
+			GameObject(stage),
+			m_time(0),
+			m_isActive(false),
+			m_characterNum(0)
+		{
+
+		}
+
+		virtual void Start(const Vec3& position, const Vec3& rotation) {}
+		virtual void Finish();
+		void SetPlayer(const shared_ptr<Player>& player) { m_player = player; }
+
+	};
+
+	class HammerFormation : public CharacterFormation
+	{
 	public:
 		HammerFormation(const std::shared_ptr<Stage>& stage) :
-			GameObject(stage),
-			m_isActive(true)
+			CharacterFormation(stage)
 		{
 
 		}
@@ -156,23 +185,16 @@ namespace basecross {
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
 
-		void Start(const Vec3& position, const Vec3& rotation);
-		void SetPlayer(const shared_ptr<Player>& player) { m_player = player; }
+		void Start(const Vec3& position, const Vec3& rotation) override;
 	};
 
-	class CubeFormation : public GameObject
+	class CubeFormation : public CharacterFormation
 	{
-		shared_ptr<Transform> m_transComp;
-		weak_ptr<Player> m_player;
-		Vec3 m_rotation;
-		bool m_isActive;
-		float m_time;
-
 		shared_ptr<JoltRigidBody> m_rigidBody;
+
 	public:
 		CubeFormation(const std::shared_ptr<Stage>& stage) :
-			GameObject(stage),
-			m_isActive(false)
+			CharacterFormation(stage)
 		{
 		}
 
@@ -180,9 +202,41 @@ namespace basecross {
 		void OnUpdate() override; // 更新
 
 		void Start(const Vec3& position, const Vec3& rotation);
-		void SetPlayer(const shared_ptr<Player>& player) { m_player = player; }
 
 	};
+
+	class SpearFormation : public CharacterFormation
+	{
+		Vec3 m_position;
+	public:
+		SpearFormation(const std::shared_ptr<Stage>& stage) :
+			CharacterFormation(stage)
+		{
+
+		}
+
+		void OnCreate() override; // 初期化
+		void OnUpdate() override; // 更新
+
+		void Start(const Vec3& position, const Vec3& rotation) override;
+	};
+
+	class BridgeFormation : public CharacterFormation
+	{
+		Vec3 m_position;
+	public:
+		BridgeFormation(const std::shared_ptr<Stage>& stage) :
+			CharacterFormation(stage)
+		{
+
+		}
+
+		void OnCreate() override; // 初期化
+		void OnUpdate() override; // 更新
+
+		void Start(const Vec3& position, const Vec3& rotation) override;
+	};
+
 
 	class AttackCollisionObj : public GameObject
 	{
