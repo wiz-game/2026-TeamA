@@ -18,8 +18,9 @@ namespace basecross {
 		// ドローコンポーネントを追加
 		//m_draw = AddComponent<PNTDXModelDraw>();
 		m_draw = AddComponent<PNTStaticDraw>();
-		m_draw->SetMeshResource(L"DEFAULT_CUBE");
-		m_draw->SetDiffuse(Col4(1, 0, 0, 1));
+		m_draw->SetMeshResource(L"MODEL_PLAYER");
+		//m_draw->SetTextureResource(L"TEX_PLAYER");
+		//m_draw->SetDiffuse(Col4(1, 0, 0, 1));
 		//AddComponent<Gravity>();
 
 		// 群れのキャラクターの生成
@@ -42,7 +43,7 @@ namespace basecross {
 			subPlayer->SetPlayer(GetThis<GameObject>());
 			m_subPlayers.push_back(subPlayer);
 		}
-		AddSubPlayer(150);
+		AddSubPlayer(100);
 
 		//// ハンマーのオブジェクトの作成
 		//m_hammer = GetStage()->AddGameObject<HammerFormation>();
@@ -81,10 +82,11 @@ namespace basecross {
 
 		//InitializeCharacter();
 
-		auto col = AddComponent<CollisionCapsule>();
-		col->SetMakedDiameter(0.5f);
-		col->SetMakedHeight(1.0f);
-		AddComponent<Gravity>();
+		auto col = AddComponent<CollisionSphere>();
+		//col->SetMakedDiameter(0.5f);
+		//col->SetMakedHeight(1.0f);
+		col->SetDrawActive(true);
+		//AddComponent<Gravity>();
 
 	}
 
@@ -107,13 +109,14 @@ namespace basecross {
 
 		if (LStick.length() > 0.1f)
 		{
-			m_rotation.y = -atan2f(LStick.y, LStick.x);
+			m_rotation.y = -atan2f(LStick.y, LStick.x) - XM_PIDIV2;
 			m_transform->SetRotation(m_rotation);
 		}
 
 		// 左スティックの入力に応じてプレイヤーを移動させる
 		float moveSpeed = 8.0f; // 移動速度
-		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
+		Vec3 moveVec(LStick.x, m_velocity.y, LStick.y); // 移動ベクトル
+		m_velocity.y -= delta;
 		m_position = m_transform->GetPosition();
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
@@ -204,7 +207,9 @@ namespace basecross {
 			auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
 			if (formation)
 			{
-				formation->Start(m_position, m_rotation);
+				auto rotate = m_rotation;
+				rotate.y += XM_PIDIV2;
+				formation->Start(m_position, rotate);
 			}
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
@@ -299,6 +304,10 @@ namespace basecross {
 		}
 	}
 
+	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
+	{
+		m_velocity.y = 0;
+	}
 	void Player::InitializeCharacter()
 	{
 		m_pPhysicsSystem = JoltManager::GetActiveSystem();
@@ -438,18 +447,18 @@ namespace basecross {
 	{
 		// ドローコンポーネントを追加
 		auto draw = AddComponent<PNTStaticDraw>();
-		draw->SetMeshResource(L"DEFAULT_SPHERE");
-		draw->SetDiffuse(Col4(1, 0, 0, 1));
+		draw->SetMeshResource(L"MODEL_PLAYER");
+		//draw->SetDiffuse(Col4(1, 0, 0, 1));
 
 		m_transComp = GetComponent<Transform>();
 		//m_transComp->SetPosition(m_targetPos);
-		//m_transComp->SetScale(Vec3(0.5f));
+		m_transComp->SetScale(Vec3(0.7f));
 
 		m_state.reset(new StateMachine<SubPlayer>(GetThis<SubPlayer>()));
 		m_state->ChangeState(SubPlayerFollowState::Instance());
 
 		m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
-		m_len = static_cast<float>(rand() % 10) / 10.0f * 6.0f;
+		m_len = static_cast<float>(rand() % 10) / 10.0f * 7.0f;
 
 		m_dif = (float)(rand() % 10) * 0.03f + 0.05f;
 	}
@@ -478,7 +487,7 @@ namespace basecross {
 		auto pos = m_transComp->GetPosition();
 		auto dis = m_playerPos - pos;
 		//auto distance = Vec3(m_targetPos).length() + 1.0f;
-		if (dis.length() > 15)
+		if (dis.length() > 14)
 		{
 			m_follow = true;
 		}
@@ -523,13 +532,18 @@ namespace basecross {
 		//m_transComp->SetPosition(pos);
 
 		auto pos = m_transComp->GetPosition();
-		auto subPos = Vec3(cosf(m_rad - m_rotate) * m_len, 0, sinf(m_rad - m_rotate) * m_len);
-		auto playerBack = Vec3(-cosf(m_rotate), 0, sinf(m_rotate)) * 8.0f;
+		auto rotate = m_rotate + XM_PIDIV2;
+		auto subPos = Vec3(cosf(m_rad - rotate) * m_len, 0, sinf(m_rad - rotate) * m_len);
+		auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 7.5f;
 		Vec3 moveVec = Vec3(m_playerPos + subPos + playerBack - pos);
 		moveVec.normalize();
 		pos += moveVec * delta * 8.0f;
 		pos.y = 1.0f;
 		m_transComp->SetPosition(pos);
+
+		// 回転処理
+		auto rad = atan2f(moveVec.x, moveVec.z) + XM_PI;
+		m_transComp->SetRotation(Vec3(0, rad, 0));
 
 
 		auto dis = m_playerPos + subPos + playerBack - pos;

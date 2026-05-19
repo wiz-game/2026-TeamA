@@ -26,6 +26,7 @@ namespace basecross {
 		Vec3 m_position; // プレイヤーの位置
 		Vec3 m_rotation; // プレイヤーの回転
 		Vec3 m_scale;    // プレイヤーのスケーリング
+		Vec3 m_velocity; // プレイヤーの移動ベクトル
 
 		const static int MAX_CHARACTER_NUM = 150;
 		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
@@ -86,6 +87,8 @@ namespace basecross {
 		bool EraseSubPlayer(int num);
 
 		void OnCollisionEnter(const shared_ptr<GameObject>& other);
+		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
+
 	};
 
 	// 群れのキャラクター
