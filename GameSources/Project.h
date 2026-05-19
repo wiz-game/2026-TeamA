@@ -25,6 +25,7 @@
 #include "BreakWall.h"
 #include "Goal.h"
 #include "Sprite.h"
+#include "SkyBox.h"
 
 #include "GameStage.h"
 #include "GameClearStage.h"
