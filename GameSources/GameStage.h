@@ -17,10 +17,14 @@ namespace basecross {
 		JoltManager m_jphManger; // Jolt Physics マネージャー
 
 		void CreateViewLight(); //ビューの作成
+		void LoadTextures();
+
 
 		shared_ptr<Player> m_mainPlayer; // メインプレイヤー
 		Vec3 m_mainPlayerScale; // メインプレイヤーのスケーリング
 		std::shared_ptr<SingleView> m_playerCameraView;	
+
+		shared_ptr<SoundItem> m_BGM; // サウンド用ポインタ
 
 	public:
 		//構築と破棄

@@ -14,18 +14,40 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------
 	///	ゲームシーン
 	//--------------------------------------------------------------------------------------
-	void Scene::CreateResourses() {
+	void Scene::CreateResourses() 
+	{
 		// アプリケーションオブジェクトを取得する
 		auto& app = App::GetApp();
 
 		// メディアフォルダーのパスを取得する
 		auto mediaPath = app->GetDataDirWString();
+		// テクスチャフォルダーのパスを取得する
+		auto texPath = mediaPath + L"Textures\\";
+		// オーディオフォルダーのパスを取得する
+		auto audioPath = mediaPath + L"Sounds\\";
+
+
+		//オーディオの登録
+		app->RegisterWav(L"StageBGM", audioPath + L"stagebgm.wav");
 
 		// リソースの読込
+
+		// playerモデルの読み込み
+		app->RegisterTexture(L"TEX_PLAYER", mediaPath + L"Models\\Player\\Sample_Player.png");
+		auto playerModel = MeshResource::CreateStaticModelMesh(mediaPath + L"Models\\Player\\",L"Sample_Player.bmf");
+		playerModel->SetTextureResource(L"TEX_PLAYER");
+		app->RegisterResource(L"MODEL_PLAYER", playerModel);
+
+		// Blockモデルの読み込み
+		app->RegisterTexture(L"TEX_GRAND", mediaPath + L"Models\\Block\\T_Grand.png");
+		auto blockModel = MeshResource::CreateStaticModelMesh(mediaPath + L"Models\\Block\\", L"M_Grand.bmf");
+		blockModel->SetTextureResource(L"TEX_GRAND");
+		app->RegisterResource(L"MODEL_BLOCK", blockModel);
 	}
 
 
-	void Scene::OnCreate(){
+	void Scene::OnCreate()
+	{
 		try {
 			JoltManager::StaticInitialize();
 
@@ -48,7 +70,8 @@ namespace basecross{
 		}
 	}
 	
-	void Scene::OnEvent(const shared_ptr<Event>& event) {
+	void Scene::OnEvent(const shared_ptr<Event>& event) 
+	{
 		if (event->m_MsgStr == L"ToGameStage") {
 			//ゲームステージの設定
 			ResetActiveStage<GameStage>();
@@ -56,6 +79,14 @@ namespace basecross{
 			StageManager::CreateStageManager();
 
 			StageManager::GetStageManager()->LoadStageFromCSV(L"stage1.csv");
+		}
+		if (event->m_MsgStr == L"ToGameClearStage")
+		{
+			ResetActiveStage<GameClearStage>();
+		}
+		if (event->m_MsgStr == L"ToGameOverStage")
+		{
+			ResetActiveStage<GameOverStage>();
 		}
 	}
 	Scene::~Scene() {

@@ -42,6 +42,8 @@ namespace basecross {
 	void GameStage::OnCreate() {
 		try {
 			auto& app = App::GetApp();
+			LoadTextures();
+			AddGameObject<SkyBox>();
 
 			// JoltPhysicsを初期化する
 			m_jphManger.Initialize();
@@ -53,6 +55,8 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 
+			auto XAPtr = app->GetXAudio2Manager();
+			XAPtr->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, 1.0f);
 
 		}
 		catch (...) {
@@ -94,6 +98,19 @@ namespace basecross {
 
 	void GameStage::OnDraw()
 	{
+	}
+
+	void GameStage::LoadTextures()
+	{
+		auto& app = App::GetApp();
+		auto mediaPath = app->GetDataDirWString();
+		auto texPath = mediaPath + L"Textures\\";
+
+		app->RegisterTexture(L"SkyBoxBelow", texPath + L"SkyBoxBelow.png");
+		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.png");
+		app->RegisterTexture(L"SkyBoxTop", texPath + L"SkyBoxTop.png");
+
+
 	}
 
 }
