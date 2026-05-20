@@ -201,7 +201,6 @@ namespace basecross
 				floor->SetPosition(pos);
 				floor->SetRotation(rot);
 				floor->SetScale(scale);
-				floor->SetCollar(Col4(0.35f, 0.35f, 0.35f, 1.0f));
 				return;
 			}
 			else if (name == L"Scaffold")
@@ -233,7 +232,23 @@ namespace basecross
 				board->SetScale(scale);
 				board->SetCollar(Col4(0.35f, 0.35f, 0.35f, 1.0f));
 			}
-			else if (name == L"GameObject")
+			else if (name ==L"FallenTree")
+			{
+
+			}
+			else if (name==L"FirTree")
+			{
+
+			}
+			else if(name==L"Stone")
+			{
+
+			}
+			else if(name==L"M_Mushroom")
+			{
+
+			}
+			else if (name == L"GameObject"|| name == L"Stage1_1")
 			{
 				return;
 			}

@@ -55,8 +55,6 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 
-			auto XAPtr = app->GetXAudio2Manager();
-			XAPtr->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, 1.0f);
 
 		}
 		catch (...) {

@@ -78,7 +78,7 @@ namespace basecross{
 
 			StageManager::CreateStageManager();
 
-			StageManager::GetStageManager()->LoadStageFromCSV(L"stage1.csv");
+			StageManager::GetStageManager()->LoadStageFromCSV(L"stage1_1.csv");
 		}
 		if (event->m_MsgStr == L"ToGameClearStage")
 		{
