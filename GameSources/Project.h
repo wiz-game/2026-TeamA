@@ -26,6 +26,8 @@
 #include "Goal.h"
 #include "Sprite.h"
 #include "SkyBox.h"
+#include "Board.h"
+
 
 #include "GameStage.h"
 #include "GameClearStage.h"
