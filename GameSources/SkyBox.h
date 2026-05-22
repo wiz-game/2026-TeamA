@@ -1,35 +1,38 @@
 /*!
- @file SkyBox.h
- @brief 背景のテクスチャ
- @authors Kato Yuki
- */
+@file SkyBox.h
+@brief スカイボックス
+*/
 
 #pragma once
 #include "stdafx.h"
 
 namespace basecross
 {
+	class SkyBox : public GameObject
+	{
+	public:
+		// テクスチャキー(アセット名)と配置座標を関連づける連想配列
+		static const map<wstring, Vec3> pairs;
+
+	private:
+		// スカイキューブの６面を管理する
+		vector<shared_ptr<GameObject>> m_planes;
+
+	public:
+		SkyBox(const shared_ptr<Stage>& stage);
+		virtual ~SkyBox();
+
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		virtual void OnDraw() override;
+	};
+
 	class Plane : public GameObject
 	{
 	public:
-		Plane(const shared_ptr<Stage>& ptrStage) : GameObject(ptrStage) {}
-		~Plane() {}
+		Plane(const shared_ptr<Stage>& stage);
+		~Plane();
 
 		void OnCreate() override;
-	};
-
-	class SkyBox : public GameObject
-	{
-	private:
-		vector<shared_ptr<GameObject>> m_Planes;
-
-	public:
-		SkyBox(const shared_ptr<Stage>& ptrStage) : GameObject(ptrStage) {}
-		~SkyBox() {}
-
-		void OnCreate() override;
-		void OnUpdate() override;
-		void OnDraw() override; // 自分で描画を行うためオーバーライドする
 	};
 }
-//end basecross

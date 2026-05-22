@@ -106,10 +106,15 @@ namespace basecross {
 		auto mediaPath = app->GetDataDirWString();
 		auto texPath = mediaPath + L"Textures\\";
 
-		app->RegisterTexture(L"SkyBoxBelow", texPath + L"SkyBoxBelow.png");
-		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.png");
-		app->RegisterTexture(L"SkyBoxTop", texPath + L"SkyBoxTop.png");
-
+		//app->RegisterTexture(L"SkyBoxBelow", texPath + L"SkyBoxBelow.png");
+		//app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.png");
+		//app->RegisterTexture(L"SkyBoxTop", texPath + L"SkyBoxTop.png");
+		app->RegisterTexture(L"000_000_000", texPath + L"000_000_000.bmp");
+		app->RegisterTexture(L"000_090_000", texPath + L"000_090_000.bmp");
+		app->RegisterTexture(L"000_180_000", texPath + L"000_180_000.bmp");
+		app->RegisterTexture(L"000_270_000", texPath + L"000_270_000.bmp");
+		app->RegisterTexture(L"090_000_000", texPath + L"090_000_000.bmp");
+		app->RegisterTexture(L"270_000_000", texPath + L"270_000_000.bmp");
 
 	}
 
