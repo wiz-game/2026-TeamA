@@ -25,7 +25,8 @@ namespace basecross{
 		auto texPath = mediaPath + L"Textures\\";
 		// オーディオフォルダーのパスを取得する
 		auto audioPath = mediaPath + L"Sounds\\";
-
+		// モデルフォルダーのパスを取得する
+		auto modelPath = mediaPath + L"Models\\";
 
 		//オーディオの登録
 		app->RegisterWav(L"StageBGM", audioPath + L"stagebgm.wav");
@@ -43,6 +44,12 @@ namespace basecross{
 		auto blockModel = MeshResource::CreateStaticModelMesh(mediaPath + L"Models\\Block\\", L"M_Grand.bmf");
 		blockModel->SetTextureResource(L"TEX_GRAND");
 		app->RegisterResource(L"MODEL_BLOCK", blockModel);
+
+		// Boardモデルの読み込み（仮）
+		app->RegisterTexture(L"TEX_BOARD", modelPath + L"Board\\T_FallenTree.png");
+		auto boardModel = MeshResource::CreateStaticModelMesh(modelPath + L"Board\\", L"M_FallenTree.bmf");
+		boardModel->SetTextureResource(L"TEX_BOARD");
+		app->RegisterResource(L"MODEL_BOARD", boardModel);
 	}
 
 
