@@ -96,6 +96,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SkyBox.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Board.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -176,5 +177,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SkyBox.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Board.cpp" />
   </ItemGroup>
 </Project>
