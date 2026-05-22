@@ -46,8 +46,8 @@ namespace basecross{
 		app->RegisterResource(L"MODEL_BLOCK", blockModel);
 
 		// Boardƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ýi‰¼j
-		app->RegisterTexture(L"TEX_BOARD", modelPath + L"T_FallenTree.png");
-		auto boardModel = MeshResource::CreateStaticModelMesh(modelPath + L"Board", L"M_FallTree.bmf");
+		app->RegisterTexture(L"TEX_BOARD", modelPath + L"Board\\T_FallenTree.png");
+		auto boardModel = MeshResource::CreateStaticModelMesh(modelPath + L"Board\\", L"M_FallenTree.bmf");
 		boardModel->SetTextureResource(L"TEX_BOARD");
 		app->RegisterResource(L"MODEL_BOARD", boardModel);
 	}
