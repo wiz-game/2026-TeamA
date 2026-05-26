@@ -7,6 +7,7 @@
 #include "stdafx.h"
 #include "PNTDXModelDraw.h"
 #include "JoltRigidBody.h"
+#include <deque>
 
 #include <Jolt/Jolt.h>
 #include <Jolt/Physics/PhysicsSystem.h>
@@ -16,6 +17,27 @@
 
 
 namespace basecross {
+
+	// 軌跡ノード
+	struct TrackNode
+	{
+		Vec3 position;
+		float roadWidth;
+	};
+
+	// プレイヤーの移動の軌跡を管理するクラス
+	class PlayerTrackManager
+	{
+	private:
+		std::deque<TrackNode> m_track;
+		size_t m_maxNode = 20; // ノードの最大数
+		float m_interval = 2.0f; // ノードの間隔(2.0f)
+	public:
+		void UpdateTrack(const Vec3& playerPos, float width);
+		TrackNode GetNearTrackNode(const Vec3& pos);
+	};
+
+
 	// GameObjectクラスを継承した「Player」クラスを定義
 	class Player : public GameObject // GameObjectクラスの継承【必須】
 	{
@@ -42,6 +64,8 @@ namespace basecross {
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
 		Vec3 m_desiredVelocity;
 		JPH::ObjectLayer m_objectLayer;
+
+		PlayerTrackManager m_trackMng;
 
 		void InitializeCharacter();
 		void UpdateCharacter(float deltaTime);
@@ -90,6 +114,7 @@ namespace basecross {
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 
 	};
+
 
 	// 群れのキャラクター
 	class SubPlayer : public GameObject
