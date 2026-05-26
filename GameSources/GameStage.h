@@ -38,7 +38,17 @@ namespace basecross {
 			m_stageObj.push_back(newStageObj);
 		}
 
-		bool IsActive() const 
+		void SetIsActive(bool isActive)
+		{
+			m_isActive = isActive;
+
+			for (auto& obj : m_stageObj)
+			{
+				obj->SetUpdateActive(m_isActive);
+			}
+		}
+
+		bool GetIsActive() const 
 		{
 			return m_isActive;
 		}

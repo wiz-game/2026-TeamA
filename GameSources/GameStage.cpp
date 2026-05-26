@@ -74,12 +74,16 @@ namespace basecross {
 		//デバック用
 		wstringstream wss(L"");
 
-		if (m_isActive && pad.wPressedButtons & XINPUT_GAMEPAD_START)
+		if (m_isActive)
 		{
-			m_isActive = false;
-			option->SetVisible(true); //追加しておいたオプションを表示
+			// ゲーム中：STARTボタンでポーズ開始
+			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
+			{
+				SetIsActive(false);       // 関数を使って停止させる
+				option->SetVisible(true); // メニュー表示
+			}
 		}
-		else if (!m_isActive)
+		else
 		{
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
 			{
@@ -88,10 +92,6 @@ namespace basecross {
 
 			}
 
-			for (auto& obj : m_stageObj)
-			{
-				obj->SetUpdateActive(m_isActive);
-			}
 
 		}
 	}

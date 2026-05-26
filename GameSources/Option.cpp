@@ -56,7 +56,7 @@ namespace basecross
 
 		// 左スティックの値取得
 		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
-		if (!stage->IsActive())
+		if (!stage->GetIsActive())
 		{
 
 			switch (m_optionItem)
@@ -71,6 +71,11 @@ namespace basecross
 				{
 					m_optionItem = OptionItem::Title;
 					cursolpositon.y -= wrapIndex;
+				}
+				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+				{
+					stage->SetIsActive(true);
+					SetVisible(false);
 				}
 				break;
 			case OptionItem::Restart:
@@ -95,6 +100,10 @@ namespace basecross
 				{
 					m_optionItem = OptionItem::Restart;
 					cursolpositon.y += cursolIndex;
+				}
+				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+				{
+					PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToGameOverStage");//ゲームシーンを移動する
 				}
 				break;
 			case OptionItem::SoundTest:
