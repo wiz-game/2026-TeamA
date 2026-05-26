@@ -31,7 +31,7 @@ namespace basecross {
 	private:
 		std::deque<TrackNode> m_track;
 		size_t m_maxNode = 20; // ノードの最大数
-		float m_interval = 2.0f; // ノードの間隔(2.0f)
+		float m_interval = 5.0f; // ノードの間隔(2.0f)
 	public:
 		void UpdateTrack(const Vec3& playerPos, float width);
 		TrackNode GetNearTrackNode(const Vec3& pos);
@@ -109,6 +109,9 @@ namespace basecross {
 		void SetAllMove(bool allMove) { m_allMove = allMove; }
 		void AddSubPlayer(int num);
 		bool EraseSubPlayer(int num);
+		PlayerTrackManager GetTrackManager() const { return m_trackMng; }
+		vector<shared_ptr<GameObject>> GetActiveSubPlayer();
+
 
 		void OnCollisionEnter(const shared_ptr<GameObject>& other);
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
@@ -131,6 +134,8 @@ namespace basecross {
 		unique_ptr<StateMachine<SubPlayer>> m_state;
 		weak_ptr<GameObject> m_player;
 		Vec3 m_velocity;
+		float m_maxSpeed;
+		Vec3 CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers);
 
 	public:
 		// コンストラクタ
@@ -142,7 +147,8 @@ namespace basecross {
 			m_dif(0),
 			m_stay(0),
 			m_follow(false),
-			m_velocity(Vec3(0))
+			m_velocity(Vec3(0)),
+			m_maxSpeed(8.0f)
 		{
 		}
 		SubPlayer(const std::shared_ptr<Stage>& stage, const Vec3& pos) :
@@ -153,7 +159,8 @@ namespace basecross {
 			m_dif(0),
 			m_stay(0),
 			m_follow(false),
-			m_velocity(Vec3(0))
+			m_velocity(Vec3(0)),
+			m_maxSpeed(8.0f)
 		{
 		}
 
@@ -170,6 +177,7 @@ namespace basecross {
 		bool FollowPlayer();
 		void SetPlayer(const shared_ptr<GameObject>& player) { m_player = player; }
 		shared_ptr<GameObject> GetPlayer();
+		Vec3 GetVelocity() { return m_velocity; }
 		//ステートマシンのゲッター
 		const unique_ptr<StateMachine<SubPlayer>>& GetStateMachine() {
 			return m_state;

@@ -20,6 +20,7 @@ namespace basecross {
 		// 最後の軌跡と今の場所を比較し、移動してたら軌跡を追加
 		auto lastPos = m_track.back().position;
 		auto dis = playerPos - lastPos;
+		dis.y = 0;
 		if (dis.length() > m_interval)
 		{
 			m_track.push_back({ playerPos, width });
@@ -51,7 +52,10 @@ namespace basecross {
 				id = i;
 			}
 		}
-
+		if (id < m_track.size() - 1)
+		{
+			id += 1;
+		}
 		return m_track[id];
 	}
 
@@ -350,7 +354,23 @@ namespace basecross {
 		return true;
 	}
 
+	vector<shared_ptr<GameObject>> Player::GetActiveSubPlayer()
+	{
+		vector<shared_ptr<GameObject>> objs;
+		for (auto& obj : m_subPlayers)
+		{
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer)
+			{
+				if (subPlayer->GetAlive())
+				{
+					objs.push_back(obj);
+				}
+			}
+		}
 
+		return objs;
+	}
 
 	void Player::OnCollisionEnter(const shared_ptr<GameObject>& other)
 	{
@@ -527,8 +547,8 @@ namespace basecross {
 
 		m_dif = (float)(rand() % 10) * 0.03f + 0.05f;
 
-		auto col = AddComponent<CollisionSphere>();
-		col->SetDrawActive(true);
+		//auto col = AddComponent<CollisionSphere>();
+		//col->SetDrawActive(true);
 
 	}
 
@@ -586,18 +606,13 @@ namespace basecross {
 		auto delta = App::GetApp()->GetElapsedTime();
 
 		Vec3 playerVec = Vec3(0);
-		if (!m_player.expired())
-		{
-			auto obj = m_player.lock();
-			if (obj)
-			{
-				auto player = dynamic_pointer_cast<Player>(obj);
-				if (player)
-				{
-					playerVec = player->GetMoveVelocity();
-				}
-			}
-		}
+		if (m_player.expired()) return false;
+		auto obj = m_player.lock();
+		if (!obj) return false;
+		auto player = dynamic_pointer_cast<Player>(obj);
+		if (!player) return false;
+		playerVec = player->GetMoveVelocity();
+		
 
 		//auto pos = m_transComp->GetPosition();
 		//auto rotate = -m_rotate + XM_PIDIV2;
@@ -610,32 +625,43 @@ namespace basecross {
 		//m_transComp->SetPosition(pos);
 
 		auto pos = m_transComp->GetPosition();
-		auto rotate = m_rotate + XM_PIDIV2;
-		auto subPos = Vec3(cosf(m_rad - rotate) * m_len, 0, sinf(m_rad - rotate) * m_len);
-		auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 7.5f;
-		Vec3 moveVec = Vec3(m_playerPos + subPos + playerBack - pos);
-		moveVec.y = 0;
-		moveVec.normalize();
-		m_velocity += moveVec * 0.5f;
-		auto y = m_velocity.y;
-		m_velocity.y = 0;
-		m_velocity.normalize();
-		// 重力
-		m_velocity.y = y - 9.8f * delta;
-		pos += m_velocity * delta * 8.0f;
+		//auto rotate = m_rotate + XM_PIDIV2;
+		//auto subPos = Vec3(cosf(m_rad - rotate) * m_len, 0, sinf(m_rad - rotate) * m_len);
+		//auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 7.5f;
+		//Vec3 moveVec = Vec3(m_playerPos + subPos + playerBack - pos);
+		//moveVec.y = 0;
+		//moveVec.normalize();
+		//m_velocity += moveVec * 0.5f;
+		//auto y = m_velocity.y;
+		//m_velocity.y = 0;
+		//m_velocity.normalize();
+		 //重力
+		//m_velocity.y += -9.8f * delta;
+
+		auto trackMng = player->GetTrackManager();
+		auto node = trackMng.GetNearTrackNode(pos);
+		auto others = player->GetActiveSubPlayer();
+		auto steeringForce = CalculateSteering(node, others);
+		m_velocity += steeringForce * delta;
+		if (m_velocity.length() > m_maxSpeed)
+		{
+			m_velocity = m_velocity.normalize() * m_maxSpeed;
+		}
+
+		pos += m_velocity * delta;
 		//pos.y = m_playerPos.y;
 		m_transComp->SetPosition(pos);
 
 		// 回転処理
-		auto rad = atan2f(moveVec.x, moveVec.z) + XM_PI;
+		auto rad = atan2f(m_velocity.x, m_velocity.z) + XM_PI;
 		m_transComp->SetRotation(Vec3(0, rad, 0));
 
 
-		auto dis = m_playerPos + subPos + playerBack - pos;
-		if (dis.length() < 1.0f && playerVec.length() < 0.1f)
-		{
-			return true;
-		}
+		//auto dis = m_playerPos + subPos + playerBack - pos;
+		//if (dis.length() < 1.0f && playerVec.length() < 0.1f)
+		//{
+		//	return true;
+		//}
 
 
 		return false;
@@ -668,6 +694,123 @@ namespace basecross {
 		}
 		return nullptr;
 	}
+
+	Vec3 SubPlayer::CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers)
+	{
+		Vec3 force = Vec3(0);
+
+		auto pos = m_transComp->GetPosition();
+
+		// 道幅をもとに追従、分散の大きさの割合を決める
+		// 基準を10.0fとして比率を計算
+		float spreadRatio = targetNode.roadWidth / 10.0f;
+		if (spreadRatio > 1.0f)
+		{
+			spreadRatio = 1.0f;
+		}
+		else if (spreadRatio < 0.1f)
+		{
+			spreadRatio = 0.1f;
+		}
+
+		// Seekは狭いと強くなる
+		float seekWeight = (1.0f + (1.0f - spreadRatio) * 2.0f) * 1.5f;
+		// Separationは狭いと弱くなる
+		float sepWeight = spreadRatio * 1.5f;
+
+		// Seek(軌跡への追従)の処理
+		{
+			Vec3 disVec = targetNode.position - pos;
+			disVec.y = 0;
+			float dis = disVec.length();
+
+			// ノードの範囲内にいるときはスピードを緩める
+			float speedScale = ((dis * dis) < (targetNode.roadWidth / 2.0f) * (targetNode.roadWidth / 2.0f)) ? 0.6f : 1.0f;
+
+			disVec *= m_maxSpeed * speedScale;
+			auto seekForce = disVec - m_velocity;
+
+			// 力の制限
+			if (seekForce.length() > 10.0f)
+			{
+				seekForce = seekForce.normalize() * 10.0f;
+			}
+
+			force += seekForce * seekWeight;
+		}
+
+		// Separation(衝突回避の反発)の処理
+		{
+			Vec3 sepForce = Vec3(0);
+			int sepCount = 0;
+
+			for (auto& obj : subPlayers)
+			{
+				auto other = dynamic_pointer_cast<SubPlayer>(obj);
+				if (!other) continue;
+				if (other == GetThis<SubPlayer>()) continue;
+
+				auto otherPos = other->GetComponent<Transform>()->GetPosition();
+				auto disVec = pos - otherPos;
+				disVec.y = 0;
+				float dis = disVec.length();
+				if (dis > 0.001f && dis < 3.0f)
+				{
+					auto push = disVec.normalize() * (1.0f / dis);
+					sepForce += push;
+					sepCount++;
+				}
+			}
+
+			if (sepCount > 0)
+			{
+				sepForce /= sepCount;
+				// 現在の速度を引いてステアリング力に変換
+				sepForce = sepForce.normalize() * m_maxSpeed - m_velocity;
+
+				// 力の制限
+				if (sepForce.length() > 10.0f)
+				{
+					sepForce = sepForce.normalize() * 10.0f;
+				}
+
+				force += sepForce * sepWeight;
+			}
+		}
+
+		// Aligment(群れの進行方向を合わせる)処理
+		{
+			Vec3 aliForce = Vec3(0);
+			int count = 0;
+
+			for (auto& obj : subPlayers)
+			{
+				auto other = dynamic_pointer_cast<SubPlayer>(obj);
+				if (!other) continue;
+				if (other == GetThis<SubPlayer>()) continue;
+
+				auto otherPos = other->GetComponent<Transform>()->GetPosition();
+				auto disVec = pos - otherPos;
+				disVec.y = 0;
+				float dis = disVec.length();
+				if (dis > 0.001f && dis < 5.0f)
+				{
+					aliForce += other->GetVelocity();
+					count++;
+				}
+			}
+
+			if (count > 0)
+			{
+				aliForce /= count;
+				aliForce = (aliForce.normalize() * m_maxSpeed) - m_velocity;
+
+				force += aliForce;
+			}
+		}
+		return force;
+	}
+
 
 	void CharacterFormation::Finish()
 	{
