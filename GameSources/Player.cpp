@@ -309,7 +309,17 @@ namespace basecross {
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
 	{
-		m_velocity.y = 0;
+		auto otherTrans = Other->GetComponent<Transform>();
+		auto otherPos = otherTrans->GetPosition();
+		auto otherScale = otherTrans->GetScale();
+		auto pos = m_transform->GetPosition();
+		auto scale = m_transform->GetScale();
+		auto dis = pos - otherPos;
+		auto scaleSum = scale + otherScale;
+		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f || Other->FindTag(L"Cube"))
+		{
+			m_velocity.y = 0;
+		}
 	}
 	void Player::InitializeCharacter()
 	{
@@ -558,7 +568,7 @@ namespace basecross {
 		m_velocity.y = 0;
 		m_velocity.normalize();
 		// 重力
-		m_velocity.y = y - 1.0f * delta;
+		m_velocity.y = y - 9.8f * delta;
 		pos += m_velocity * delta * 8.0f;
 		//pos.y = m_playerPos.y;
 		m_transComp->SetPosition(pos);
@@ -580,7 +590,17 @@ namespace basecross {
 
 	void SubPlayer::OnCollisionExcute(shared_ptr<GameObject>& Other)
 	{
-		m_velocity.y = 0;
+		auto otherTrans = Other->GetComponent<Transform>();
+		auto otherPos = otherTrans->GetPosition();
+		auto otherScale = otherTrans->GetScale();
+		auto pos = m_transComp->GetPosition();
+		auto scale = m_transComp->GetScale();
+		auto dis = pos - otherPos;
+		auto scaleSum = scale + otherScale;
+		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f)
+		{
+			m_velocity.y = 0;
+		}
 	}
 
 	shared_ptr<GameObject> SubPlayer::GetPlayer()
@@ -690,6 +710,7 @@ namespace basecross {
 		//col->SetMakedSize(0.5f);
 		col->SetDrawActive(true);
 		col->SetFixed(true);
+		AddTag(L"Cube");
 		// 箱形の当たり判定を作成
 		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
 		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
