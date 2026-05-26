@@ -60,6 +60,8 @@ namespace basecross
 		// 右スティックの値取得
 		Vec2 RStick(pad.fThumbRX, pad.fThumbRY);
 
+		if (!gameStage->GetIsActive()) return; //ポーズ中は動作をしない
+
 		switch (m_cameraAngleState)
 		{
 		case Center:
