@@ -21,7 +21,6 @@ namespace basecross {
 
 		m_playerCameraView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
 		auto playerCamera = ObjectFactory::Create<PlayerCamera>();
-
 		auto camera = ObjectFactory::Create<Camera>();
 		camera->SetEye(Vec3(0.0f, 8.0f, -15.0f));
 		camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
@@ -49,12 +48,15 @@ namespace basecross {
 			m_jphManger.Initialize();
 			m_mainPlayer = AddGameObject<Player>(); // プレイヤーオブジェクトを追加
 			SetSharedGameObject(L"Player", m_mainPlayer);
+			m_stageObj.push_back(m_mainPlayer);
 			m_mainPlayer->SetPosition(Vec3(0, 2, 0));
 			Vec3 center = m_mainPlayer->GetPosition();
 			Vec3 mainPlayerScale = m_mainPlayer->GetScale();
 			//ビューとライトの作成
 			CreateViewLight();
 
+			m_isActive = true;
+			option = AddGameObject<Option>(); //追加はしておくが表示しない
 
 		}
 		catch (...) {
@@ -69,24 +71,29 @@ namespace basecross {
 		auto scene = App::GetApp()->GetScene<Scene>();
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
-		////デバック用
+		//デバック用
 		wstringstream wss(L"");
 
-
-
-		//scene->SetDebugString(wss.str());
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
+		if (m_isActive && pad.wPressedButtons & XINPUT_GAMEPAD_START)
 		{
-			wss<<L"ハンマー" << endl;;
-			scene->SetDebugString(wss.str());
+			m_isActive = false;
+			option->SetVisible(true); //追加しておいたオプションを表示
 		}
-
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
+		else if (!m_isActive)
 		{
-			wss << L"キューブ" << endl;;
-			scene->SetDebugString(wss.str());
-		}
+			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
+			{
+				m_isActive = true;
+				option->SetVisible(false);
 
+			}
+
+			for (auto& obj : m_stageObj)
+			{
+				obj->SetUpdateActive(m_isActive);
+			}
+
+		}
 	}
 
 	void GameStage::OnUpdate2()

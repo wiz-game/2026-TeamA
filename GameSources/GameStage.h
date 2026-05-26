@@ -25,12 +25,24 @@ namespace basecross {
 		std::shared_ptr<SingleView> m_playerCameraView;	
 
 		shared_ptr<SoundItem> m_BGM; // サウンド用ポインタ
-
+		bool m_isActive;
+		shared_ptr<Option> option;
+		vector<shared_ptr<GameObject>> m_stageObj;
 	public:
 		//構築と破棄
 		GameStage() :Stage(){}
 		virtual ~GameStage() {}
 		
+		void SetStageObj(shared_ptr<GameObject> newStageObj)
+		{
+			m_stageObj.push_back(newStageObj);
+		}
+
+		bool IsActive() const 
+		{
+			return m_isActive;
+		}
+
 		virtual void OnCreate()override; //初期化
 		virtual void OnUpdate()override; //更新
 		virtual void OnUpdate2() override;

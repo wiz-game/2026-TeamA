@@ -33,7 +33,7 @@ namespace basecross
 			wss << L"GameClear" << endl;
 			scene->SetDebugString(wss.str());
 
-			PostEvent(0.0f, GetThis<ObjectInterface>(),scene, L"ToStageSelect");//ゲームシーンを移動する
+			PostEvent(0.0f, GetThis<ObjectInterface>(),scene, L"ToGameClearStage");//ゲームシーンを移動する
 
 		}
 	}

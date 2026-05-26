@@ -14,6 +14,8 @@
 // Manager
 #include "StageManager.h"
 
+#include "Option.h"
+
 #include "Character.h"
 #include "StageObject.h"
 #include "Player.h"

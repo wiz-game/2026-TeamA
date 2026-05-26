@@ -28,7 +28,8 @@ namespace basecross
 
 	void GameClearStage::OnCreate()
 	{
-
+		LoadTextures();
+		CreateUI();
 	}
 
 	void GameClearStage::OnUpdate()
@@ -52,7 +53,7 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 
-		AddGameObject<Sprite>(L"TEX_GameCLlear", true, Vec3(1280, 840, 0), Vec3(0, 0, 0));
+		AddGameObject<Sprite>(L"TEX_GameClear", true, Vec3(1280, 840, 0), Vec3(0, 0, 0));
 
 	}
 

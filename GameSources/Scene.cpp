@@ -32,6 +32,8 @@ namespace basecross{
 		app->RegisterWav(L"StageBGM", audioPath + L"stagebgm.wav");
 
 		// リソースの読込
+		app->RegisterTexture(L"TEX_PAUSEUI", texPath + L"Pause.png");
+		app->RegisterTexture(L"TEX_POINTERUI", texPath + L"pointer.png");
 
 		// playerモデルの読み込み
 		app->RegisterTexture(L"TEX_PLAYER", mediaPath + L"Models\\Player\\Sample_Player.png");
