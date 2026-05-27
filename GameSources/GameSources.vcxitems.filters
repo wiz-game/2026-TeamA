@@ -100,6 +100,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Option.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TurningPoint.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -182,6 +183,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Board.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Option.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TurningPoint.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
