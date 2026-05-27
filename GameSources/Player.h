@@ -30,8 +30,8 @@ namespace basecross {
 	{
 	private:
 		std::deque<TrackNode> m_track;
-		size_t m_maxNode = 20; // ノードの最大数
-		float m_interval = 5.0f; // ノードの間隔(2.0f)
+		size_t m_maxNode = 200; // ノードの最大数
+		float m_interval = 2.0f; // ノードの間隔(2.0f)
 	public:
 		void UpdateTrack(const Vec3& playerPos, float width);
 		TrackNode GetNearTrackNode(const Vec3& pos);
@@ -75,7 +75,7 @@ namespace basecross {
 		// ステージを引数にしたコンストラクタ【必須】
 		Player(const std::shared_ptr<Stage>& stage) :
 			GameObject(stage), // ステージをGameObjectに渡す【必須】
-			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
+			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(1.0f),     // プレイヤーの初期スケーリングを設定
 			m_activeNum(0),     // 
@@ -85,7 +85,7 @@ namespace basecross {
 		}
 		Player(const std::shared_ptr<Stage>& stage, Vec3 scale) :
 			GameObject(stage), // ステージをGameObjectに渡す【必須】
-			m_position(0.0f, 1.0f, 0.0f), // プレイヤーの初期位置を設定
+			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(scale),     // プレイヤーの初期スケーリングを設定
 			m_activeNum(0),     // 
@@ -125,16 +125,18 @@ namespace basecross {
 		//Vec3 m_targetPos;
 		Vec3 m_playerPos;
 		shared_ptr<Transform> m_transComp;
-		float m_rotate;
+		//float m_rotate;
 		float m_dif;
 		float m_stay;
 		bool m_follow;
-		float m_rad;
-		float m_len;
+		//float m_rad;
+		//float m_len;
 		unique_ptr<StateMachine<SubPlayer>> m_state;
 		weak_ptr<GameObject> m_player;
 		Vec3 m_velocity;
 		float m_maxSpeed;
+		int m_randam;
+		float m_dis;
 		Vec3 CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers);
 
 	public:
@@ -143,7 +145,7 @@ namespace basecross {
 			GameObject(stage),
 			//m_targetPos(Vec3(0)),
 			m_playerPos(Vec3(0)),
-			m_rotate(0),
+			//m_rotate(0),
 			m_dif(0),
 			m_stay(0),
 			m_follow(false),
@@ -155,7 +157,7 @@ namespace basecross {
 			GameObject(stage),
 			//m_targetPos(pos),
 			m_playerPos(Vec3(0)),
-			m_rotate(0),
+			//m_rotate(0),
 			m_dif(0),
 			m_stay(0),
 			m_follow(false),
@@ -169,7 +171,7 @@ namespace basecross {
 		void OnUpdate() override; // 更新
 		//void SetTargetPos(const Vec3& pos) { m_targetPos = pos; }
 		void SetPlayerPos(const Vec3& pos) { m_playerPos = pos; }
-		void SetRotate(float rotate) { m_rotate = rotate; }
+		//void SetRotate(float rotate) { m_rotate = rotate; }
 		void SetAlive(bool isAlive); // 生きているかどうかのセッター
 		bool GetAlive(); // 生きているかどうかのゲッター
 		void SetFollow(bool follow) { m_follow = follow; }
@@ -178,6 +180,7 @@ namespace basecross {
 		void SetPlayer(const shared_ptr<GameObject>& player) { m_player = player; }
 		shared_ptr<GameObject> GetPlayer();
 		Vec3 GetVelocity() { return m_velocity; }
+		void SetPosition(const Vec3& pos);
 		//ステートマシンのゲッター
 		const unique_ptr<StateMachine<SubPlayer>>& GetStateMachine() {
 			return m_state;

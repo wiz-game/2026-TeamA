@@ -52,9 +52,10 @@ namespace basecross {
 				id = i;
 			}
 		}
-		if (id < m_track.size() - 1)
+		id += 1;
+		if (id >= m_track.size())
 		{
-			id += 1;
+			id = m_track.size() - 1;
 		}
 		return m_track[id];
 	}
@@ -167,13 +168,13 @@ namespace basecross {
 		}
 
 		// 左スティックの入力に応じてプレイヤーを移動させる
-		float moveSpeed = 8.0f; // 移動速度
+		float moveSpeed = 9.0f; // 移動速度
 		Vec3 moveVec(LStick.x, m_velocity.y, LStick.y); // 移動ベクトル
-		m_velocity.y -= delta;
+		//m_velocity.y -= delta;
 		m_position = m_transform->GetPosition();
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
-		//m_desiredVelocity = moveVec * moveSpeed;
+		m_desiredVelocity = moveVec * moveSpeed;
 
 		//if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 		//{
@@ -210,7 +211,7 @@ namespace basecross {
 				{
 					//subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
 					subPlayer->SetPlayerPos(m_position);
-					subPlayer->SetRotate(m_rotation.y);
+					//subPlayer->SetRotate(m_rotation.y);
 				}
 			}
 		}
@@ -287,8 +288,17 @@ namespace basecross {
 		}
 
 		// 軌跡ノードの更新
-		m_trackMng.UpdateTrack(m_position, 10.0f);
+		auto rotate = m_rotation.y + XM_PIDIV2;
+		auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 2.5f;
+		m_trackMng.UpdateTrack(m_position + playerBack, 10.0f);
 
+		// Debug用文字列
+		//app->GetScene<Scene>()->GetDebugString();
+		wstringstream ss;
+		ss << L"FPS : " << app->GetStepTimer().GetFramesPerSecond() << endl;
+		ss << L"Formation : " << m_formationNumber << endl;
+		ss << L"ActiveNum : " << m_activeNum << endl;
+		app->GetScene<Scene>()->SetDebugString(ss.str());
 	}
 
 	void Player::AddSubPlayer(int num)
@@ -303,6 +313,10 @@ namespace basecross {
 			if (!subPlayer->GetAlive())
 			{
 				subPlayer->SetAlive(true);
+				int x = -rand() % 9 + 5;
+				int z = -rand() % 9 + 5;
+				Vec3 v = { (float)x, 0, (float)z };
+				subPlayer->SetPosition(v + m_position);
 				//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
 				m_activeNum++;
 				num--;
@@ -542,13 +556,13 @@ namespace basecross {
 		m_state.reset(new StateMachine<SubPlayer>(GetThis<SubPlayer>()));
 		m_state->ChangeState(SubPlayerFollowState::Instance());
 
-		m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
-		m_len = static_cast<float>(rand() % 10) / 10.0f * 7.0f;
+		//m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
+		//m_len = static_cast<float>(rand() % 10) / 10.0f * 7.0f;
 
-		m_dif = (float)(rand() % 10) * 0.03f + 0.05f;
-
-		//auto col = AddComponent<CollisionSphere>();
-		//col->SetDrawActive(true);
+		m_dif = (float)(rand() % 10) * 0.06f + 0.05f;
+		m_randam = rand() % 5;
+		auto col = AddComponent<CollisionSphere>();
+		col->SetDrawActive(true);
 
 	}
 
@@ -585,7 +599,7 @@ namespace basecross {
 		auto pos = m_transComp->GetPosition();
 		auto dis = m_playerPos - pos;
 		//auto distance = Vec3(m_targetPos).length() + 1.0f;
-		if (dis.length() > 14)
+		if (dis.length() > m_dis * 2.5f)
 		{
 			m_follow = true;
 		}
@@ -604,6 +618,7 @@ namespace basecross {
 	bool SubPlayer::FollowPlayer()
 	{
 		auto delta = App::GetApp()->GetElapsedTime();
+		auto frame = App::GetApp()->GetStepTimer().GetFrameCount();
 
 		Vec3 playerVec = Vec3(0);
 		if (m_player.expired()) return false;
@@ -636,18 +651,22 @@ namespace basecross {
 		//m_velocity.y = 0;
 		//m_velocity.normalize();
 		 //重力
-		//m_velocity.y += -9.8f * delta;
+		//float y = m_velocity.y - 9.8f * delta;
 
-		auto trackMng = player->GetTrackManager();
-		auto node = trackMng.GetNearTrackNode(pos);
-		auto others = player->GetActiveSubPlayer();
-		auto steeringForce = CalculateSteering(node, others);
-		m_velocity += steeringForce * delta;
-		if (m_velocity.length() > m_maxSpeed)
+		if (frame % 5 == m_randam)
 		{
-			m_velocity = m_velocity.normalize() * m_maxSpeed;
+			auto trackMng = player->GetTrackManager();
+			auto node = trackMng.GetNearTrackNode(pos);
+			auto others = player->GetActiveSubPlayer();
+			auto steeringForce = CalculateSteering(node, others);
+			m_velocity += steeringForce * delta * 5;
+			m_velocity.y = 0;
+			if (m_velocity.length() > m_maxSpeed)
+			{
+				m_velocity = m_velocity.normalize() * m_maxSpeed;
+			}
 		}
-
+		//m_velocity.y = y;
 		pos += m_velocity * delta;
 		//pos.y = m_playerPos.y;
 		m_transComp->SetPosition(pos);
@@ -657,11 +676,36 @@ namespace basecross {
 		m_transComp->SetRotation(Vec3(0, rad, 0));
 
 
-		//auto dis = m_playerPos + subPos + playerBack - pos;
-		//if (dis.length() < 1.0f && playerVec.length() < 0.1f)
-		//{
-		//	return true;
-		//}
+		auto dis = m_playerPos - pos;
+		auto others = player->GetActiveSubPlayer();
+		if (playerVec.length() < 0.1f)
+		{
+			if (dis.length() < 1.0f)
+			{
+				m_dis = dis.length();
+				return true;
+			}
+			else
+			{
+				for (auto& other : others)
+				{
+					auto sub = dynamic_pointer_cast<SubPlayer>(other);
+					if (sub)
+					{
+						if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()))
+						{
+							auto otherPos = sub->GetComponent<Transform>()->GetPosition();
+							auto otherDis = otherPos - pos;
+							if (otherDis.length() < 1.3f)
+							{
+								m_dis = dis.length();
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
 
 
 		return false;
@@ -695,11 +739,48 @@ namespace basecross {
 		return nullptr;
 	}
 
+	void SubPlayer::SetPosition(const Vec3& pos)
+	{
+		m_transComp->SetPosition(pos);
+	}
+
 	Vec3 SubPlayer::CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers)
 	{
 		Vec3 force = Vec3(0);
 
 		auto pos = m_transComp->GetPosition();
+		// プレイヤーとの距離をもとに分離の値を変更
+		// 群れの数も参照する
+		float playerDis = 0;
+		if (!m_player.expired())
+		{
+			auto obj = m_player.lock();
+			if (obj)
+			{
+				auto playerPos = obj->GetComponent<Transform>()->GetPosition();
+				playerDis = Vec3(playerPos - pos).length();
+			}
+		}
+		float separateRatio = (7.0f / playerDis);
+		if (separateRatio < 0.2f)
+		{
+			separateRatio = 0.2f;
+		}
+		else if (separateRatio > 1.f)
+		{
+			separateRatio = 1.0f;
+		}
+		int num = subPlayers.size();
+		float sepRatio = (float)num / 100.0f;
+		if (sepRatio < 0.5f)
+		{
+			sepRatio = 0.5f;
+		}
+		else if (sepRatio > 2.0f)
+		{
+			sepRatio = 2;
+		}
+
 
 		// 道幅をもとに追従、分散の大きさの割合を決める
 		// 基準を10.0fとして比率を計算
@@ -714,9 +795,9 @@ namespace basecross {
 		}
 
 		// Seekは狭いと強くなる
-		float seekWeight = (1.0f + (1.0f - spreadRatio) * 2.0f) * 1.5f;
+		float seekWeight = (1.0f + (1.0f - spreadRatio) * 2.0f) * 2.0f;
 		// Separationは狭いと弱くなる
-		float sepWeight = spreadRatio * 1.5f;
+		float sepWeight = spreadRatio * 1.5f * separateRatio + sepRatio;
 
 		// Seek(軌跡への追従)の処理
 		{
