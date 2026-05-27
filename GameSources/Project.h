@@ -29,6 +29,7 @@
 #include "Sprite.h"
 #include "SkyBox.h"
 #include "Board.h"
+#include "TurningPoint.h"
 
 
 #include "GameStage.h"

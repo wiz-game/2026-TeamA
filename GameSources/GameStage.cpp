@@ -28,7 +28,6 @@ namespace basecross {
 		m_playerCameraView->SetCamera(playerCamera);
 		SetView(m_playerCameraView);
 
-
 		//// ƒrƒ…[‚ÉƒJƒƒ‰‚ğİ’è
 		//auto view = CreateView<SingleView>();
 		//view->SetCamera(camera);
