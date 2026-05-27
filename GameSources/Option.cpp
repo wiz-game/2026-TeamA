@@ -51,6 +51,7 @@ namespace basecross
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
 		auto stage = GetStage()->GetThis<GameStage>();
+		float lStickValue = 0.5f;
 		float cursolIndex = 117.0f; //カーソル移動用変数
 		int wrapIndex = cursolIndex * (itemCount - 1); //一番上や下の時用の変数
 
@@ -62,12 +63,12 @@ namespace basecross
 			switch (m_optionItem)
 			{
 			case OptionItem::Return:
-				if (m_prevLStick.y <= -0.25f && LStick.y >= -0.25f)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
 				{
 					m_optionItem = OptionItem::Restart;
 					cursolpositon.y -= cursolIndex;
 				}
-				else if (m_prevLStick.y <= 0.25f && LStick.y >= 0.25f)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
 				{
 					m_optionItem = OptionItem::Title;
 					cursolpositon.y -= wrapIndex;
@@ -79,24 +80,28 @@ namespace basecross
 				}
 				break;
 			case OptionItem::Restart:
-				if (m_prevLStick.y <= -0.25f && LStick.y >= -0.25f)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
 				{
 					m_optionItem = OptionItem::StageSelect;
 					cursolpositon.y -= cursolIndex;
 				}
-				else if (m_prevLStick.y <= 0.25f && LStick.y >= 0.25f)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
 				{
 					m_optionItem = OptionItem::Return;
 					cursolpositon.y += cursolIndex;
 				}
+				if(pad.wPressedButtons & XINPUT_GAMEPAD_A)
+				{
+					scene->PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToGameStage");
+				}
 				break;
 			case OptionItem::StageSelect:
-				if (m_prevLStick.y <= -0.25f && LStick.y >= -0.25f)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
 				{
 					m_optionItem = OptionItem::SoundTest;
 					cursolpositon.y -= cursolIndex;
 				}
-				else if (m_prevLStick.y <= 0.25f && LStick.y >= 0.25f)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
 				{
 					m_optionItem = OptionItem::Restart;
 					cursolpositon.y += cursolIndex;
@@ -107,24 +112,29 @@ namespace basecross
 				}
 				break;
 			case OptionItem::SoundTest:
-				if (m_prevLStick.y <= -0.25f && LStick.y >= -0.25f)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
 				{
 					m_optionItem = OptionItem::Title;
 					cursolpositon.y -= cursolIndex;
 				}
-				else if (m_prevLStick.y <= 0.25f && LStick.y >= 0.25f)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
 				{
 					m_optionItem = OptionItem::StageSelect;
 					cursolpositon.y += cursolIndex;
 				}
+				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+				{			
+					stage->AddGameObject<SoundTest>();
+					stage->RemoveGameObject<Option>(GetThis<Option>());
+				}
 				break;
 			case OptionItem::Title:
-				if (m_prevLStick.y <= -0.25f && LStick.y >= -0.25f)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
 				{
 					m_optionItem = OptionItem::Return;
 					cursolpositon.y += wrapIndex;
 				}
-				else if (m_prevLStick.y <= 0.25f && LStick.y >= 0.25f)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
 				{
 					m_optionItem = OptionItem::SoundTest;
 					cursolpositon.y += cursolIndex;
@@ -142,5 +152,50 @@ namespace basecross
 			m_prevLStick = LStick;
 		}
 
+	}
+
+	SoundTest::SoundTest(const shared_ptr<Stage>& stage) :
+		GameObject(stage),
+		m_BGMVolume(1.0f),
+		m_SEVolume(1.0f),
+		m_prevLStick(0)
+	{
+	}
+	SoundTest::~SoundTest(){}
+
+	void SoundTest::OnCreate()
+	{
+		CreateUI();
+	}
+
+	void SoundTest::CreateUI()
+	{
+		auto stage = GetStage();
+		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_BSQUARE", true, Vec3(1280, 800, 0) * 0.01f, Vec3(0, 0, 0)));
+		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_BGMICON", true, Vec3(1280, 800, 0) * 0.003f, Vec3(-200, 200, 0)));
+		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_SEICON" , true, Vec3(1280, 800, 0) * 0.003f, Vec3(-200, -200, 0)));
+	}
+
+	void SoundTest::OnUpdate()
+	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		// 入力デバイスを取得する
+		auto input = app->GetInputDevice();
+		auto pad = input.GetControlerVec()[0];
+		auto stage = GetStage()->GetThis<GameStage>();
+		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
+		float lStickValue = 0.5f;
+
+		if (m_prevLStick.x <= lStickValue && LStick.x >= lStickValue)
+		{
+
+		}
+		else if (m_prevLStick.x <= -lStickValue && LStick.x >= -lStickValue)
+		{
+
+		}
+
+		m_prevLStick = LStick;
 	}
 }

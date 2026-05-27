@@ -39,4 +39,21 @@ namespace basecross
 		void OnUpdate()override;
 
 	};
+
+	class SoundTest : public GameObject
+	{
+		float m_BGMVolume;
+		float m_SEVolume;
+		Vec2 m_prevLStick;
+		void CreateUI();
+
+		vector<shared_ptr<GameObject>> m_soundTestUI;
+	public:
+		SoundTest(const shared_ptr<Stage>& stage);
+		~SoundTest();
+
+		void OnCreate() override;
+		void OnUpdate() override;
+
+	};
 }
