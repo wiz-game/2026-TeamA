@@ -24,6 +24,7 @@ namespace basecross
 		bool m_isActive;
 		shared_ptr<GameObject> m_cursol; //カーソル用ポインタ
 		Vec3 cursolpositon; //カーソル位置更新用変数
+
 	public:
 		Option(const shared_ptr<Stage>& stage);
 		~Option();
