@@ -37,6 +37,46 @@ namespace basecross {
 		TrackNode GetNearTrackNode(const Vec3& pos);
 	};
 
+	// 隊列オブジェクトのベース
+	class CharacterFormation : public GameObject
+	{
+	protected:
+		shared_ptr<Transform> m_transComp;
+		weak_ptr<GameObject> m_player;
+		Vec3 m_rotation;
+		float m_time;
+		bool m_isActive;
+		int m_characterNum;
+	public:
+		CharacterFormation(const std::shared_ptr<Stage>& stage) :
+			GameObject(stage),
+			m_time(0),
+			m_isActive(false),
+			m_characterNum(0)
+		{
+
+		}
+
+		virtual void Start(const Vec3& position, const Vec3& rotation) {}
+		virtual void Finish();
+		bool GetActive() { return m_isActive; }
+		void SetPlayer(const shared_ptr<GameObject>& player) { m_player = player; }
+
+	};
+
+	// 隊列オブジェクトの管理クラス
+	class FormationManager
+	{
+	private:
+		weak_ptr<CharacterFormation> m_formation[4];
+
+	public:
+		void Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject> player);
+		void StartFormation(int num, const Vec3& pos, const Vec3& rot);
+		void FinishFormation(int num);
+		bool GetFormationActive(int num);
+
+	};
 
 	// GameObjectクラスを継承した「Player」クラスを定義
 	class Player : public GameObject // GameObjectクラスの継承【必須】
@@ -54,7 +94,7 @@ namespace basecross {
 		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
 		//shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
 		//shared_ptr<GameObject> m_cube; // キューブのオブジェクト
-		shared_ptr<GameObject> m_formation[4]; // 隊列のオブジェクト
+		//shared_ptr<GameObject> m_formation[4]; // 隊列のオブジェクト
 		Vec3 m_characterPositions[MAX_CHARACTER_NUM]; // 
 		int m_activeNum; // 
 		bool m_allMove; // すべての群れを動かすためのフラグ
@@ -66,6 +106,7 @@ namespace basecross {
 		JPH::ObjectLayer m_objectLayer;
 
 		PlayerTrackManager m_trackMng;
+		FormationManager m_formationMng;
 
 		void InitializeCharacter();
 		void UpdateCharacter(float deltaTime);
@@ -189,30 +230,6 @@ namespace basecross {
 
 	};
 
-	class CharacterFormation : public GameObject
-	{
-	protected:
-		shared_ptr<Transform> m_transComp;
-		weak_ptr<Player> m_player;
-		Vec3 m_rotation;
-		float m_time;
-		bool m_isActive;
-		int m_characterNum;
-	public:
-		CharacterFormation(const std::shared_ptr<Stage>& stage) :
-			GameObject(stage),
-			m_time(0),
-			m_isActive(false),
-			m_characterNum(0)
-		{
-
-		}
-
-		virtual void Start(const Vec3& position, const Vec3& rotation) {}
-		virtual void Finish();
-		void SetPlayer(const shared_ptr<Player>& player) { m_player = player; }
-
-	};
 
 	class HammerFormation : public CharacterFormation
 	{

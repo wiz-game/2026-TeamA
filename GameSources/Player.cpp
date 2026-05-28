@@ -60,6 +60,55 @@ namespace basecross {
 		return m_track[id];
 	}
 
+	void FormationManager::Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject> player)
+	{
+		m_formation[0] = stage->AddGameObject<HammerFormation>();
+		m_formation[1] = stage->AddGameObject<CubeFormation>();
+		m_formation[2] = stage->AddGameObject<SpearFormation>();
+		m_formation[3] = stage->AddGameObject<BridgeFormation>();
+
+		for (int i = 0; i < 4; i++)
+		{
+			auto formation = m_formation[i].lock();
+			if (formation)
+			{
+				formation->SetUpdateActive(false);
+				formation->SetDrawActive(false);
+				formation->SetPlayer(player);
+			}
+		}
+
+	}
+
+	void FormationManager::StartFormation(int num, const Vec3& pos, const Vec3& rot)
+	{
+		auto formation = m_formation[num].lock();
+		if (formation)
+		{
+			formation->Start(pos, rot);
+		}
+	}
+	
+	void FormationManager::FinishFormation(int num)
+	{
+		auto formation = m_formation[num].lock();
+		if (formation)
+		{
+			formation->Finish();
+		}
+	}
+
+	bool FormationManager::GetFormationActive(int num)
+	{
+		auto formation = m_formation[num].lock();
+		if (formation)
+		{
+			return formation->GetActive();
+		}
+
+		return false;
+	}
+
 
 	// プレイヤーの初期設定
 	void Player::OnCreate()
@@ -99,40 +148,23 @@ namespace basecross {
 		}
 		AddSubPlayer(30);
 
-		//// ハンマーのオブジェクトの作成
-		//m_hammer = GetStage()->AddGameObject<HammerFormation>();
-		//auto hammer = dynamic_pointer_cast<HammerFormation>(m_hammer);
-		//if (hammer)
+		//m_formation[0] = GetStage()->AddGameObject<HammerFormation>();
+		//m_formation[1] = GetStage()->AddGameObject<CubeFormation>();
+		//m_formation[2] = GetStage()->AddGameObject<SpearFormation>();
+		//m_formation[3] = GetStage()->AddGameObject<BridgeFormation>();
+
+		//for (int i = 0; i < 4; i++)
 		//{
-		//	hammer->SetUpdateActive(false);
-		//	hammer->SetDrawActive(false);
-		//	hammer->SetPlayer(GetThis<Player>());
+		//	auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[i]);
+		//	if (formation)
+		//	{
+		//		formation->SetUpdateActive(false);
+		//		formation->SetDrawActive(false);
+		//		formation->SetPlayer(GetThis<Player>());
+		//	}
 		//}
 
-		//m_cube = GetStage()->AddGameObject<CubeFormation>();
-		//auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
-		//if (cube)
-		//{
-		//	cube->SetUpdateActive(false);
-		//	cube->SetDrawActive(false);
-		//	cube->SetPlayer(GetThis<Player>());
-		//}
-
-		m_formation[0] = GetStage()->AddGameObject<HammerFormation>();
-		m_formation[1] = GetStage()->AddGameObject<CubeFormation>();
-		m_formation[2] = GetStage()->AddGameObject<SpearFormation>();
-		m_formation[3] = GetStage()->AddGameObject<BridgeFormation>();
-
-		for (int i = 0; i < 4; i++)
-		{
-			auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[i]);
-			if (formation)
-			{
-				formation->SetUpdateActive(false);
-				formation->SetDrawActive(false);
-				formation->SetPlayer(GetThis<Player>());
-			}
-		}
+		m_formationMng.Init(GetStage(), GetThis<Player>());
 
 		//InitializeCharacter();
 
@@ -170,7 +202,7 @@ namespace basecross {
 		// 左スティックの入力に応じてプレイヤーを移動させる
 		float moveSpeed = 9.0f; // 移動速度
 		Vec3 moveVec(LStick.x, m_velocity.y, LStick.y); // 移動ベクトル
-		//m_velocity.y -= delta;
+		m_velocity.y -= delta;
 		m_position = m_transform->GetPosition();
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
@@ -237,36 +269,25 @@ namespace basecross {
 			EraseSubPlayer(1);
 		}
 
-		//if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
-		//{
-		//	auto hammerFormation = dynamic_pointer_cast<HammerFormation>(m_hammer);
-		//	if (hammerFormation)
-		//	{
-		//		hammerFormation->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0), 20);
-		//	}
-		//}
-
-		//if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
-		//{
-		//	auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
-		//	if (cube)
-		//	{
-		//		auto pos = m_position;
-		//		//auto rot = cube->GetComponent<Transform>()->GetQuaternion().toRotVec();
-		//		pos.x += cosf(-m_rotation.y) * 3.0f;
-		//		pos.z += sinf(-m_rotation.y) * 3.0f;
-		//		pos.y -= 0.5f;
-		//		cube->Start(pos, Vec3(0, m_rotation.y - XM_PIDIV2, 0), 15);
-		//	}
-		//}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
 		{
-			auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
-			if (formation)
+			//auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
+			//if (formation)
+			//{
+			//	auto rotate = m_rotation;
+			//	rotate.y += XM_PIDIV2;
+			//	formation->Start(m_position, rotate);
+			//}
+			if (!m_formationMng.GetFormationActive(m_formationNumber))
 			{
 				auto rotate = m_rotation;
 				rotate.y += XM_PIDIV2;
-				formation->Start(m_position, rotate);
+				m_formationMng.StartFormation(m_formationNumber, m_position, rotate);
+			}
+			else
+			{
+				m_formationMng.FinishFormation(m_formationNumber);
+
 			}
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
@@ -354,17 +375,6 @@ namespace basecross {
 			}
 		}
 
-		// 場所をただす
-		//int i = 0;
-		//for (auto& obj : m_subPlayers)
-		//{
-		//	auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-		//	if (subPlayer->GetAlive())
-		//	{
-		//		subPlayer->SetTargetPos(m_characterPositions[i]);
-		//		i++;
-		//	}
-		//}
 		return true;
 	}
 
@@ -898,10 +908,14 @@ namespace basecross {
 		m_isActive = false;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			player->AddSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				player->AddSubPlayer(m_characterNum);
+			}
 		}
 
 	}
@@ -948,10 +962,14 @@ namespace basecross {
 	void HammerFormation::Start(const Vec3& position, const Vec3& rotation)
 	{
 		bool b = true;
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			b = player->EraseSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				b = player->EraseSubPlayer(m_characterNum);
+			}
 		}
 		if (!b)
 		{
@@ -988,41 +1006,27 @@ namespace basecross {
 		col->SetDrawActive(true);
 		col->SetFixed(true);
 		AddTag(L"Cube");
-		// 箱形の当たり判定を作成
-		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
-		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
-
-		//JoltRigidBody::Settings rbSettings;
-		//rbSettings.shape = boxShape; // 共通の形状を使い回す
-		//rbSettings.motionType = JPH::EMotionType::Kinematic; // 物理演算で動く設定
-		//rbSettings.objectLayer = Layers::MOVING; // レイヤー 1 (例: MOVING)
-		//rbSettings.mass = 10.0f; // 重さ 10kg
-		//rbSettings.restitution = 0.5f; // 反発係数 0.5 (弾む)
-		//rbSettings.friction = 0.5f;
-		//m_rigidBody = AddComponent<JoltRigidBody>();
-		//m_rigidBody->Initialize(rbSettings);
-
 	}
 
 	void CubeFormation::OnUpdate()
 	{
-		auto delta = App::GetApp()->GetElapsedTime();
-		m_time += delta;
-		if (m_time > 3.0f)
-		{
-			//m_isActive = false;
-			//SetDrawActive(m_isActive);
-			//SetUpdateActive(m_isActive);
-			////GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
-			////RemoveComponent<JoltRigidBody>();
-			////m_rigidBody.reset();
-			//auto player = m_player.lock();
-			//if (player)
-			//{
-			//	player->AddSubPlayer(15);
-			//}
-			Finish();
-		}
+		//auto delta = App::GetApp()->GetElapsedTime();
+		//m_time += delta;
+		//if (m_time > 3.0f)
+		//{
+		//	//m_isActive = false;
+		//	//SetDrawActive(m_isActive);
+		//	//SetUpdateActive(m_isActive);
+		//	////GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
+		//	////RemoveComponent<JoltRigidBody>();
+		//	////m_rigidBody.reset();
+		//	//auto player = m_player.lock();
+		//	//if (player)
+		//	//{
+		//	//	player->AddSubPlayer(15);
+		//	//}
+		//	Finish();
+		//}
 	}
 
 	void CubeFormation::Start(const Vec3& position, const Vec3& rotation)
@@ -1032,10 +1036,14 @@ namespace basecross {
 			return;
 		}
 		bool b = true;
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			b = player->EraseSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				b = player->EraseSubPlayer(m_characterNum);
+			}
 		}
 		if (!b)
 		{
@@ -1108,10 +1116,14 @@ namespace basecross {
 	void SpearFormation::Start(const Vec3& position, const Vec3& rotation)
 	{
 		bool b = true;
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			b = player->EraseSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				b = player->EraseSubPlayer(m_characterNum);
+			}
 		}
 		if (!b)
 		{
@@ -1166,23 +1178,23 @@ namespace basecross {
 
 	void BridgeFormation::OnUpdate()
 	{
-		auto delta = App::GetApp()->GetElapsedTime();
-		m_time += delta;
-		if (m_time > 3.0f)
-		{
-			//m_isActive = false;
-			//SetDrawActive(m_isActive);
-			//SetUpdateActive(m_isActive);
-			////GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
-			////RemoveComponent<JoltRigidBody>();
-			////m_rigidBody.reset();
-			//auto player = m_player.lock();
-			//if (player)
-			//{
-			//	player->AddSubPlayer(15);
-			//}
-			Finish();
-		}
+		//auto delta = App::GetApp()->GetElapsedTime();
+		//m_time += delta;
+		//if (m_time > 3.0f)
+		//{
+		//	//m_isActive = false;
+		//	//SetDrawActive(m_isActive);
+		//	//SetUpdateActive(m_isActive);
+		//	////GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
+		//	////RemoveComponent<JoltRigidBody>();
+		//	////m_rigidBody.reset();
+		//	//auto player = m_player.lock();
+		//	//if (player)
+		//	//{
+		//	//	player->AddSubPlayer(15);
+		//	//}
+		//	Finish();
+		//}
 	}
 
 	void BridgeFormation::Start(const Vec3& position, const Vec3& rotation)
@@ -1192,10 +1204,14 @@ namespace basecross {
 			return;
 		}
 		bool b = true;
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			b = player->EraseSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				b = player->EraseSubPlayer(m_characterNum);
+			}
 		}
 		if (!b)
 		{
