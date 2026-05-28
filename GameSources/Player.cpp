@@ -80,27 +80,27 @@ namespace basecross {
 
 	}
 
-	void FormationManager::StartFormation(int num, const Vec3& pos, const Vec3& rot)
+	void FormationManager::StartFormation(const Vec3& pos, const Vec3& rot)
 	{
-		auto formation = m_formation[num].lock();
+		auto formation = m_formation[m_formationNum].lock();
 		if (formation)
 		{
 			formation->Start(pos, rot);
 		}
 	}
 	
-	void FormationManager::FinishFormation(int num)
+	void FormationManager::FinishFormation()
 	{
-		auto formation = m_formation[num].lock();
+		auto formation = m_formation[m_formationNum].lock();
 		if (formation)
 		{
 			formation->Finish();
 		}
 	}
 
-	bool FormationManager::GetFormationActive(int num)
+	bool FormationManager::GetFormationActive()
 	{
-		auto formation = m_formation[num].lock();
+		auto formation = m_formation[m_formationNum].lock();
 		if (formation)
 		{
 			return formation->GetActive();
@@ -278,33 +278,36 @@ namespace basecross {
 			//	rotate.y += XM_PIDIV2;
 			//	formation->Start(m_position, rotate);
 			//}
-			if (!m_formationMng.GetFormationActive(m_formationNumber))
+			if (!m_formationMng.GetFormationActive())
 			{
 				auto rotate = m_rotation;
 				rotate.y += XM_PIDIV2;
-				m_formationMng.StartFormation(m_formationNumber, m_position, rotate);
+				m_formationMng.StartFormation(m_position, rotate);
 			}
 			else
 			{
-				m_formationMng.FinishFormation(m_formationNumber);
+				m_formationMng.FinishFormation();
 
 			}
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 		{
-			m_formationNumber -= 1;
-			if (m_formationNumber < 0)
-			{
-				m_formationNumber = 0;
-			}
+			m_formationMng.SetFormationNumber(m_formationMng.GetFormationNumber() - 1);
+			//m_formationNumber -= 1;
+			//if (m_formationNumber < 0)
+			//{
+			//	m_formationNumber = 0;
+			//}
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 		{
-			m_formationNumber += 1;
-			if (m_formationNumber >= 4)
-			{
-				m_formationNumber = 3;
-			}
+			m_formationMng.SetFormationNumber(m_formationMng.GetFormationNumber() + 1);
+
+			//m_formationNumber += 1;
+			//if (m_formationNumber >= 4)
+			//{
+			//	m_formationNumber = 3;
+			//}
 
 		}
 
@@ -317,7 +320,7 @@ namespace basecross {
 		//app->GetScene<Scene>()->GetDebugString();
 		wstringstream ss;
 		ss << L"FPS : " << app->GetStepTimer().GetFramesPerSecond() << endl;
-		ss << L"Formation : " << m_formationNumber << endl;
+		ss << L"Formation : " << m_formationMng.GetFormationNumber() << endl;
 		ss << L"ActiveNum : " << m_activeNum << endl;
 		app->GetScene<Scene>()->SetDebugString(ss.str());
 	}
@@ -690,7 +693,7 @@ namespace basecross {
 		auto others = player->GetActiveSubPlayer();
 		if (playerVec.length() < 0.1f)
 		{
-			if (dis.length() < 1.0f)
+			if (dis.length() < 2.0f)
 			{
 				m_dis = dis.length();
 				return true;
@@ -867,6 +870,22 @@ namespace basecross {
 
 				force += sepForce * sepWeight;
 			}
+		}
+
+		// プレイヤーへの反発
+		{
+			auto disVec = pos - m_playerPos;
+			auto dis = disVec.length();
+			if (dis > 0.001f && dis < 2.0f)
+			{
+				auto pForce = disVec.normalize() * (100.0f / dis);
+				if (pForce.length() > 100.0f)
+				{
+					pForce = pForce.normalize() * 100.0f;
+				}
+				force += pForce;
+			}
+
 		}
 
 		// Aligment(群れの進行方向を合わせる)処理

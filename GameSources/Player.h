@@ -69,13 +69,20 @@ namespace basecross {
 	{
 	private:
 		weak_ptr<CharacterFormation> m_formation[4];
+		int m_formationNum;
 
 	public:
 		void Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject> player);
-		void StartFormation(int num, const Vec3& pos, const Vec3& rot);
-		void FinishFormation(int num);
-		bool GetFormationActive(int num);
-
+		void StartFormation(const Vec3& pos, const Vec3& rot);
+		void FinishFormation();
+		bool GetFormationActive();
+		void SetFormationNumber(int num)
+		{ 
+			m_formationNum = num; 
+			if (m_formationNum < 0)m_formationNum = 0;
+			if (m_formationNum >= 4)m_formationNum = 3;
+		}
+		int GetFormationNumber() { return m_formationNum; }
 	};
 
 	// GameObjectクラスを継承した「Player」クラスを定義
@@ -98,7 +105,7 @@ namespace basecross {
 		Vec3 m_characterPositions[MAX_CHARACTER_NUM]; // 
 		int m_activeNum; // 
 		bool m_allMove; // すべての群れを動かすためのフラグ
-		int m_formationNumber;
+		//int m_formationNumber;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
@@ -120,8 +127,8 @@ namespace basecross {
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(1.0f),     // プレイヤーの初期スケーリングを設定
 			m_activeNum(0),     // 
-			m_allMove(false),
-			m_formationNumber(0)
+			m_allMove(false)
+			//m_formationNumber(0)
 		{
 		}
 		Player(const std::shared_ptr<Stage>& stage, Vec3 scale) :
@@ -130,8 +137,8 @@ namespace basecross {
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(scale),     // プレイヤーの初期スケーリングを設定
 			m_activeNum(0),     // 
-			m_allMove(false),
-			m_formationNumber(0)
+			m_allMove(false)
+			//m_formationNumber(0)
 		{
 		}
 
