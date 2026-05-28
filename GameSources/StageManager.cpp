@@ -203,14 +203,20 @@ namespace basecross
 				floor->SetScale(scale);
 				return;
 			}
-			else if (name == L"Scaffold")
+			else if (name == L"Foothold")
 			{
-				auto Scaffold = stage->AddGameObject<Block>();
-				Scaffold->SetPosition(pos);
-				Scaffold->SetRotation(rot);
-				Scaffold->SetScale(scale);
-				Scaffold->SetCollar(Col4(0.0f, 0.0f, 0.0f, 1.0f));
-				return;
+
+			}
+			else if(name==L"Slope")
+			{
+
+			}
+			else if(name==L"Soil")
+			{
+
+			}
+			else if(name==L"Fence")
+			{
 
 			}
 			else if (name == L"Board")
@@ -240,15 +246,32 @@ namespace basecross
 			{
 
 			}
+			else if (name == L"Shrub")
+			{
+
+			}
 			else if(name==L"Stone")
 			{
 
 			}
-			else if(name==L"M_Mushroom")
+			else if(name==L"Mushroom")
 			{
 
 			}
-			else if (name == L"GameObject"|| name == L"Stage1_1")
+			else if (name == L"PoisonMushroom")
+			{
+
+			}
+			else if (name == L"LongMushroom")
+			{
+
+			}
+			else if (name == L"PoisonLongMushroom")
+			{
+
+			}
+
+			else if (name == L"GameObject")
 			{
 				return;
 			}
