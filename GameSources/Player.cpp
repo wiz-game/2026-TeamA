@@ -282,7 +282,7 @@ namespace basecross {
 		// 左スティックの入力に応じてプレイヤーを移動させる
 		float moveSpeed = 9.0f; // 移動速度
 		Vec3 moveVec(LStick.x, m_velocity.y, LStick.y); // 移動ベクトル
-		//m_velocity.y -= delta;
+		m_velocity.y -= delta;
 		m_position = m_transform->GetPosition();
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
@@ -650,7 +650,7 @@ namespace basecross {
 		//m_velocity.y = 0;
 		//m_velocity.normalize();
 		 //重力
-		//float y = m_velocity.y - 9.8f * delta;
+		float y = m_velocity.y - 9.8f * delta;
 
 		if (frame % 5 == m_randam)
 		{
@@ -665,7 +665,7 @@ namespace basecross {
 				m_velocity = m_velocity.normalize() * m_maxSpeed;
 			}
 		}
-		//m_velocity.y = y;
+		m_velocity.y = y;
 		pos += m_velocity * delta;
 		//pos.y = m_playerPos.y;
 		m_transComp->SetPosition(pos);
