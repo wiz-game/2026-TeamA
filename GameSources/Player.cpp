@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "Project.h"
 
-namespace basecross{
+namespace basecross {
 	// プレイヤーの初期設定
 	void Player::OnCreate()
 	{
@@ -18,43 +18,75 @@ namespace basecross{
 		// ドローコンポーネントを追加
 		//m_draw = AddComponent<PNTDXModelDraw>();
 		m_draw = AddComponent<PNTStaticDraw>();
-		m_draw->SetMeshResource(L"DEFAULT_CUBE");
-		m_draw->SetDiffuse(Col4(1,0,0,1));
+		m_draw->SetMeshResource(L"MODEL_PLAYER");
+		//m_draw->SetTextureResource(L"TEX_PLAYER");
+		//m_draw->SetDiffuse(Col4(1, 0, 0, 1));
 		//AddComponent<Gravity>();
 
 		// 群れのキャラクターの生成
-		for (int i = 0; i < 150; i++)
+		int num[12] = { 10, 12, 12, 14, 14, 14, 14, 14, 12, 12, 12, 10 };
+		int n = 0;;
+		int sum = 0;
+		sum += num[n];
+		for (int i = 0; i < MAX_CHARACTER_NUM; i++)
 		{
-			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(Vec3(i % 8, 0, i / 10));
-			if (i < 50)
+			if (i >= sum)
 			{
-				subPlayer->SetAlive(true);
+				n++;
+				sum += num[n];
 			}
-			else
-			{
-				subPlayer->SetAlive(false);
-			}
+			float x = ((float)((i % num[n]) / 2) + 0.5f) * (float)(i % 2 == 0 ? 1 : -1) * 1.0f;
+			float z = n * 1.0f + 1;
+			m_characterPositions[i] = Vec3(x, 0, z);
+			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(m_characterPositions[i]);
+			subPlayer->SetAlive(false);
+			subPlayer->SetPlayer(GetThis<GameObject>());
 			m_subPlayers.push_back(subPlayer);
 		}
+		AddSubPlayer(30);
 
-		// ハンマーのオブジェクトの作成
-		m_hammer = GetStage()->AddGameObject<HammerFormation>();
-		auto hammer = dynamic_pointer_cast<HammerFormation>(m_hammer);
-		if (hammer)
+		//// ハンマーのオブジェクトの作成
+		//m_hammer = GetStage()->AddGameObject<HammerFormation>();
+		//auto hammer = dynamic_pointer_cast<HammerFormation>(m_hammer);
+		//if (hammer)
+		//{
+		//	hammer->SetUpdateActive(false);
+		//	hammer->SetDrawActive(false);
+		//	hammer->SetPlayer(GetThis<Player>());
+		//}
+
+		//m_cube = GetStage()->AddGameObject<CubeFormation>();
+		//auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
+		//if (cube)
+		//{
+		//	cube->SetUpdateActive(false);
+		//	cube->SetDrawActive(false);
+		//	cube->SetPlayer(GetThis<Player>());
+		//}
+
+		m_formation[0] = GetStage()->AddGameObject<HammerFormation>();
+		m_formation[1] = GetStage()->AddGameObject<CubeFormation>();
+		m_formation[2] = GetStage()->AddGameObject<SpearFormation>();
+		m_formation[3] = GetStage()->AddGameObject<BridgeFormation>();
+
+		for (int i = 0; i < 4; i++)
 		{
-			hammer->SetUpdateActive(false);
-			hammer->SetDrawActive(false);
-			hammer->SetPlayer(GetThis<Player>());
+			auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[i]);
+			if (formation)
+			{
+				formation->SetUpdateActive(false);
+				formation->SetDrawActive(false);
+				formation->SetPlayer(GetThis<Player>());
+			}
 		}
 
-		m_cube = GetStage()->AddGameObject<CubeFormation>();
-		auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
-		if (cube)
-		{
-			cube->SetUpdateActive(false);
-			cube->SetDrawActive(false);
-			cube->SetPlayer(GetThis<Player>());
-		}
+		//InitializeCharacter();
+
+		auto col = AddComponent<CollisionSphere>();
+		//col->SetMakedDiameter(0.5f);
+		//col->SetMakedHeight(1.0f);
+		col->SetDrawActive(true);
+		//AddComponent<Gravity>();
 
 	}
 
@@ -75,11 +107,45 @@ namespace basecross{
 		// 左スティックの入力を取得する
 		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
 
+		if (LStick.length() > 0.1f)
+		{
+			m_rotation.y = -atan2f(LStick.y, LStick.x) - XM_PIDIV2;
+			m_transform->SetRotation(m_rotation);
+		}
+
 		// 左スティックの入力に応じてプレイヤーを移動させる
-		float moveSpeed = 2.0f; // 移動速度
-		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
+		float moveSpeed = 8.0f; // 移動速度
+		Vec3 moveVec(LStick.x, m_velocity.y, LStick.y); // 移動ベクトル
+		m_velocity.y -= delta;
+		m_position = m_transform->GetPosition();
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
+		//m_desiredVelocity = moveVec * moveSpeed;
+
+		//if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		//{
+		//	// 直接CharacterVirtualの速度を設定
+		//	auto velocity = JPH::Vec3(m_desiredVelocity.x, 5.0f, m_desiredVelocity.z);
+		//	m_character->SetLinearVelocity(velocity);
+		//}
+
+		//if (!m_pPhysicsSystem || !m_character) return;
+
+		//UpdateCharacter(delta);
+
+		//// Transformを更新
+		//if (m_transform) {
+		//	JPH::RVec3 joltPos = m_character->GetPosition();
+		//	m_transform->SetPosition(
+		//		static_cast<float>(joltPos.GetX()),
+		//		static_cast<float>(joltPos.GetY()),
+		//		static_cast<float>(joltPos.GetZ())
+		//	);
+		//}
+		//m_position = m_transform->GetPosition();
+
+		auto aabb = AABB(m_position, 100, 100, 100);
+		GetStage()->GetCollisionManager()->SetRootAABB(aabb);
 
 		// 群れに移動用の座標を送る
 		for (auto& obj : m_subPlayers)
@@ -87,40 +153,84 @@ namespace basecross{
 			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
 			if (subPlayer)
 			{
+				if (subPlayer->GetAlive())
 				{
-					subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
+					//subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
+					subPlayer->SetPlayerPos(m_position);
 					subPlayer->SetRotate(m_rotation.y);
 				}
 			}
 		}
 
+		// 群れの移動を管理
+		if ((m_desiredVelocity.length() > 0.1f || LStick.length()) && m_allMove)
+		{
+			AllCharacterMove();
+		}
+		else if (m_desiredVelocity.length() < 0.1f)
+		{
+			m_allMove = false;
+		}
+
 		// ボタンで群れの数を変更
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
 		{
 			AddSubPlayer(1);
 		}
 
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
+		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
 		{
 			EraseSubPlayer(1);
 		}
 
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
+		//if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
+		//{
+		//	auto hammerFormation = dynamic_pointer_cast<HammerFormation>(m_hammer);
+		//	if (hammerFormation)
+		//	{
+		//		hammerFormation->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0), 20);
+		//	}
+		//}
+
+		//if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
+		//{
+		//	auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
+		//	if (cube)
+		//	{
+		//		auto pos = m_position;
+		//		//auto rot = cube->GetComponent<Transform>()->GetQuaternion().toRotVec();
+		//		pos.x += cosf(-m_rotation.y) * 3.0f;
+		//		pos.z += sinf(-m_rotation.y) * 3.0f;
+		//		pos.y -= 0.5f;
+		//		cube->Start(pos, Vec3(0, m_rotation.y - XM_PIDIV2, 0), 15);
+		//	}
+		//}
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
 		{
-			auto hammerFormation = dynamic_pointer_cast<HammerFormation>(m_hammer);
-			if (hammerFormation)
+			auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
+			if (formation)
 			{
-				hammerFormation->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0));
+				auto rotate = m_rotation;
+				rotate.y += XM_PIDIV2;
+				formation->Start(m_position, rotate);
 			}
 		}
-
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 		{
-			auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
-			if (cube)
+			m_formationNumber -= 1;
+			if (m_formationNumber < 0)
 			{
-				cube->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0));
+				m_formationNumber = 0;
 			}
+		}
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
+		{
+			m_formationNumber += 1;
+			if (m_formationNumber >= 4)
+			{
+				m_formationNumber = 3;
+			}
+
 		}
 
 	}
@@ -137,6 +247,8 @@ namespace basecross{
 			if (!subPlayer->GetAlive())
 			{
 				subPlayer->SetAlive(true);
+				//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
+				m_activeNum++;
 				num--;
 			}
 		}
@@ -167,10 +279,22 @@ namespace basecross{
 			if (subPlayer->GetAlive())
 			{
 				subPlayer->SetAlive(false);
+				m_activeNum--;
 				num--;
 			}
 		}
-		
+
+		// 場所をただす
+		//int i = 0;
+		//for (auto& obj : m_subPlayers)
+		//{
+		//	auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+		//	if (subPlayer->GetAlive())
+		//	{
+		//		subPlayer->SetTargetPos(m_characterPositions[i]);
+		//		i++;
+		//	}
+		//}
 		return true;
 	}
 
@@ -183,55 +307,327 @@ namespace basecross{
 		}
 	}
 
-	//void Player::OnDraw()
-	//{
-	//	GameObject::OnDraw();
-	//	for (auto& subPlayer : m_subPlayers)
-	//	{
-	//		subPlayer->OnDraw();
-	//	}
-	//}
+	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
+	{
+		auto otherTrans = Other->GetComponent<Transform>();
+		auto otherPos = otherTrans->GetPosition();
+		auto otherScale = otherTrans->GetScale();
+		auto pos = m_transform->GetPosition();
+		auto scale = m_transform->GetScale();
+		auto dis = pos - otherPos;
+		auto scaleSum = scale + otherScale;
+		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f || Other->FindTag(L"Cube"))
+		{
+			m_velocity.y = 0;
+		}
+	}
+	void Player::InitializeCharacter()
+	{
+		m_pPhysicsSystem = JoltManager::GetActiveSystem();
+		if (!m_pPhysicsSystem) return;
+
+		// Transformから初期位置を取得
+		auto transComp = GetComponent<Transform>();
+		if (!transComp) return;
+
+		Vec3 pos = transComp->GetPosition();
+		Quat q = transComp->GetQuaternion();
+
+		float height = 0.0f;           // キャラクターの高さ
+		float radius = 0.5f;           // カプセルの半径
+		float mass = 70.0f;            // 質量
+		float maxSlopeAngle = 45.0f;   // 登れる最大斜面角度（度）
+		float maxStrength = 100.0f;    // 押す力の最大値
+		float predictiveContactDistance = 0.1f; // 予測接触距離
+		float penetrationRecoverySpeed = 1.0f;  // 貫通回復速度
+		m_objectLayer = Layers::MOVING;
+
+		// カプセル形状を作成（半分の高さ - 半径がカプセルの円筒部分）
+		float halfHeight = (height * 0.5f) - radius;
+		if (halfHeight < 0.0f) halfHeight = 0.0f;
+
+		// 箱形の当たり判定を作成
+		JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
+		JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
+
+		JPH::RefConst<JPH::Shape> standingShape = JPH::RotatedTranslatedShapeSettings(
+			JPH::Vec3(0, height * 0.5f, 0),
+			JPH::Quat::sIdentity(),
+			boxShape
+		).Create().Get();
+
+		// CharacterVirtualの設定
+		JPH::CharacterVirtualSettings characterSettings;
+		characterSettings.mShape = standingShape;
+		characterSettings.mMass = mass;
+		characterSettings.mMaxSlopeAngle = JPH::DegreesToRadians(maxSlopeAngle);
+		characterSettings.mMaxStrength = maxStrength;
+		characterSettings.mPredictiveContactDistance = predictiveContactDistance;
+		characterSettings.mPenetrationRecoverySpeed = penetrationRecoverySpeed;
+		characterSettings.mUp = JPH::Vec3::sAxisY();
+		characterSettings.mSupportingVolume = JPH::Plane(JPH::Vec3::sAxisY(), -radius);
+
+		// CharacterVirtualを作成
+		m_character = std::make_unique<JPH::CharacterVirtual>(
+			&characterSettings,
+			JPH::RVec3(pos.x, pos.y, pos.z),
+			JPH::Quat(q.x, q.y, q.z, q.w),
+			m_pPhysicsSystem
+		);
+
+		// レイヤーの設定
+		m_character->SetCharacterVsCharacterCollision(nullptr);
+
+	}
+
+	void Player::UpdateCharacter(float deltaTime)
+	{
+		if (!m_character) return;
+
+		// 重力を適用
+		JPH::Vec3 gravity = m_pPhysicsSystem->GetGravity();
+		JPH::Vec3 currentVelocity = m_character->GetLinearVelocity();
+
+		JPH::Vec3 newVelocity;
+
+		// 地面にいる場合
+		if (m_character->GetGroundState() == JPH::CharacterVirtual::EGroundState::OnGround || m_position.y < 1.0f) {
+			// ジャンプ中（上向きの速度がある）場合はY速度を維持
+			if (currentVelocity.GetY() > 0.0f) {
+				newVelocity = JPH::Vec3(m_desiredVelocity.x, currentVelocity.GetY(), m_desiredVelocity.z);
+			}
+			else {
+				// 地面に静止している場合はY速度を0に
+				newVelocity = JPH::Vec3(m_desiredVelocity.x, 0.0f, m_desiredVelocity.z);
+			}
+		}
+		else {
+			// 空中では重力を加算
+			newVelocity = currentVelocity + gravity * deltaTime;
+			newVelocity.SetX(m_desiredVelocity.x);
+			newVelocity.SetZ(m_desiredVelocity.z);
+		}
+		//newVelocity = JPH::Vec3(m_desiredVelocity.x, m_desiredVelocity.y, m_desiredVelocity.z);
+
+		m_character->SetLinearVelocity(newVelocity);
+
+		// 衝突判定用のフィルター
+		JPH::DefaultBroadPhaseLayerFilter broadPhaseFilter(
+			m_pPhysicsSystem->GetObjectVsBroadPhaseLayerFilter(),
+			m_objectLayer
+		);
+
+		JPH::DefaultObjectLayerFilter objectFilter(
+			m_pPhysicsSystem->GetObjectLayerPairFilter(),
+			m_objectLayer
+		);
+
+		JPH::BodyFilter bodyFilter;
+		JPH::ShapeFilter shapeFilter;
+		JPH::TempAllocatorMalloc tempAllocatorMalloc;
+
+		// 床の速度を反映
+		m_character->UpdateGroundVelocity();
+
+		// 更新を実行
+		m_character->Update(
+			deltaTime,
+			gravity,
+			broadPhaseFilter,
+			objectFilter,
+			bodyFilter,
+			shapeFilter,
+			tempAllocatorMalloc
+		);
+
+	}
+
+	void Player::AllCharacterMove()
+	{
+		for (auto& obj : m_subPlayers)
+		{
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer->GetAlive())
+			{
+				subPlayer->SetFollow(true);
+			}
+		}
+
+	}
 
 	// 群れのキャラクターの初期化
 	void SubPlayer::OnCreate()
 	{
 		// ドローコンポーネントを追加
 		auto draw = AddComponent<PNTStaticDraw>();
-		draw->SetMeshResource(L"DEFAULT_SPHERE");
-		draw->SetDiffuse(Col4(1, 0, 0, 1));
+		draw->SetMeshResource(L"MODEL_PLAYER");
+		//draw->SetDiffuse(Col4(1, 0, 0, 1));
 
 		m_transComp = GetComponent<Transform>();
-		m_transComp->SetPosition(m_targetPos);
+		//m_transComp->SetPosition(m_targetPos);
+		m_transComp->SetScale(Vec3(0.7f));
+
+		m_state.reset(new StateMachine<SubPlayer>(GetThis<SubPlayer>()));
+		m_state->ChangeState(SubPlayerFollowState::Instance());
 
 		m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
-		m_len = static_cast<float>(rand() % 10) / 10.0f * 6.0f;
-		m_subPos = Vec3(cosf(m_rad) * m_len, 0, sinf(m_rad) * m_len);
+		m_len = static_cast<float>(rand() % 10) / 10.0f * 7.0f;
+
+		m_dif = (float)(rand() % 10) * 0.03f + 0.05f;
+
+		auto col = AddComponent<CollisionSphere>();
+		col->SetDrawActive(true);
 	}
 
 	// 群れのキャラクターの更新
 	void SubPlayer::OnUpdate()
 	{
-		auto delta = App::GetApp()->GetElapsedTime();
+		m_state->Update();
 
 		auto pos = m_transComp->GetPosition();
-		m_subPos = Vec3(cosf(m_rad - m_rotate) * m_len, 0, sinf(m_rad - m_rotate) * m_len);
-		Vec3 moveVec = Vec3(m_targetPos + m_subPos - pos);
-		moveVec.normalize();
-		pos += moveVec * delta * 3.0f;
-		pos.y = 1.0f;
-		m_transComp->SetPosition(pos);
+
+		if (pos.y < -100)
+		{
+			pos.y = m_playerPos.y;
+			m_velocity.y = 0;
+			m_transComp->SetPosition(pos);
+		}
 	}
 
 	void SubPlayer::SetAlive(bool isAlive)
 	{
 		SetUpdateActive(isAlive);
 		SetDrawActive(isAlive);
+
 	}
 	bool SubPlayer::GetAlive()
 	{
 		return GetUpdateActive() && GetDrawActive();
 	}
 
+	bool SubPlayer::Stay()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+
+		auto pos = m_transComp->GetPosition();
+		auto dis = m_playerPos - pos;
+		//auto distance = Vec3(m_targetPos).length() + 1.0f;
+		if (dis.length() > 14)
+		{
+			m_follow = true;
+		}
+		if (m_follow)
+		{
+			m_stay += delta;
+			if (m_stay > m_dif)
+			{
+				m_stay = 0;
+				m_follow = false;
+				return true;
+			}
+		}
+		return false;
+	}
+	bool SubPlayer::FollowPlayer()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+
+		Vec3 playerVec = Vec3(0);
+		if (!m_player.expired())
+		{
+			auto obj = m_player.lock();
+			if (obj)
+			{
+				auto player = dynamic_pointer_cast<Player>(obj);
+				if (player)
+				{
+					playerVec = player->GetMoveVelocity();
+				}
+			}
+		}
+
+		//auto pos = m_transComp->GetPosition();
+		//auto rotate = -m_rotate + XM_PIDIV2;
+		//auto subPos = Vec3(m_targetPos.x * cosf(rotate) - m_targetPos.z * sinf(rotate), 0, m_targetPos.x * sinf(rotate) + m_targetPos.z * cosf(rotate)) + m_playerPos;
+		//Vec3 moveVec = Vec3(subPos - pos);
+		//moveVec.normalize();
+		//float speed = playerVec.length() < 0.1f ? 2.0f : playerVec.length();
+		//pos += moveVec * delta * speed;
+		//pos.y = 1.0f;
+		//m_transComp->SetPosition(pos);
+
+		auto pos = m_transComp->GetPosition();
+		auto rotate = m_rotate + XM_PIDIV2;
+		auto subPos = Vec3(cosf(m_rad - rotate) * m_len, 0, sinf(m_rad - rotate) * m_len);
+		auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 7.5f;
+		Vec3 moveVec = Vec3(m_playerPos + subPos + playerBack - pos);
+		moveVec.y = 0;
+		moveVec.normalize();
+		m_velocity += moveVec * 0.5f;
+		auto y = m_velocity.y;
+		m_velocity.y = 0;
+		m_velocity.normalize();
+		// 重力
+		m_velocity.y = y - 9.8f * delta;
+		pos += m_velocity * delta * 8.0f;
+		//pos.y = m_playerPos.y;
+		m_transComp->SetPosition(pos);
+
+		// 回転処理
+		auto rad = atan2f(moveVec.x, moveVec.z) + XM_PI;
+		m_transComp->SetRotation(Vec3(0, rad, 0));
+
+
+		auto dis = m_playerPos + subPos + playerBack - pos;
+		if (dis.length() < 1.0f && playerVec.length() < 0.1f)
+		{
+			return true;
+		}
+
+
+		return false;
+	}
+
+	void SubPlayer::OnCollisionExcute(shared_ptr<GameObject>& Other)
+	{
+		auto otherTrans = Other->GetComponent<Transform>();
+		auto otherPos = otherTrans->GetPosition();
+		auto otherScale = otherTrans->GetScale();
+		auto pos = m_transComp->GetPosition();
+		auto scale = m_transComp->GetScale();
+		auto dis = pos - otherPos;
+		auto scaleSum = scale + otherScale;
+		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f)
+		{
+			m_velocity.y = 0;
+		}
+	}
+
+	shared_ptr<GameObject> SubPlayer::GetPlayer()
+	{
+		if (!m_player.expired())
+		{
+			auto player = m_player.lock();
+			if (player)
+			{
+				return player;
+			}
+		}
+		return nullptr;
+	}
+
+	void CharacterFormation::Finish()
+	{
+		m_isActive = false;
+		SetDrawActive(m_isActive);
+		SetUpdateActive(m_isActive);
+		auto player = m_player.lock();
+		if (player)
+		{
+			player->AddSubPlayer(m_characterNum);
+		}
+
+	}
 
 	void HammerFormation::OnCreate()
 	{
@@ -247,6 +643,8 @@ namespace basecross{
 		Vec3 scale = m_transComp->GetScale();
 		scale.y = 2.0f;
 		m_transComp->SetScale(scale);
+
+		m_characterNum = 20;
 	}
 
 	void HammerFormation::OnUpdate()
@@ -255,14 +653,15 @@ namespace basecross{
 		m_rotation.x += delta;
 		if (m_rotation.x > XM_PIDIV2)
 		{
-			m_isActive = false;
-			SetDrawActive(m_isActive);
-			SetUpdateActive(m_isActive);
-			auto player = m_player.lock();
-			if(player)
-			{
-				player->AddSubPlayer(20);
-			}
+			//m_isActive = false;
+			//SetDrawActive(m_isActive);
+			//SetUpdateActive(m_isActive);
+			//auto player = m_player.lock();
+			//if (player)
+			//{
+			//	player->AddSubPlayer(20);
+			//}
+			Finish();
 
 			GetStage()->AddGameObject<AttackCollisionObj>(m_transComp->GetPosition(), m_rotation.y);
 		}
@@ -275,13 +674,14 @@ namespace basecross{
 		auto player = m_player.lock();
 		if (player)
 		{
-			b = player->EraseSubPlayer(20);
+			b = player->EraseSubPlayer(m_characterNum);
 		}
 		if (!b)
 		{
 			return;
 		}
 		m_rotation = rotation;
+		m_rotation.y += XM_PIDIV2;
 		m_transComp->SetPosition(position);
 		m_transComp->SetRotation(m_rotation);
 		m_isActive = true;
@@ -298,9 +698,33 @@ namespace basecross{
 
 		m_transComp = GetComponent<Transform>();
 		Vec3 pos = m_transComp->GetPosition();
-		pos.y = 1;
+		pos.x = 1;
 		m_transComp->SetPosition(pos);
+		m_transComp->SetRotation(Vec3(XM_PIDIV2 / 3, 0, 0));
+		m_transComp->SetScale(Vec3(4.0f, 1.0f, 10.0f));
 		Vec3 scale = m_transComp->GetScale();
+
+		m_characterNum = 15;
+
+		auto col = AddComponent<CollisionObb>();
+		//col->SetMakedSize(0.5f);
+		col->SetDrawActive(true);
+		col->SetFixed(true);
+		AddTag(L"Cube");
+		// 箱形の当たり判定を作成
+		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
+		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
+
+		//JoltRigidBody::Settings rbSettings;
+		//rbSettings.shape = boxShape; // 共通の形状を使い回す
+		//rbSettings.motionType = JPH::EMotionType::Kinematic; // 物理演算で動く設定
+		//rbSettings.objectLayer = Layers::MOVING; // レイヤー 1 (例: MOVING)
+		//rbSettings.mass = 10.0f; // 重さ 10kg
+		//rbSettings.restitution = 0.5f; // 反発係数 0.5 (弾む)
+		//rbSettings.friction = 0.5f;
+		//m_rigidBody = AddComponent<JoltRigidBody>();
+		//m_rigidBody->Initialize(rbSettings);
+
 	}
 
 	void CubeFormation::OnUpdate()
@@ -309,24 +733,32 @@ namespace basecross{
 		m_time += delta;
 		if (m_time > 3.0f)
 		{
-			m_isActive = false;
-			SetDrawActive(m_isActive);
-			SetUpdateActive(m_isActive);
-			auto player = m_player.lock();
-			if (player)
-			{
-				player->AddSubPlayer(15);
-			}
+			//m_isActive = false;
+			//SetDrawActive(m_isActive);
+			//SetUpdateActive(m_isActive);
+			////GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
+			////RemoveComponent<JoltRigidBody>();
+			////m_rigidBody.reset();
+			//auto player = m_player.lock();
+			//if (player)
+			//{
+			//	player->AddSubPlayer(15);
+			//}
+			Finish();
 		}
 	}
 
 	void CubeFormation::Start(const Vec3& position, const Vec3& rotation)
 	{
+		if (m_isActive)
+		{
+			return;
+		}
 		bool b = true;
 		auto player = m_player.lock();
 		if (player)
 		{
-			b = player->EraseSubPlayer(15);
+			b = player->EraseSubPlayer(m_characterNum);
 		}
 		if (!b)
 		{
@@ -334,13 +766,196 @@ namespace basecross{
 		}
 		m_time = 0.0f;
 		m_rotation = rotation;
+		auto rot = rotation;
+		rot.x = XM_PIDIV2 / 3;
+		rot.y += -XM_PIDIV2;
+		auto pos = position;
+		pos.x += cosf(-m_rotation.y) * 5.0f;
+		pos.z += sinf(-m_rotation.y) * 5.0f;
+		pos.y += 1.5f;
+		m_transComp->SetPosition(pos);
+		m_transComp->SetRotation(rot);
+		m_isActive = true;
+		SetDrawActive(m_isActive);
+		SetUpdateActive(m_isActive);
+		//GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
+
+		// 箱形の当たり判定を再設定
+		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
+		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
+
+		//JoltRigidBody::Settings rbSettings;
+		//rbSettings.shape = boxShape; // 共通の形状を使い回す
+		//rbSettings.motionType = JPH::EMotionType::Kinematic; // 物理演算で動く設定
+		//rbSettings.objectLayer = Layers::MOVING; // レイヤー 1 (例: MOVING)
+		//rbSettings.mass = 10.0f; // 重さ 10kg
+		//rbSettings.restitution = 0.5f; // 反発係数 0.5 (弾む)
+		//rbSettings.friction = 0.5f;
+		//m_rigidBody = AddComponent<JoltRigidBody>();
+		//m_rigidBody->Initialize(rbSettings);
+
+	}
+
+	void SpearFormation::OnCreate()
+	{
+		// ドローコンポーネントを追加
+		auto draw = AddComponent<PNTStaticDraw>();
+		draw->SetMeshResource(L"DEFAULT_CUBE");
+		draw->SetDiffuse(Col4(0, 1, 0, 1));
+
+		m_transComp = GetComponent<Transform>();
+		Vec3 pos = m_transComp->GetPosition();
+		pos.y = 1;
+		m_transComp->SetPosition(pos);
+		Vec3 scale = m_transComp->GetScale();
+		scale.z = 2.0f;
+		m_transComp->SetScale(scale);
+
+		m_characterNum = 20;
+	}
+
+	void SpearFormation::OnUpdate()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+		m_position.x += delta * 10;
+		m_time += delta;
+		if (m_time > 0.2f)
+		{
+			Finish();
+			m_time = 0;
+			GetStage()->AddGameObject<AttackCollisionObj>(m_transComp->GetPosition(), m_rotation.y);
+		}
+		m_transComp->SetPosition(m_position);
+	}
+
+	void SpearFormation::Start(const Vec3& position, const Vec3& rotation)
+	{
+		bool b = true;
+		auto player = m_player.lock();
+		if (player)
+		{
+			b = player->EraseSubPlayer(m_characterNum);
+		}
+		if (!b)
+		{
+			return;
+		}
+		m_rotation = rotation;
+		m_rotation.y += XM_PIDIV2;
+		m_position = position;
 		m_transComp->SetPosition(position);
 		m_transComp->SetRotation(m_rotation);
 		m_isActive = true;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
+	}
+
+	void BridgeFormation::OnCreate()
+	{
+		// ドローコンポーネントを追加
+		auto draw = AddComponent<PNTStaticDraw>();
+		draw->SetMeshResource(L"DEFAULT_CUBE");
+		draw->SetDiffuse(Col4(0, 1, 0, 1));
+
+		m_transComp = GetComponent<Transform>();
+		Vec3 pos = m_transComp->GetPosition();
+		pos.x = 1;
+		m_transComp->SetPosition(pos);
+		//m_transComp->SetRotation(Vec3(XM_PIDIV2 / 3, 0, 0));
+		m_transComp->SetScale(Vec3(4.0f, 1.0f, 20.0f));
+		Vec3 scale = m_transComp->GetScale();
+
+		m_characterNum = 15;
+
+		auto col = AddComponent<CollisionObb>();
+		//col->SetMakedSize(0.5f);
+		col->SetDrawActive(true);
+		col->SetFixed(true);
+		// 箱形の当たり判定を作成
+		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
+		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
+
+		//JoltRigidBody::Settings rbSettings;
+		//rbSettings.shape = boxShape; // 共通の形状を使い回す
+		//rbSettings.motionType = JPH::EMotionType::Kinematic; // 物理演算で動く設定
+		//rbSettings.objectLayer = Layers::MOVING; // レイヤー 1 (例: MOVING)
+		//rbSettings.mass = 10.0f; // 重さ 10kg
+		//rbSettings.restitution = 0.5f; // 反発係数 0.5 (弾む)
+		//rbSettings.friction = 0.5f;
+		//m_rigidBody = AddComponent<JoltRigidBody>();
+		//m_rigidBody->Initialize(rbSettings);
 
 	}
+
+	void BridgeFormation::OnUpdate()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+		m_time += delta;
+		if (m_time > 3.0f)
+		{
+			//m_isActive = false;
+			//SetDrawActive(m_isActive);
+			//SetUpdateActive(m_isActive);
+			////GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
+			////RemoveComponent<JoltRigidBody>();
+			////m_rigidBody.reset();
+			//auto player = m_player.lock();
+			//if (player)
+			//{
+			//	player->AddSubPlayer(15);
+			//}
+			Finish();
+		}
+	}
+
+	void BridgeFormation::Start(const Vec3& position, const Vec3& rotation)
+	{
+		if (m_isActive)
+		{
+			return;
+		}
+		bool b = true;
+		auto player = m_player.lock();
+		if (player)
+		{
+			b = player->EraseSubPlayer(m_characterNum);
+		}
+		if (!b)
+		{
+			return;
+		}
+		m_time = 0.0f;
+		m_rotation = rotation;
+		auto rot = rotation;
+		//rot.x = XM_PIDIV2 / 3;
+		rot.y += -XM_PIDIV2;
+		auto pos = position;
+		pos.x += cosf(-m_rotation.y) * 10.5f;
+		pos.z += sinf(-m_rotation.y) * 10.5f;
+		pos.y -= 1.0f;
+		m_transComp->SetPosition(pos);
+		m_transComp->SetRotation(rot);
+		m_isActive = true;
+		SetDrawActive(m_isActive);
+		SetUpdateActive(m_isActive);
+		//GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
+
+		// 箱形の当たり判定を再設定
+		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
+		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
+
+		//JoltRigidBody::Settings rbSettings;
+		//rbSettings.shape = boxShape; // 共通の形状を使い回す
+		//rbSettings.motionType = JPH::EMotionType::Kinematic; // 物理演算で動く設定
+		//rbSettings.objectLayer = Layers::MOVING; // レイヤー 1 (例: MOVING)
+		//rbSettings.mass = 10.0f; // 重さ 10kg
+		//rbSettings.restitution = 0.5f; // 反発係数 0.5 (弾む)
+		//rbSettings.friction = 0.5f;
+		//m_rigidBody = AddComponent<JoltRigidBody>();
+		//m_rigidBody->Initialize(rbSettings);
+
+	}
+
 
 	void AttackCollisionObj::OnCreate()
 	{
@@ -363,6 +978,55 @@ namespace basecross{
 		{
 			GetStage()->RemoveGameObject<AttackCollisionObj>(GetThis<AttackCollisionObj>());
 		}
+	}
+
+	shared_ptr<SubPlayerStayState> SubPlayerStayState::Instance()
+	{
+		static shared_ptr<SubPlayerStayState> instance(new SubPlayerStayState);
+		return instance;
+	}
+
+	void SubPlayerStayState::Enter(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+	void SubPlayerStayState::Execute(const shared_ptr<SubPlayer>& obj)
+	{
+		if (obj->Stay())
+		{
+			obj->GetStateMachine()->ChangeState(SubPlayerFollowState::Instance());
+		}
+	}
+	void SubPlayerStayState::Exit(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+
+	shared_ptr<SubPlayerFollowState> SubPlayerFollowState::Instance()
+	{
+		static shared_ptr<SubPlayerFollowState> instance(new SubPlayerFollowState);
+		return instance;
+	}
+
+	void SubPlayerFollowState::Enter(const shared_ptr<SubPlayer>& obj)
+	{
+		auto gameObj = obj->GetPlayer();
+		auto player = dynamic_pointer_cast<Player>(gameObj);
+		if (player)
+		{
+			player->SetAllMove(true);
+		}
+	}
+	void SubPlayerFollowState::Execute(const shared_ptr<SubPlayer>& obj)
+	{
+		if (obj->FollowPlayer())
+		{
+			obj->GetStateMachine()->ChangeState(SubPlayerStayState::Instance());
+		}
+	}
+	void SubPlayerFollowState::Exit(const shared_ptr<SubPlayer>& obj)
+	{
+
 	}
 
 }

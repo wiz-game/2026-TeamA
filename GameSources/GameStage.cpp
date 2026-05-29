@@ -1,6 +1,6 @@
 /*!
 @file GameStage.cpp
-@brief ƒQ[ƒ€ƒXƒe[ƒWÀ‘Ì
+@brief ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -9,19 +9,18 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
-	//	ƒQ[ƒ€ƒXƒe[ƒWƒNƒ‰ƒXÀ‘Ì
+	//	ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒ©ã‚¹å®Ÿä½“
 	//--------------------------------------------------------------------------------------
 
-	//ƒrƒ…[‚Æƒ‰ƒCƒg‚Ìì¬
+	//ãƒ“ãƒ¥ãƒ¼ã¨ãƒ©ã‚¤ãƒˆã®ä½œæˆ
 	void GameStage::CreateViewLight() {
-		// ƒJƒƒ‰‚Ìİ’è
+		// ã‚«ãƒ¡ãƒ©ã®è¨­å®š
 		//auto camera = ObjectFactory::Create<Camera>();
 		//camera->SetEye(Vec3(0.0f, 8.0f, -8.0f));
 		//camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 
 		m_playerCameraView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
 		auto playerCamera = ObjectFactory::Create<PlayerCamera>();
-
 		auto camera = ObjectFactory::Create<Camera>();
 		camera->SetEye(Vec3(0.0f, 8.0f, -15.0f));
 		camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
@@ -29,41 +28,33 @@ namespace basecross {
 		m_playerCameraView->SetCamera(playerCamera);
 		SetView(m_playerCameraView);
 
-
-		//// ƒrƒ…[‚ÉƒJƒƒ‰‚ğİ’è
+		//// ãƒ“ãƒ¥ãƒ¼ã«ã‚«ãƒ¡ãƒ©ã‚’è¨­å®š
 		//auto view = CreateView<SingleView>();
 		//view->SetCamera(camera);
 
-		//ƒ}ƒ‹ƒ`ƒ‰ƒCƒg‚Ìì¬
+		//ãƒãƒ«ãƒãƒ©ã‚¤ãƒˆã®ä½œæˆ
 		auto light = CreateLight<MultiLight>();
-		light->SetDefaultLighting(); //ƒfƒtƒHƒ‹ƒg‚Ìƒ‰ƒCƒeƒBƒ“ƒO‚ğw’è
+		light->SetDefaultLighting(); //ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã‚’æŒ‡å®š
 	}
 
 	void GameStage::OnCreate() {
 		try {
 			auto& app = App::GetApp();
+			LoadTextures();
+			AddGameObject<SkyBox>();
 
-			// JoltPhysics‚ğ‰Šú‰»‚·‚é
+			// JoltPhysicsã‚’åˆæœŸåŒ–ã™ã‚‹
 			m_jphManger.Initialize();
-			m_mainPlayer = AddGameObject<Player>(); // ƒvƒŒƒCƒ„[ƒIƒuƒWƒFƒNƒg‚ğ’Ç‰Á
+			m_mainPlayer = AddGameObject<Player>(); // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿½åŠ 
 			SetSharedGameObject(L"Player", m_mainPlayer);
+			m_stageObj.push_back(m_mainPlayer);
 			m_mainPlayer->SetPosition(Vec3(0, 2, 0));
 			Vec3 center = m_mainPlayer->GetPosition();
 			Vec3 mainPlayerScale = m_mainPlayer->GetScale();
-			for (int i = 0; i < 10; i++)
-			{
-				auto player = AddGameObject<Player>(mainPlayerScale*0.5f);
-
-				float angle = (2.0f * XM_PI / 10) * i;   // 10‘Ì‚ğ‹Ï“™‚É”z’u
-				float radius =1.5f;                  // mainPlayer ‚©‚ç‚Ì‹——£
-
-				Vec3 offset = Vec3(cos(angle) * radius, 0.0f, sin(angle) * radius);
-				player->SetPosition(center + offset);
-				m_sabPlayer.push_back(player);
-			}			//ƒrƒ…[‚Æƒ‰ƒCƒg‚Ìì¬
+			//ãƒ“ãƒ¥ãƒ¼ã¨ãƒ©ã‚¤ãƒˆã®ä½œæˆ
 			CreateViewLight();
-
-
+			m_isActive = true;
+			option = AddGameObject<Option>(); //è¿½åŠ ã¯ã—ã¦ãŠããŒè¡¨ç¤ºã—ãªã„
 		}
 		catch (...) {
 			throw;
@@ -72,45 +63,34 @@ namespace basecross {
 
 	void GameStage::OnUpdate()
 	{
-		// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ğæ“¾
+		// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
 		auto& app = App::GetApp();
 		auto scene = App::GetApp()->GetScene<Scene>();
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
-		////ƒfƒoƒbƒN—p
+		//ãƒ‡ãƒãƒƒã‚¯ç”¨
 		wstringstream wss(L"");
 
-
-
-		//scene->SetDebugString(wss.str());
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		if (m_isActive)
 		{
-			RemoveGameObject<GameObject>(m_sabPlayer[0]);
-			m_sabPlayer.erase(m_sabPlayer.begin());
-
-			UpdateFormation();
+			// ã‚²ãƒ¼ãƒ ä¸­ï¼šSTARTãƒœã‚¿ãƒ³ã§ãƒãƒ¼ã‚ºé–‹å§‹
+			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
+			{
+				SetIsActive(false);       // é–¢æ•°ã‚’ä½¿ã£ã¦åœæ­¢ã•ã›ã‚‹
+				option->SetVisible(true); // ãƒ¡ãƒ‹ãƒ¥ãƒ¼è¡¨ç¤º
+			}
 		}
-
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
+		else
 		{
-			auto player = AddGameObject<Player>(Vec3(0.5f));
-			m_sabPlayer.push_back(player);
+			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
+			{
+				m_isActive = true;
+				option->SetVisible(false);
 
-			UpdateFormation(); 
+			}
+
+
 		}
-
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
-		{
-			wss<<L"ƒnƒ“ƒ}[" << endl;;
-			scene->SetDebugString(wss.str());
-		}
-
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
-		{
-			wss << L"ƒLƒ…[ƒu" << endl;;
-			scene->SetDebugString(wss.str());
-		}
-
 	}
 
 	void GameStage::OnUpdate2()
@@ -122,21 +102,23 @@ namespace basecross {
 	{
 	}
 
-	void GameStage::UpdateFormation()
+	void GameStage::LoadTextures()
 	{
-		if (m_sabPlayer.empty()) return;
+		auto& app = App::GetApp();
+		auto mediaPath = app->GetDataDirWString();
+		auto texPath = mediaPath + L"Textures\\";
 
-		Vec3 center = m_mainPlayer->GetPosition();
-		int count = m_sabPlayer.size();
-		float radius = 1.5f;
+		app->RegisterTexture(L"SkyBoxBelow", texPath + L"SkyBoxBelow.png");
+		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.png");
+		app->RegisterTexture(L"SkyBoxTop", texPath + L"SkyBoxTop.png");
+		app->RegisterTexture(L"000_000_000", texPath + L"000_000_000.bmp");
+		app->RegisterTexture(L"000_090_000", texPath + L"000_090_000.bmp");
+		app->RegisterTexture(L"000_180_000", texPath + L"000_180_000.bmp");
+		app->RegisterTexture(L"000_270_000", texPath + L"000_270_000.bmp");
+		app->RegisterTexture(L"090_000_000", texPath + L"090_000_000.bmp");
+		app->RegisterTexture(L"270_000_000", texPath + L"270_000_000.bmp");
 
-		for (int i = 0; i < count; i++)
-		{
-			float angle = (2.0f * XM_PI / count) * i;
-			Vec3 offset = Vec3(cos(angle) * radius, 0, sin(angle) * radius);
-
-			m_sabPlayer[i]->SetPosition(center + offset);
-		}
 	}
+
 }
 //end basecross

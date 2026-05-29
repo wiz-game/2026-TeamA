@@ -14,16 +14,26 @@
 // Manager
 #include "StageManager.h"
 
+#include "Option.h"
+
 #include "Character.h"
+#include "StageObject.h"
 #include "Player.h"
 #include "Ground.h"
 #include "PlayerCamera.h"
 #include "BrokenObjs.h"
 #include "Enemy.h"
-#include "Wall.h"
+#include "Block.h"
 #include "BreakWall.h"
 #include "Goal.h"
+#include "Sprite.h"
+#include "SkyBox.h"
+#include "Board.h"
+#include "TurningPoint.h"
+
 
 #include "GameStage.h"
+#include "GameClearStage.h"
+#include "GameOverStage.h"
 
 

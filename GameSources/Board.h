@@ -4,14 +4,14 @@
 
 namespace basecross
 {
-	class Goal : public StageObject
+	class Board : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
 
-		void OnCollisionEnter(shared_ptr<GameObject>& other)override;
+		//void OnCollisionEnter(shared_ptr<GameObject>& other)override;
 
 	public:
-		Goal(const shared_ptr<Stage>& stage) :
+		Board(const shared_ptr<Stage>& stage) :
 			StageObject(stage)
 		{
 
@@ -20,6 +20,6 @@ namespace basecross
 		void OnCreate()override;
 		void OnUpdate()override;
 
-
+		void SetCollar(Col4 collar);
 	};
 }
