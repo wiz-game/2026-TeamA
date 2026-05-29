@@ -108,6 +108,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Board.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)FormationUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -200,5 +201,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Board.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)FormationUI.cpp" />
   </ItemGroup>
 </Project>

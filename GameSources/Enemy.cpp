@@ -3,8 +3,6 @@
 
 namespace basecross
 {
-<<<<<<< Updated upstream
-=======
 	// Enemyの徘徊中ステート
 	shared_ptr<WonderingState> WonderingState::Instance() 
 	{
@@ -47,8 +45,6 @@ namespace basecross
 	}
 
 
->>>>>>> Stashed changes
-
 	void Enemy::OnCreate()
 	{
 		InitTransComp();
@@ -58,12 +54,9 @@ namespace basecross
 
 		auto col = AddComponent<CollisionObb>();
 
-<<<<<<< Updated upstream
-=======
 		m_stateMachine.reset(new StateMachine<Enemy>(GetThis<Enemy>())); // ステートマシンの初期化
 		m_stateMachine->ChangeState(WonderingState::Instance()); //最初に徘徊中のステートを設定
 
->>>>>>> Stashed changes
 		m_player = GetStage()->GetSharedGameObject<Player>(L"Player");
 
 		damage = 2; //ダメージ値
@@ -170,9 +163,8 @@ namespace basecross
 
 			BrokenObjs::OnUpdate();
 
-<<<<<<< Updated upstream
 		}
-=======
+
 		diff = playerPos - enemyPos;
 		distance = diff.length();
 
@@ -232,7 +224,6 @@ namespace basecross
 		//}
 
 
->>>>>>> Stashed changes
 	}
 
 	void Enemy::SetValue()
