@@ -3,6 +3,51 @@
 
 namespace basecross
 {
+<<<<<<< Updated upstream
+=======
+	// Enemyの徘徊中ステート
+	shared_ptr<WonderingState> WonderingState::Instance() 
+	{
+		static shared_ptr<WonderingState> instance(new WonderingState);
+		return instance;
+	}
+	void WonderingState::Enter(const shared_ptr<Enemy>& Obj) 
+	{
+		//
+	}
+	void WonderingState::Execute(const shared_ptr<Enemy>& Obj) 
+	{
+		// 徘徊中の毎フレーム処理
+		Obj->Wondering();
+	}
+	void WonderingState::Exit(const shared_ptr<Enemy>& Obj) 
+	{
+		// wonderingから抜けるときの処理
+
+	}
+
+	// EnemyがPlayerを追跡中ステート
+	shared_ptr<ChasingState> ChasingState::Instance() 
+	{
+		static shared_ptr<ChasingState> instance(new ChasingState);
+		return instance;
+	}
+	void ChasingState::Enter(const shared_ptr<Enemy>& Obj) 
+	{
+		
+	}
+	void ChasingState::Execute(const shared_ptr<Enemy>& Obj) 
+	{
+		// 追跡中のマイフレーム処理
+		Obj->Chasing();
+	}
+	void ChasingState::Exit(const shared_ptr<Enemy>& Obj) 
+	{
+		
+	}
+
+
+>>>>>>> Stashed changes
 
 	void Enemy::OnCreate()
 	{
@@ -13,15 +58,21 @@ namespace basecross
 
 		auto col = AddComponent<CollisionObb>();
 
+<<<<<<< Updated upstream
+=======
+		m_stateMachine.reset(new StateMachine<Enemy>(GetThis<Enemy>())); // ステートマシンの初期化
+		m_stateMachine->ChangeState(WonderingState::Instance()); //最初に徘徊中のステートを設定
+
+>>>>>>> Stashed changes
 		m_player = GetStage()->GetSharedGameObject<Player>(L"Player");
 
-		damage = 2;
+		damage = 2; //ダメージ値
 
 		timer = 0.0f;
 
 		isHit = false;
 		BrokenObjs::OnCreate();
-		BrokenObjs::SetHP(hp);
+		BrokenObjs::SetHP(hp); //hpを設定
 	}
 
 	void Enemy::InitTransComp()
@@ -119,7 +170,69 @@ namespace basecross
 
 			BrokenObjs::OnUpdate();
 
+<<<<<<< Updated upstream
 		}
+=======
+		diff = playerPos - enemyPos;
+		distance = diff.length();
+
+		if (distance < followRange && m_stateMachine->GetCurrentState() != ChasingState::Instance())
+		{
+			m_stateMachine->ChangeState(ChasingState::Instance()); //player発見時に追跡中のステートに移行
+		}
+		else if(distance >= followRange && m_stateMachine->GetCurrentState() != WonderingState::Instance())
+		{
+			m_stateMachine->ChangeState(WonderingState::Instance()); //追跡範囲から出たら徘徊中ステートに戻る
+		}
+
+	}
+
+	void Enemy::Wondering()
+	{
+		float speed = 1.0f; //速度
+		timer += elapsedTime;
+
+		if (timer >= 0.0f)
+		{
+			SetValue();
+			dir = Vec3(rx, 0, rz).normalize();
+			timer = -1.0f + (float)rand() / RAND_MAX * -4.0f;
+		}
+
+		auto ground = GetStage()->GetSharedGameObject<Ground>(L"Ground");
+		Vec3 groundPos = ground->GetComponent<Transform>()->GetPosition();
+
+		if (enemyPos.x < groundPos.x)
+		{
+			enemyPos += dir * elapsedTime * speed;
+			m_transComp->SetPosition(enemyPos);
+		}
+		else if (enemyPos.z < groundPos.z)
+		{
+			enemyPos += dir * elapsedTime * speed;
+			m_transComp->SetPosition(enemyPos);
+		}
+	}
+
+	void Enemy::Chasing()
+	{
+		//Vec3 diff = playerPos - enemyPos;
+		//float distance = diff.length();
+
+		//float followRange = 5.0f; //追尾を開始する距離
+		//float followSpeed = 1.5f;//追尾時の速度
+
+		//if (distance < followRange)//一定距離以内
+		//{
+			dir = diff.normalize();
+
+			enemyPos += dir * elapsedTime * followSpeed;
+			m_transComp->SetPosition(enemyPos);
+
+		//}
+
+
+>>>>>>> Stashed changes
 	}
 
 	void Enemy::SetValue()
@@ -136,7 +249,7 @@ namespace basecross
 		if (other->FindTag(L"Attack"))
 		{
 			isHit = true;
-			BrokenObjs::SetDamage(damage);
+			BrokenObjs::SetDamage(damage); //ダメージを設定
 			BrokenObjs::takeDamage();
 		}
 	}
