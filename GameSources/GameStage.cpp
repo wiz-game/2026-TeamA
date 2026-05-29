@@ -1,6 +1,6 @@
 /*!
 @file GameStage.cpp
-@brief ƒQ[ƒ€ƒXƒe[ƒWÀ‘Ì
+@brief ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -9,12 +9,12 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
-	//	ƒQ[ƒ€ƒXƒe[ƒWƒNƒ‰ƒXÀ‘Ì
+	//	ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒ©ã‚¹å®Ÿä½“
 	//--------------------------------------------------------------------------------------
 
-	//ƒrƒ…[‚Æƒ‰ƒCƒg‚Ìì¬
+	//ãƒ“ãƒ¥ãƒ¼ã¨ãƒ©ã‚¤ãƒˆã®ä½œæˆ
 	void GameStage::CreateViewLight() {
-		// ƒJƒƒ‰‚Ìİ’è
+		// ã‚«ãƒ¡ãƒ©ã®è¨­å®š
 		//auto camera = ObjectFactory::Create<Camera>();
 		//camera->SetEye(Vec3(0.0f, 8.0f, -8.0f));
 		//camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
@@ -28,13 +28,13 @@ namespace basecross {
 		m_playerCameraView->SetCamera(playerCamera);
 		SetView(m_playerCameraView);
 
-		//// ƒrƒ…[‚ÉƒJƒƒ‰‚ğİ’è
+		//// ãƒ“ãƒ¥ãƒ¼ã«ã‚«ãƒ¡ãƒ©ã‚’è¨­å®š
 		//auto view = CreateView<SingleView>();
 		//view->SetCamera(camera);
 
-		//ƒ}ƒ‹ƒ`ƒ‰ƒCƒg‚Ìì¬
+		//ãƒãƒ«ãƒãƒ©ã‚¤ãƒˆã®ä½œæˆ
 		auto light = CreateLight<MultiLight>();
-		light->SetDefaultLighting(); //ƒfƒtƒHƒ‹ƒg‚Ìƒ‰ƒCƒeƒBƒ“ƒO‚ğw’è
+		light->SetDefaultLighting(); //ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã‚’æŒ‡å®š
 	}
 
 	void GameStage::OnCreate() {
@@ -43,20 +43,18 @@ namespace basecross {
 			LoadTextures();
 			AddGameObject<SkyBox>();
 
-			// JoltPhysics‚ğ‰Šú‰»‚·‚é
+			// JoltPhysicsã‚’åˆæœŸåŒ–ã™ã‚‹
 			m_jphManger.Initialize();
-			m_mainPlayer = AddGameObject<Player>(); // ƒvƒŒƒCƒ„[ƒIƒuƒWƒFƒNƒg‚ğ’Ç‰Á
+			m_mainPlayer = AddGameObject<Player>(); // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿½åŠ 
 			SetSharedGameObject(L"Player", m_mainPlayer);
 			m_stageObj.push_back(m_mainPlayer);
 			m_mainPlayer->SetPosition(Vec3(0, 2, 0));
 			Vec3 center = m_mainPlayer->GetPosition();
 			Vec3 mainPlayerScale = m_mainPlayer->GetScale();
-			//ƒrƒ…[‚Æƒ‰ƒCƒg‚Ìì¬
+			//ãƒ“ãƒ¥ãƒ¼ã¨ãƒ©ã‚¤ãƒˆã®ä½œæˆ
 			CreateViewLight();
-
 			m_isActive = true;
-			option = AddGameObject<Option>(); //’Ç‰Á‚Í‚µ‚Ä‚¨‚­‚ª•\¦‚µ‚È‚¢
-
+			option = AddGameObject<Option>(); //è¿½åŠ ã¯ã—ã¦ãŠããŒè¡¨ç¤ºã—ãªã„
 		}
 		catch (...) {
 			throw;
@@ -65,21 +63,21 @@ namespace basecross {
 
 	void GameStage::OnUpdate()
 	{
-		// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ğæ“¾
+		// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
 		auto& app = App::GetApp();
 		auto scene = App::GetApp()->GetScene<Scene>();
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
-		//ƒfƒoƒbƒN—p
+		//ãƒ‡ãƒãƒƒã‚¯ç”¨
 		wstringstream wss(L"");
 
 		if (m_isActive)
 		{
-			// ƒQ[ƒ€’†FSTARTƒ{ƒ^ƒ“‚Åƒ|[ƒYŠJn
+			// ã‚²ãƒ¼ãƒ ä¸­ï¼šSTARTãƒœã‚¿ãƒ³ã§ãƒãƒ¼ã‚ºé–‹å§‹
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
 			{
-				SetIsActive(false);       // ŠÖ”‚ğg‚Á‚Ä’â~‚³‚¹‚é
-				option->SetVisible(true); // ƒƒjƒ…[•\¦
+				SetIsActive(false);       // é–¢æ•°ã‚’ä½¿ã£ã¦åœæ­¢ã•ã›ã‚‹
+				option->SetVisible(true); // ãƒ¡ãƒ‹ãƒ¥ãƒ¼è¡¨ç¤º
 			}
 		}
 		else
