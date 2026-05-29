@@ -175,16 +175,6 @@ namespace basecross {
 		Vec3 m_scale;    // プレイヤーのスケーリング
 		Vec3 m_velocity; // プレイヤーの移動ベクトル
 
-		//const static int MAX_CHARACTER_NUM = 150;
-		//vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
-		//shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
-		//shared_ptr<GameObject> m_cube; // キューブのオブジェクト
-		//shared_ptr<GameObject> m_formation[4]; // 隊列のオブジェクト
-		//Vec3 m_characterPositions[MAX_CHARACTER_NUM]; // 
-		//int m_activeNum; // 
-		//bool m_allMove; // すべての群れを動かすためのフラグ
-		//int m_formationNumber;
-
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
 		Vec3 m_desiredVelocity;
@@ -196,7 +186,6 @@ namespace basecross {
 
 		void InitializeCharacter();
 		void UpdateCharacter(float deltaTime);
-		//void AllCharacterMove();
 
 	public:
 		// ステージを引数にしたコンストラクタ【必須】
@@ -205,9 +194,6 @@ namespace basecross {
 			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(1.0f)     // プレイヤーの初期スケーリングを設定
-			//m_activeNum(0),     // 
-			//m_allMove(false)
-			//m_formationNumber(0)
 		{
 		}
 		Player(const std::shared_ptr<Stage>& stage, Vec3 scale) :
@@ -215,9 +201,6 @@ namespace basecross {
 			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
 			m_scale(scale)    // プレイヤーの初期スケーリングを設定
-			//m_activeNum(0),     // 
-			//m_allMove(false)
-			//m_formationNumber(0)
 		{
 		}
 
@@ -233,12 +216,8 @@ namespace basecross {
 		void SetScale(const Vec3& scale) { m_scale = scale; }
 		Vec3 GetMoveVelocity() { return m_desiredVelocity; }
 
-		//void SetAllMove(bool allMove) { m_allMove = allMove; }
-		//void AddSubPlayer(int num);
-		//bool EraseSubPlayer(int num);
 		PlayerTrackManager GetTrackManager() const { return m_trackMng; }
 		SubPlayerManager GetSunbPlayerManager() const { return m_subPlayerMng; }
-		//vector<shared_ptr<GameObject>> GetActiveSubPlayer();
 
 
 		void OnCollisionEnter(const shared_ptr<GameObject>& other);
@@ -350,6 +329,18 @@ namespace basecross {
 		SubPlayerFollowState() {}
 
 		static shared_ptr<SubPlayerFollowState> Instance();
+		void Enter(const shared_ptr<SubPlayer>& obj) override;
+		void Execute(const shared_ptr<SubPlayer>& obj) override;
+		void Exit(const shared_ptr<SubPlayer>& obj) override;
+
+	};
+
+	class SubPlayerMoveToTargetPositionState : public ObjState<SubPlayer>
+	{
+	public:
+		SubPlayerMoveToTargetPositionState() {}
+
+		static shared_ptr<SubPlayerMoveToTargetPositionState> Instance();
 		void Enter(const shared_ptr<SubPlayer>& obj) override;
 		void Execute(const shared_ptr<SubPlayer>& obj) override;
 		void Exit(const shared_ptr<SubPlayer>& obj) override;

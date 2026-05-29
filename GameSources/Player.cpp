@@ -241,32 +241,8 @@ namespace basecross {
 		//AddComponent<Gravity>();
 
 		// 群れのキャラクターの生成
-		//for (int i = 0; i < MAX_CHARACTER_NUM; i++)
-		//{
-		//	auto subPlayer = GetStage()->AddGameObject<SubPlayer>();
-		//	subPlayer->SetAlive(false);
-		//	subPlayer->SetPlayer(GetThis<GameObject>());
-		//	m_subPlayers.push_back(subPlayer);
-		//}
-		//AddSubPlayer(30);
 		m_subPlayerMng.Init(GetStage(), GetThis<GameObject>());
 		m_subPlayerMng.Add(50, m_position);
-
-		//m_formation[0] = GetStage()->AddGameObject<HammerFormation>();
-		//m_formation[1] = GetStage()->AddGameObject<CubeFormation>();
-		//m_formation[2] = GetStage()->AddGameObject<SpearFormation>();
-		//m_formation[3] = GetStage()->AddGameObject<BridgeFormation>();
-
-		//for (int i = 0; i < 4; i++)
-		//{
-		//	auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[i]);
-		//	if (formation)
-		//	{
-		//		formation->SetUpdateActive(false);
-		//		formation->SetDrawActive(false);
-		//		formation->SetPlayer(GetThis<Player>());
-		//	}
-		//}
 
 		m_formationMng.Init(GetStage(), GetThis<Player>());
 
@@ -338,19 +314,6 @@ namespace basecross {
 		GetStage()->GetCollisionManager()->SetRootAABB(aabb);
 
 		// 群れに移動用の座標を送る
-		//for (auto& obj : m_subPlayers)
-		//{
-		//	auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-		//	if (subPlayer)
-		//	{
-		//		if (subPlayer->GetAlive())
-		//		{
-		//			//subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
-		//			subPlayer->SetPlayerPos(m_position);
-		//			//subPlayer->SetRotate(m_rotation.y);
-		//		}
-		//	}
-		//}
 		m_subPlayerMng.SetPlayerPos(m_position);
 
 		// 群れの移動を管理
@@ -433,79 +396,6 @@ namespace basecross {
 		app->GetScene<Scene>()->SetDebugString(ss.str());
 	}
 
-	//void Player::AddSubPlayer(int num)
-	//{
-	//	for (auto& obj : m_subPlayers)
-	//	{
-	//		if (num <= 0)
-	//		{
-	//			break;
-	//		}
-	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-	//		if (!subPlayer->GetAlive())
-	//		{
-	//			subPlayer->SetAlive(true);
-	//			int x = -rand() % 9 + 5;
-	//			int z = -rand() % 9 + 5;
-	//			Vec3 v = { (float)x, 0, (float)z };
-	//			subPlayer->SetPosition(v + m_position);
-	//			//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
-	//			m_activeNum++;
-	//			num--;
-	//		}
-	//	}
-	//}
-
-	//bool Player::EraseSubPlayer(int num)
-	//{
-	//	int rest = 0;
-	//	for (auto& obj : m_subPlayers)
-	//	{
-	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-	//		if (subPlayer->GetAlive())
-	//		{
-	//			rest++;
-	//		}
-	//	}
-	//	if (rest < num)
-	//	{
-	//		return false;
-	//	}
-	//	for (auto& obj : m_subPlayers)
-	//	{
-	//		if (num <= 0)
-	//		{
-	//			break;
-	//		}
-	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-	//		if (subPlayer->GetAlive())
-	//		{
-	//			subPlayer->SetAlive(false);
-	//			m_activeNum--;
-	//			num--;
-	//		}
-	//	}
-
-	//	return true;
-	//}
-
-	//vector<shared_ptr<GameObject>> Player::GetActiveSubPlayer()
-	//{
-	//	vector<shared_ptr<GameObject>> objs;
-	//	for (auto& obj : m_subPlayers)
-	//	{
-	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-	//		if (subPlayer)
-	//		{
-	//			if (subPlayer->GetAlive())
-	//			{
-	//				objs.push_back(obj);
-	//			}
-	//		}
-	//	}
-
-	//	return objs;
-	//}
 
 	void Player::OnCollisionEnter(const shared_ptr<GameObject>& other)
 	{
@@ -649,18 +539,6 @@ namespace basecross {
 
 	}
 
-	//void Player::AllCharacterMove()
-	//{
-	//	for (auto& obj : m_subPlayers)
-	//	{
-	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-	//		if (subPlayer->GetAlive())
-	//		{
-	//			subPlayer->SetFollow(true);
-	//		}
-	//	}
-
-	//}
 
 	// 群れのキャラクターの初期化
 	void SubPlayer::OnCreate()
@@ -1445,6 +1323,25 @@ namespace basecross {
 		}
 	}
 	void SubPlayerFollowState::Exit(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+
+	shared_ptr<SubPlayerMoveToTargetPositionState> SubPlayerMoveToTargetPositionState::Instance()
+	{
+		static shared_ptr<SubPlayerMoveToTargetPositionState> instance(new SubPlayerMoveToTargetPositionState);
+		return instance;
+	}
+
+	void SubPlayerMoveToTargetPositionState::Enter(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+	void SubPlayerMoveToTargetPositionState::Execute(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+	void SubPlayerMoveToTargetPositionState::Exit(const shared_ptr<SubPlayer>& obj)
 	{
 
 	}
