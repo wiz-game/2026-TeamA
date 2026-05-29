@@ -57,6 +57,7 @@ namespace basecross {
 			m_isActive = true;
 			AddGameObject<FormationUI>();
 			option = AddGameObject<Option>(); //オプションを追加しておくが、表示はしない
+			SetSharedGameObject(L"Option", option);
 
 			//StageBGM
 			auto XAPtr = App::GetApp()->GetXAudio2Manager();

@@ -125,7 +125,7 @@ namespace basecross
 				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 				{			
 					stage->AddGameObject<SoundTest>();
-					GetThis<Option>()->SetDrawActive(false);
+					stage->RemoveGameObject<Option>(GetThis<Option>());
 					//stage->RemoveGameObject<Option>(GetThis<Option>());
 				}
 				break;
@@ -230,5 +230,12 @@ namespace basecross
 			break;
 		}
 		m_prevLStick = LStick;
+
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		{
+			auto option = stage->GetSharedGameObject<Option>(L"Option");
+			option->SetUpdateActive(true);
+			
+		}
 	}
 }
