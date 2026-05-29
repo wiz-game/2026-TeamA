@@ -1,6 +1,6 @@
 /*!
 @file Foo.cpp
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚ÇÀ‘Ì
+@brief ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãªã©å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -14,32 +14,32 @@ namespace basecross
 	{
 	}
 
-	// ƒVƒ“ƒOƒ‹ƒgƒ“\’z
+	// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³æ§‹ç¯‰
 	unique_ptr<StageManager, StageManager::StageManagerDeleter>& StageManager::CreateStageManager()
 	{
 		if (!m_StageManager)
 		{
-			//©•ª©g‚Ì\’z
+			//è‡ªåˆ†è‡ªèº«ã®æ§‹ç¯‰
 			m_StageManager.reset(new StageManager());
-			// ‰Šú‰»
+			// åˆæœŸåŒ–
 			m_StageManager->Initialize();
 		}
 		return m_StageManager;
 	}
 
-	// ƒVƒ“ƒOƒ‹ƒgƒ“æ“¾
+	// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³å–å¾—
 	unique_ptr<StageManager, StageManager::StageManagerDeleter>& StageManager::GetStageManager()
 	{
 		try
 		{
 			if (m_StageManager.get() == 0)
 			{
-				throw BaseException
-				(
-					L"StageManager‚ª‚Ü‚¾ì¬‚³‚ê‚Ä‚Ü‚¹‚ñ",
-					L"if (m_StageManager.get() == 0)",
-					L"StageManager::GetStageManager()"
-				);
+				//throw BaseException
+				//(
+				//	L"StageManagerãŒã¾ã ä½œæˆã•ã‚Œã¦ã¾ã›ã‚“",
+				//	L"if (m_StageManager.get() == 0)",
+				//	L"StageManager::GetStageManager()"
+				//);
 			}
 			return m_StageManager;
 		}
@@ -49,37 +49,37 @@ namespace basecross
 		}
 	}
 
-	// ƒVƒ“ƒOƒ‹ƒgƒ“”jŠü
+	// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ç ´æ£„
 	void StageManager::DeleteStageManager()
 	{
 		if (m_StageManager)
 		{
-			// íœˆ—
+			// å‰Šé™¤å‡¦ç†
 			m_StageManager->Discard();
-			// ©•ª©g‚Ì”jŠü
+			// è‡ªåˆ†è‡ªèº«ã®ç ´æ£„
 			m_StageManager.reset();
 		}
 	}
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void StageManager::Initialize()
 	{
 
 	}
 
-	// XV
+	// æ›´æ–°
 	void StageManager::Update()
 	{
 
 	}
 
-	// ”jŠü
+	// ç ´æ£„
 	void StageManager::Discard()
 	{
 
 	}
 
-	// CSV ƒtƒ@ƒCƒ‹‚©‚çƒXƒe[ƒWƒf[ƒ^‚ğ“Ç‚İ‚Ş
+	// CSV ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€
 	void StageManager::LoadStageFromCSV(const std::wstring& filePath)
 	{
 		auto& app = App::GetApp();
@@ -87,7 +87,7 @@ namespace basecross
 		wstring levelPath = path + L"Levels/";
 		wstring wstrPath = levelPath + filePath;
 
-		// wstring ¨ string ‚É•ÏŠ·
+		// wstring â†’ string ã«å¤‰æ›
 		std::string strPath(wstrPath.begin(), wstrPath.end());
 
 		try
@@ -95,19 +95,19 @@ namespace basecross
 			ifstream file(strPath);
 			if (!file.is_open())
 			{
-				throw BaseException(
-					L"CSVƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚Ü‚¹‚ñ‚Å‚µ‚½",
-					L"ifstream file(strPath); if (!file.is_open())",
-					L"StageManager::LoadStageFromCSV()"
-				);
+				//throw BaseException(
+				//	L"CSVãƒ•ã‚¡ã‚¤ãƒ«ãŒé–‹ã‘ã¾ã›ã‚“ã§ã—ãŸ",
+				//	L"ifstream file(strPath); if (!file.is_open())",
+				//	L"StageManager::LoadStageFromCSV()"
+				//);
 			}
 
 			string line;
 
-			// ƒwƒbƒ_[‚ğƒXƒLƒbƒv
+			// ãƒ˜ãƒƒãƒ€ãƒ¼ã‚’ã‚¹ã‚­ãƒƒãƒ—
 			getline(file, line);
 
-			// –{‘Ì‚ğ“Ç‚Ş
+			// æœ¬ä½“ã‚’èª­ã‚€
 			while (getline(file, line))
 			{
 				ParseCSVLine(line);
@@ -121,7 +121,7 @@ namespace basecross
 		}
 	}
 
-	// CSV‚Ì1s‚ğ‰ğÍ‚·‚é
+	// CSVã®1è¡Œã‚’è§£æã™ã‚‹
 	void StageManager::ParseCSVLine(const std::string& line)
 	{
 		try
@@ -147,11 +147,11 @@ namespace basecross
 			}
 			else
 			{
-				throw BaseException(
-					L"CSV‚Ìs‚ÌŒ`®‚ª•s³‚Å‚·",
-					L"ParseCSVLine ‚Ìƒp[ƒX¸”s",
-					L"StageManager::ParseCSVLine()"
-				);
+				//throw BaseException(
+				//	L"CSVã®è¡Œã®å½¢å¼ãŒä¸æ­£ã§ã™",
+				//	L"ParseCSVLine ã®ãƒ‘ãƒ¼ã‚¹å¤±æ•—",
+				//	L"StageManager::ParseCSVLine()"
+				//);
 			}
 		}
 		catch (...)
@@ -160,7 +160,7 @@ namespace basecross
 		}
 	}
 
-	// CSV‚Ìî•ñ‚©‚çƒXƒe[ƒWƒIƒuƒWƒFƒNƒg‚ğ¶¬‚·‚é
+	// CSVã®æƒ…å ±ã‹ã‚‰ã‚¹ãƒ†ãƒ¼ã‚¸ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆã™ã‚‹
 	void StageManager::CreateObjectFromCSV(const std::wstring& name, const Vec3& pos, const Vec3& rot, const Vec3& scale)
 	{
 		try
@@ -168,24 +168,24 @@ namespace basecross
 			auto scene = App::GetApp()->GetScene<Scene>();
 			if (!scene)
 			{
-				throw BaseException(
-					L"Scene ‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ",
-					L"auto scene = App::GetApp()->GetScene<Scene>()",
-					L"StageManager::CreateObjectFromCSV()"
-				);
+				//throw BaseException(
+				//	L"Scene ãŒå–å¾—ã§ãã¾ã›ã‚“",
+				//	L"auto scene = App::GetApp()->GetScene<Scene>()",
+				//	L"StageManager::CreateObjectFromCSV()"
+				//);
 			}
 
 			auto stage = scene->GetActiveTypeStage<GameStage>();
 			if (!stage)
 			{
-				throw BaseException(
-					L"ƒAƒNƒeƒBƒu‚ÈƒXƒe[ƒW‚ª‚ ‚è‚Ü‚¹‚ñ",
-					L"scene->GetActiveTypeStage<GameStage>()",
-					L"StageManager::CreateObjectFromCSV()"
-				);
+				//throw BaseException(
+				//	L"ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªã‚¹ãƒ†ãƒ¼ã‚¸ãŒã‚ã‚Šã¾ã›ã‚“",
+				//	L"scene->GetActiveTypeStage<GameStage>()",
+				//	L"StageManager::CreateObjectFromCSV()"
+				//);
 			}
 
-			// --- ƒIƒuƒWƒFƒNƒg¶¬ ---
+			// --- ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ ---
 			if (name == L"Goal")
 			{
 				auto goal = stage->AddGameObject<Goal>();
@@ -203,14 +203,20 @@ namespace basecross
 				floor->SetScale(scale);
 				return;
 			}
-			else if (name == L"Scaffold")
+			else if (name == L"Foothold")
 			{
-				auto Scaffold = stage->AddGameObject<Block>();
-				Scaffold->SetPosition(pos);
-				Scaffold->SetRotation(rot);
-				Scaffold->SetScale(scale);
-				Scaffold->SetCollar(Col4(0.0f, 0.0f, 0.0f, 1.0f));
-				return;
+
+			}
+			else if(name==L"Slope")
+			{
+
+			}
+			else if(name==L"Soil")
+			{
+
+			}
+			else if(name==L"Fence")
+			{
 
 			}
 			else if (name == L"Board")
@@ -240,25 +246,50 @@ namespace basecross
 			{
 
 			}
+			else if (name == L"Shrub")
+			{
+
+			}
 			else if(name==L"Stone")
 			{
 
 			}
-			else if(name==L"M_Mushroom")
+			else if(name==L"Mushroom")
 			{
 
 			}
-			else if (name == L"GameObject"|| name == L"Stage1_1")
+			else if (name == L"PoisonMushroom")
+			{
+
+			}
+			else if (name == L"LongMushroom")
+			{
+
+			}
+			else if (name == L"PoisonLongMushroom")
+			{
+
+			}
+			else if (name == L"Board")
+			{
+				auto board = stage->AddGameObject<Wall>();
+				board->SetPosition(pos);
+				board->SetRotation(rot);
+				board->SetScale(scale);
+				return;
+
+			}
+			else if (name == L"GameObject")
 			{
 				return;
 			}
 			else
 			{
-				throw BaseException(
-					L"CSV‚ÌƒIƒuƒWƒFƒNƒg–¼‚ª•s³‚Å‚·",
-					L"•s–¾‚ÈƒIƒuƒWƒFƒNƒg–¼: " + name,
-					L"StageManager::CreateObjectFromCSV()"
-				);
+				//throw BaseException(
+				//	L"CSVã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåãŒä¸æ­£ã§ã™",
+				//	L"ä¸æ˜ãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå: " + name,
+				//	L"StageManager::CreateObjectFromCSV()"
+				//);
 			}
 		}
 		catch (...)

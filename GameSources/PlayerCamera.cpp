@@ -35,17 +35,6 @@ namespace basecross
 		auto playerTrans = player->GetComponent<Transform>();
 		Vec3 playerPos = playerTrans->GetPosition();
 
-		//bool isOK = playerPos.x >= 10.0f ? true : false; // プレイヤーがこの位置に来たら
-
-		//if(!isOK)
-		//{
-		//	SetCameraToPlayerPos();
-		//}
-		//else if(isOK)
-		//{
-		//	//ChangeAngle();
-		//}
-
 		SetCameraToPlayerPos();
 
 		// アプリケーションオブジェクトを取得
@@ -60,18 +49,20 @@ namespace basecross
 		// 右スティックの値取得
 		Vec2 RStick(pad.fThumbRX, pad.fThumbRY);
 
+		if (!gameStage->GetIsActive()) return; //ポーズ中は動作をしない
+
 		switch (m_cameraAngleState)
 		{
 		case Center:
 			if (m_prevRStick.x <= 0.25f && RStick.x > 0.25f) // 通常時に右に倒した場合
 			{
 				//m_changeAngle = true;
-				m_offsetYaw = 40.0f; // 右に向く角度を決める
+				m_offsetYaw = 45.0f; // 右に向く角度を決める
 				SetCameraAngleState(Right);
 			}
 			if (m_prevRStick.x >= -0.25f && RStick.x < -0.25f) //通常時に左に倒した場合
 			{
-				m_offsetYaw = -40.0f;
+				m_offsetYaw = -45.0f;
 				SetCameraAngleState(Left);
 			}
 			break;
@@ -110,9 +101,9 @@ namespace basecross
 		if (!player) return;
 		auto playerTrans = player->GetComponent<Transform>();
 		Vec3 playerPos = playerTrans->GetPosition();
-		Vec3 up = Vec3(0, 1, -0.5);
+		Vec3 up = Vec3(0, 2, -0.5);
 
-		float distance = 18.0f; // プレイヤーとの距離
+		float distance = 40.0f; // プレイヤーとの距離
 		float height = 13.0f;   // カメラの高さ
 		//float lookAtHeight = 2.0f; // 注視点の高さ調整
 
@@ -160,19 +151,19 @@ namespace basecross
 		float delta = App::GetApp()->GetElapsedTime();
 		float fixedDelta = (std::min)(delta * 4.0f, 1.0f);
 
-		Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
-		Vec3 at = Vec3(playerPos.x + 5.0f, playerPos.y, playerPos.z);
+		//Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
+		//Vec3 at = Vec3(playerPos.x + 5.0f, playerPos.y, playerPos.z);
 
 		if (!m_isFirstFrame)
 		{
-			SetEye(eye);
-			SetAt(at);
+			SetEye(m_nextEye);
+			SetAt(m_nextAt);
 		}
 		else
 		{
 			float speed = (std::min)(delta * 5.0f, 1.0f);
-			SetEye(GetEye() + (eye - GetEye()) * speed);
-			SetAt(GetAt() + (at - GetAt()) * speed * 2.0f);
+			SetEye(GetEye() + (m_nextEye - GetEye()) * speed);
+			SetAt(GetAt() + (m_nextAt - GetAt()) * speed * 2.0f);
 		}
 
 	}

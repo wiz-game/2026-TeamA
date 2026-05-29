@@ -35,5 +35,4 @@ namespace basecross
 		m_drawComp->SetDiffuse(collar);
 	}
 
-
 }
