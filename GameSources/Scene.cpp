@@ -52,6 +52,65 @@ namespace basecross{
 		auto boardModel = MeshResource::CreateStaticModelMesh(modelPath + L"Board\\", L"M_FallenTree.bmf");
 		boardModel->SetTextureResource(L"TEX_BOARD");
 		app->RegisterResource(L"MODEL_BOARD", boardModel);
+
+		// 土モデルの読み込み
+		app->RegisterTexture(L"TEX_SOIL", modelPath + L"Block\\T_Soil.png");
+		auto soilModel = MeshResource::CreateStaticModelMesh(modelPath + L"Block\\", L"M_Soil.bmf");
+		soilModel->SetTextureResource(L"TEX_SOIL");
+		app->RegisterResource(L"MODEL_SOIL", soilModel);
+
+		// 倒木モデルの読み込み
+		app->RegisterTexture(L"TEX_FALLENTREE", modelPath + L"FallenTree\\T_FallenTree.png");
+		auto fallenTreeModel = MeshResource::CreateStaticModelMesh(modelPath + L"FallenTree\\", L"M_FallenTree.bmf");
+		fallenTreeModel->SetTextureResource(L"TEX_FALLENTREE");
+		app->RegisterResource(L"MODEL_FALLENTREE", fallenTreeModel);
+
+		// 柵モデルの読み込み
+		app->RegisterTexture(L"TEX_FENCE", modelPath + L"Fence\\T_Fence.png");
+		auto fenceModel = MeshResource::CreateStaticModelMesh(modelPath + L"Fence\\", L"M_Fence.bmf");
+		fenceModel->SetTextureResource(L"TEX_FENCE");
+		app->RegisterResource(L"MODEL_FENCE", fenceModel);
+
+		// 木モデルの読み込み
+		app->RegisterTexture(L"TEX_FIRTREE", modelPath + L"FirTree\\T_FirTree.png");
+		auto firTreeModel = MeshResource::CreateStaticModelMesh(modelPath + L"FirTree\\", L"M_FirTree.bmf");
+		firTreeModel->SetTextureResource(L"TEX_FIRTREE");
+		app->RegisterResource(L"MODEL_FIRTREE", firTreeModel);
+
+		// 足場モデルの読み込み
+		app->RegisterTexture(L"TEX_FOOTHOLD", modelPath + L"Foothold\\T_Foothold.png");
+		auto footholdModel = MeshResource::CreateStaticModelMesh(modelPath + L"Foothold\\", L"M_Foothold.bmf");
+		footholdModel->SetTextureResource(L"TEX_FOOTHOLD");
+		app->RegisterResource(L"MODEL_FOOTHOLD", footholdModel);
+
+		//　キノコモデルの読み込み
+		app->RegisterTexture(L"TEX_MUSHROOM", modelPath + L"Mushroom\\T_Mushroom.png");
+		auto mushroomModel = MeshResource::CreateStaticModelMesh(modelPath + L"Mushroom\\", L"M_Mushroom.bmf");
+		app->RegisterResource(L"MODEL_MUSHROOM", mushroomModel);
+
+		// ロングキノコモデルの読み込み
+		app->RegisterTexture(L"TEX_LONG_MUSHROOM", modelPath + L"Mushroom\\T_LongMushroom.png");
+		auto longMushroomModel = MeshResource::CreateStaticModelMesh(modelPath + L"Mushroom\\", L"M_LongMushroom.bmf");
+		app->RegisterResource(L"MODEL_LONG_MUSHROOM", longMushroomModel);
+
+		// 低木の読み込み
+		app->RegisterTexture(L"TEX_SHRUB", modelPath + L"Shrub\\T_Shrub.png");
+		auto bushModel = MeshResource::CreateStaticModelMesh(modelPath + L"Shrub\\", L"M_Shrub.bmf");
+		bushModel->SetTextureResource(L"TEX_SHRUB");
+		app->RegisterResource(L"MODEL_SHRUB", bushModel);
+
+		// スロープモデルの読み込み
+		app->RegisterTexture(L"TEX_SLOPE", modelPath + L"Slope\\T_Slope.png");
+		auto slopeModel = MeshResource::CreateStaticModelMesh(modelPath + L"Slope\\", L"M_Slope.bmf");
+		slopeModel->SetTextureResource(L"TEX_SLOPE");
+		app->RegisterResource(L"MODEL_SLOPE", slopeModel);
+
+		// 石モデルの読み込み
+		app->RegisterTexture(L"TEX_STONE", modelPath + L"Stone\\T_Stone.png");
+		auto stoneModel = MeshResource::CreateStaticModelMesh(modelPath + L"Stone\\", L"M_Stone.bmf");
+		stoneModel->SetTextureResource(L"TEX_STONE");
+		app->RegisterResource(L"MODEL_STONE", stoneModel);
+
 	}
 
 

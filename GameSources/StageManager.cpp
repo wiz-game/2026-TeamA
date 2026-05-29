@@ -145,14 +145,6 @@ namespace basecross
 			{
 				CreateObjectFromCSV(wstring(name.begin(), name.end()), Vec3(px, py, pz), Vec3(XMConvertToRadians(rx), XMConvertToRadians(ry), XMConvertToRadians(rz)), Vec3(sx, sy, sz));
 			}
-			else
-			{
-				throw BaseException(
-					L"CSVの行の形式が不正です",
-					L"ParseCSVLine のパース失敗",
-					L"StageManager::ParseCSVLine()"
-				);
-			}
 		}
 		catch (...)
 		{
@@ -201,17 +193,24 @@ namespace basecross
 				floor->SetPosition(pos);
 				floor->SetRotation(rot);
 				floor->SetScale(scale);
+				floor->SetModel(L"MODEL_BLOCK");
 				return;
+			}
+			else if (name == L"Soil")
+			{
+				auto soil = stage->AddGameObject<Block>();
+				soil->SetPosition(pos);
+				soil->SetRotation(rot);
+				soil->SetScale(scale);
+				soil->SetModel(L"MODEL_SOIL");
+				return;
+
 			}
 			else if (name == L"Foothold")
 			{
 
 			}
 			else if(name==L"Slope")
-			{
-
-			}
-			else if(name==L"Soil")
 			{
 
 			}
@@ -226,8 +225,6 @@ namespace basecross
 				board->SetRotation(rot);
 				board->SetScale(scale);
 				board->SetCollar(Col4(0.5f, 0.35f, 0.2f, 1.0f));
-
-				return;
 
 			}
 			else if (name == L"Wall")
@@ -270,26 +267,9 @@ namespace basecross
 			{
 
 			}
-=			else if (name == L"Board")
-			{
-				auto board = stage->AddGameObject<Wall>();
-				board->SetPosition(pos);
-				board->SetRotation(rot);
-				board->SetScale(scale);
-				return;
-
-			}
 			else if (name == L"GameObject")
 			{
 				return;
-			}
-			else
-			{
-				throw BaseException(
-					L"CSVのオブジェクト名が不正です",
-					L"不明なオブジェクト名: " + name,
-					L"StageManager::CreateObjectFromCSV()"
-				);
 			}
 		}
 		catch (...)
