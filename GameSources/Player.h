@@ -85,88 +85,6 @@ namespace basecross {
 		int GetFormationNumber() { return m_formationNum; }
 	};
 
-	// GameObjectクラスを継承した「Player」クラスを定義
-	class Player : public GameObject // GameObjectクラスの継承【必須】
-	{
-		std::shared_ptr<Transform> m_transform; // トランスフォームはよく使うのでメンバにしておく
-		//std::shared_ptr<PNTDXModelDraw> m_draw; // ドローコンポーネント
-		std::shared_ptr<PNTStaticDraw> m_draw; // ドローコンポーネント
-
-		Vec3 m_position; // プレイヤーの位置
-		Vec3 m_rotation; // プレイヤーの回転
-		Vec3 m_scale;    // プレイヤーのスケーリング
-		Vec3 m_velocity; // プレイヤーの移動ベクトル
-
-		const static int MAX_CHARACTER_NUM = 150;
-		vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
-		//shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
-		//shared_ptr<GameObject> m_cube; // キューブのオブジェクト
-		//shared_ptr<GameObject> m_formation[4]; // 隊列のオブジェクト
-		Vec3 m_characterPositions[MAX_CHARACTER_NUM]; // 
-		int m_activeNum; // 
-		bool m_allMove; // すべての群れを動かすためのフラグ
-		//int m_formationNumber;
-
-		std::unique_ptr<JPH::CharacterVirtual> m_character;
-		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
-		Vec3 m_desiredVelocity;
-		JPH::ObjectLayer m_objectLayer;
-
-		PlayerTrackManager m_trackMng;
-		FormationManager m_formationMng;
-
-		void InitializeCharacter();
-		void UpdateCharacter(float deltaTime);
-		void AllCharacterMove();
-
-	public:
-		// ステージを引数にしたコンストラクタ【必須】
-		Player(const std::shared_ptr<Stage>& stage) :
-			GameObject(stage), // ステージをGameObjectに渡す【必須】
-			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
-			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
-			m_scale(1.0f),     // プレイヤーの初期スケーリングを設定
-			m_activeNum(0),     // 
-			m_allMove(false)
-			//m_formationNumber(0)
-		{
-		}
-		Player(const std::shared_ptr<Stage>& stage, Vec3 scale) :
-			GameObject(stage), // ステージをGameObjectに渡す【必須】
-			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
-			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
-			m_scale(scale),     // プレイヤーの初期スケーリングを設定
-			m_activeNum(0),     // 
-			m_allMove(false)
-			//m_formationNumber(0)
-		{
-		}
-
-		void OnCreate() override; // 初期設定用の関数(UnityのStartメソッドに相当)
-		void OnUpdate() override; // 毎フレーム実行される関数(UnityのUpdateメソッドに相当)
-		//void OnDraw() override;
-
-		Vec3 GetPosition() { return m_position; }
-		void SetPosition(const Vec3& pos) { m_position = pos; }
-		Vec3 GetRotation() { return m_rotation; }
-		void SetRotation(const Vec3& rot) { m_rotation = rot; }
-		Vec3 GetScale() { return m_scale; }
-		void SetScale(const Vec3& scale) { m_scale = scale; }
-		Vec3 GetMoveVelocity() { return m_desiredVelocity; }
-
-		void SetAllMove(bool allMove) { m_allMove = allMove; }
-		void AddSubPlayer(int num);
-		bool EraseSubPlayer(int num);
-		PlayerTrackManager GetTrackManager() const { return m_trackMng; }
-		vector<shared_ptr<GameObject>> GetActiveSubPlayer();
-
-
-		void OnCollisionEnter(const shared_ptr<GameObject>& other);
-		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
-
-	};
-
-
 	// 群れのキャラクター
 	class SubPlayer : public GameObject
 	{
@@ -201,19 +119,6 @@ namespace basecross {
 			m_maxSpeed(8.0f)
 		{
 		}
-		SubPlayer(const std::shared_ptr<Stage>& stage, const Vec3& pos) :
-			GameObject(stage),
-			//m_targetPos(pos),
-			m_playerPos(Vec3(0)),
-			//m_rotate(0),
-			m_dif(0),
-			m_stay(0),
-			m_follow(false),
-			m_velocity(Vec3(0)),
-			m_maxSpeed(8.0f)
-		{
-		}
-
 
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
@@ -236,6 +141,111 @@ namespace basecross {
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 
 	};
+
+
+
+	// 群れの隊列の管理クラス
+	class SubPlayerManager
+	{
+	private:
+		const static int MAX_CHARACTER_NUM = 150;
+		int m_activeNum;
+		bool m_allMove;
+		vector<shared_ptr<SubPlayer>> m_subPlayers; // 群れのキャラクター
+	public:
+		void Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject> player);
+		void Add(int num, const Vec3& pos);
+		bool Erase(int num);
+		void SetAllMove(bool allMove) { m_allMove = allMove; }
+		bool GetAllMove() { return m_allMove; }
+		vector<shared_ptr<GameObject>> GetActiveSubPlayer();
+		void AllCharacterMove();
+		void SetPlayerPos(const Vec3& pos);
+	};
+
+	// GameObjectクラスを継承した「Player」クラスを定義
+	class Player : public GameObject // GameObjectクラスの継承【必須】
+	{
+		std::shared_ptr<Transform> m_transform; // トランスフォームはよく使うのでメンバにしておく
+		//std::shared_ptr<PNTDXModelDraw> m_draw; // ドローコンポーネント
+		std::shared_ptr<PNTStaticDraw> m_draw; // ドローコンポーネント
+
+		Vec3 m_position; // プレイヤーの位置
+		Vec3 m_rotation; // プレイヤーの回転
+		Vec3 m_scale;    // プレイヤーのスケーリング
+		Vec3 m_velocity; // プレイヤーの移動ベクトル
+
+		//const static int MAX_CHARACTER_NUM = 150;
+		//vector<shared_ptr<GameObject>> m_subPlayers; // 群れのキャラクター
+		//shared_ptr<GameObject> m_hammer; // ハンマーのオブジェクト
+		//shared_ptr<GameObject> m_cube; // キューブのオブジェクト
+		//shared_ptr<GameObject> m_formation[4]; // 隊列のオブジェクト
+		//Vec3 m_characterPositions[MAX_CHARACTER_NUM]; // 
+		//int m_activeNum; // 
+		//bool m_allMove; // すべての群れを動かすためのフラグ
+		//int m_formationNumber;
+
+		std::unique_ptr<JPH::CharacterVirtual> m_character;
+		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
+		Vec3 m_desiredVelocity;
+		JPH::ObjectLayer m_objectLayer;
+
+		PlayerTrackManager m_trackMng;
+		FormationManager m_formationMng;
+		SubPlayerManager m_subPlayerMng;
+
+		void InitializeCharacter();
+		void UpdateCharacter(float deltaTime);
+		//void AllCharacterMove();
+
+	public:
+		// ステージを引数にしたコンストラクタ【必須】
+		Player(const std::shared_ptr<Stage>& stage) :
+			GameObject(stage), // ステージをGameObjectに渡す【必須】
+			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
+			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
+			m_scale(1.0f)     // プレイヤーの初期スケーリングを設定
+			//m_activeNum(0),     // 
+			//m_allMove(false)
+			//m_formationNumber(0)
+		{
+		}
+		Player(const std::shared_ptr<Stage>& stage, Vec3 scale) :
+			GameObject(stage), // ステージをGameObjectに渡す【必須】
+			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
+			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
+			m_scale(scale)    // プレイヤーの初期スケーリングを設定
+			//m_activeNum(0),     // 
+			//m_allMove(false)
+			//m_formationNumber(0)
+		{
+		}
+
+		void OnCreate() override; // 初期設定用の関数(UnityのStartメソッドに相当)
+		void OnUpdate() override; // 毎フレーム実行される関数(UnityのUpdateメソッドに相当)
+		//void OnDraw() override;
+
+		Vec3 GetPosition() { return m_position; }
+		void SetPosition(const Vec3& pos) { m_position = pos; }
+		Vec3 GetRotation() { return m_rotation; }
+		void SetRotation(const Vec3& rot) { m_rotation = rot; }
+		Vec3 GetScale() { return m_scale; }
+		void SetScale(const Vec3& scale) { m_scale = scale; }
+		Vec3 GetMoveVelocity() { return m_desiredVelocity; }
+
+		//void SetAllMove(bool allMove) { m_allMove = allMove; }
+		//void AddSubPlayer(int num);
+		//bool EraseSubPlayer(int num);
+		PlayerTrackManager GetTrackManager() const { return m_trackMng; }
+		SubPlayerManager GetSunbPlayerManager() const { return m_subPlayerMng; }
+		//vector<shared_ptr<GameObject>> GetActiveSubPlayer();
+
+
+		void OnCollisionEnter(const shared_ptr<GameObject>& other);
+		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
+
+	};
+
 
 
 	class HammerFormation : public CharacterFormation

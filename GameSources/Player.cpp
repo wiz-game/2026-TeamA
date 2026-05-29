@@ -109,6 +109,120 @@ namespace basecross {
 		return false;
 	}
 
+	void SubPlayerManager::Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject> player)
+	{
+		for (int i = 0; i < MAX_CHARACTER_NUM; i++)
+		{
+			auto subPlayer = stage->AddGameObject<SubPlayer>();
+			subPlayer->SetAlive(false);
+			subPlayer->SetPlayer(player);
+			m_subPlayers.push_back(subPlayer);
+		}
+
+	}
+
+	void SubPlayerManager::Add(int num, const Vec3& pos)
+	{
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (num <= 0)
+			{
+				break;
+			}
+			if (!subPlayer->GetAlive())
+			{
+				subPlayer->SetAlive(true);
+				int x = -rand() % 9 + 5;
+				int z = -rand() % 9 + 5;
+				Vec3 v = { (float)x, 0, (float)z };
+				subPlayer->SetPosition(v + pos);
+				//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
+				m_activeNum++;
+				num--;
+			}
+		}
+
+	}
+
+	bool SubPlayerManager::Erase(int num)
+	{
+		int rest = 0;
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (subPlayer->GetAlive())
+			{
+				rest++;
+			}
+		}
+		if (rest < num)
+		{
+			return false;
+		}
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (num <= 0)
+			{
+				break;
+			}
+			if (subPlayer->GetAlive())
+			{
+				subPlayer->SetAlive(false);
+				m_activeNum--;
+				num--;
+			}
+		}
+
+		return true;
+
+	}
+
+	void SubPlayerManager::AllCharacterMove()
+	{
+		for (auto& obj : m_subPlayers)
+		{
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer->GetAlive())
+			{
+				subPlayer->SetFollow(true);
+			}
+		}
+	}
+
+	vector<shared_ptr<GameObject>> SubPlayerManager::GetActiveSubPlayer()
+	{
+		vector<shared_ptr<GameObject>> objs;
+		for (auto& obj : m_subPlayers)
+		{
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer)
+			{
+				if (subPlayer->GetAlive())
+				{
+					objs.push_back(obj);
+				}
+			}
+		}
+
+		return objs;
+	}
+
+
+	void SubPlayerManager::SetPlayerPos(const Vec3& pos)
+	{
+		// 群れに移動用の座標を送る
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (subPlayer)
+			{
+				if (subPlayer->GetAlive())
+				{
+					//subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
+					subPlayer->SetPlayerPos(pos);
+					//subPlayer->SetRotate(m_rotation.y);
+				}
+			}
+		}
+	}
 
 	// プレイヤーの初期設定
 	void Player::OnCreate()
@@ -127,26 +241,16 @@ namespace basecross {
 		//AddComponent<Gravity>();
 
 		// 群れのキャラクターの生成
-		int num[12] = { 10, 12, 12, 14, 14, 14, 14, 14, 12, 12, 12, 10 };
-		int n = 0;;
-		int sum = 0;
-		sum += num[n];
-		for (int i = 0; i < MAX_CHARACTER_NUM; i++)
-		{
-			if (i >= sum)
-			{
-				n++;
-				sum += num[n];
-			}
-			float x = ((float)((i % num[n]) / 2) + 0.5f) * (float)(i % 2 == 0 ? 1 : -1) * 1.0f;
-			float z = n * 1.0f + 1;
-			m_characterPositions[i] = Vec3(x, 0, z);
-			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(m_characterPositions[i]);
-			subPlayer->SetAlive(false);
-			subPlayer->SetPlayer(GetThis<GameObject>());
-			m_subPlayers.push_back(subPlayer);
-		}
-		AddSubPlayer(30);
+		//for (int i = 0; i < MAX_CHARACTER_NUM; i++)
+		//{
+		//	auto subPlayer = GetStage()->AddGameObject<SubPlayer>();
+		//	subPlayer->SetAlive(false);
+		//	subPlayer->SetPlayer(GetThis<GameObject>());
+		//	m_subPlayers.push_back(subPlayer);
+		//}
+		//AddSubPlayer(30);
+		m_subPlayerMng.Init(GetStage(), GetThis<GameObject>());
+		m_subPlayerMng.Add(50, m_position);
 
 		//m_formation[0] = GetStage()->AddGameObject<HammerFormation>();
 		//m_formation[1] = GetStage()->AddGameObject<CubeFormation>();
@@ -234,39 +338,43 @@ namespace basecross {
 		GetStage()->GetCollisionManager()->SetRootAABB(aabb);
 
 		// 群れに移動用の座標を送る
-		for (auto& obj : m_subPlayers)
-		{
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer)
-			{
-				if (subPlayer->GetAlive())
-				{
-					//subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
-					subPlayer->SetPlayerPos(m_position);
-					//subPlayer->SetRotate(m_rotation.y);
-				}
-			}
-		}
+		//for (auto& obj : m_subPlayers)
+		//{
+		//	auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+		//	if (subPlayer)
+		//	{
+		//		if (subPlayer->GetAlive())
+		//		{
+		//			//subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
+		//			subPlayer->SetPlayerPos(m_position);
+		//			//subPlayer->SetRotate(m_rotation.y);
+		//		}
+		//	}
+		//}
+		m_subPlayerMng.SetPlayerPos(m_position);
 
 		// 群れの移動を管理
-		if ((m_desiredVelocity.length() > 0.1f || LStick.length()) && m_allMove)
+		if ((m_desiredVelocity.length() > 0.1f || LStick.length()) && m_subPlayerMng.GetAllMove())
 		{
-			AllCharacterMove();
+			m_subPlayerMng.AllCharacterMove();
 		}
 		else if (m_desiredVelocity.length() < 0.1f)
 		{
-			m_allMove = false;
+			//m_allMove = false;
+			m_subPlayerMng.SetAllMove(false);
 		}
 
 		// ボタンで群れの数を変更
 		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
 		{
-			AddSubPlayer(1);
+			//AddSubPlayer(1);
+			m_subPlayerMng.Add(1, m_position);
 		}
 
 		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
 		{
-			EraseSubPlayer(1);
+			//EraseSubPlayer(1);
+			m_subPlayerMng.Erase(1);
 		}
 
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
@@ -321,83 +429,83 @@ namespace basecross {
 		wstringstream ss;
 		ss << L"FPS : " << app->GetStepTimer().GetFramesPerSecond() << endl;
 		ss << L"Formation : " << m_formationMng.GetFormationNumber() << endl;
-		ss << L"ActiveNum : " << m_activeNum << endl;
+		//ss << L"ActiveNum : " << m_activeNum << endl;
 		app->GetScene<Scene>()->SetDebugString(ss.str());
 	}
 
-	void Player::AddSubPlayer(int num)
-	{
-		for (auto& obj : m_subPlayers)
-		{
-			if (num <= 0)
-			{
-				break;
-			}
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (!subPlayer->GetAlive())
-			{
-				subPlayer->SetAlive(true);
-				int x = -rand() % 9 + 5;
-				int z = -rand() % 9 + 5;
-				Vec3 v = { (float)x, 0, (float)z };
-				subPlayer->SetPosition(v + m_position);
-				//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
-				m_activeNum++;
-				num--;
-			}
-		}
-	}
+	//void Player::AddSubPlayer(int num)
+	//{
+	//	for (auto& obj : m_subPlayers)
+	//	{
+	//		if (num <= 0)
+	//		{
+	//			break;
+	//		}
+	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+	//		if (!subPlayer->GetAlive())
+	//		{
+	//			subPlayer->SetAlive(true);
+	//			int x = -rand() % 9 + 5;
+	//			int z = -rand() % 9 + 5;
+	//			Vec3 v = { (float)x, 0, (float)z };
+	//			subPlayer->SetPosition(v + m_position);
+	//			//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
+	//			m_activeNum++;
+	//			num--;
+	//		}
+	//	}
+	//}
 
-	bool Player::EraseSubPlayer(int num)
-	{
-		int rest = 0;
-		for (auto& obj : m_subPlayers)
-		{
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer->GetAlive())
-			{
-				rest++;
-			}
-		}
-		if (rest < num)
-		{
-			return false;
-		}
-		for (auto& obj : m_subPlayers)
-		{
-			if (num <= 0)
-			{
-				break;
-			}
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer->GetAlive())
-			{
-				subPlayer->SetAlive(false);
-				m_activeNum--;
-				num--;
-			}
-		}
+	//bool Player::EraseSubPlayer(int num)
+	//{
+	//	int rest = 0;
+	//	for (auto& obj : m_subPlayers)
+	//	{
+	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+	//		if (subPlayer->GetAlive())
+	//		{
+	//			rest++;
+	//		}
+	//	}
+	//	if (rest < num)
+	//	{
+	//		return false;
+	//	}
+	//	for (auto& obj : m_subPlayers)
+	//	{
+	//		if (num <= 0)
+	//		{
+	//			break;
+	//		}
+	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+	//		if (subPlayer->GetAlive())
+	//		{
+	//			subPlayer->SetAlive(false);
+	//			m_activeNum--;
+	//			num--;
+	//		}
+	//	}
 
-		return true;
-	}
+	//	return true;
+	//}
 
-	vector<shared_ptr<GameObject>> Player::GetActiveSubPlayer()
-	{
-		vector<shared_ptr<GameObject>> objs;
-		for (auto& obj : m_subPlayers)
-		{
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer)
-			{
-				if (subPlayer->GetAlive())
-				{
-					objs.push_back(obj);
-				}
-			}
-		}
+	//vector<shared_ptr<GameObject>> Player::GetActiveSubPlayer()
+	//{
+	//	vector<shared_ptr<GameObject>> objs;
+	//	for (auto& obj : m_subPlayers)
+	//	{
+	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+	//		if (subPlayer)
+	//		{
+	//			if (subPlayer->GetAlive())
+	//			{
+	//				objs.push_back(obj);
+	//			}
+	//		}
+	//	}
 
-		return objs;
-	}
+	//	return objs;
+	//}
 
 	void Player::OnCollisionEnter(const shared_ptr<GameObject>& other)
 	{
@@ -541,18 +649,18 @@ namespace basecross {
 
 	}
 
-	void Player::AllCharacterMove()
-	{
-		for (auto& obj : m_subPlayers)
-		{
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer->GetAlive())
-			{
-				subPlayer->SetFollow(true);
-			}
-		}
+	//void Player::AllCharacterMove()
+	//{
+	//	for (auto& obj : m_subPlayers)
+	//	{
+	//		auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+	//		if (subPlayer->GetAlive())
+	//		{
+	//			subPlayer->SetFollow(true);
+	//		}
+	//	}
 
-	}
+	//}
 
 	// 群れのキャラクターの初期化
 	void SubPlayer::OnCreate()
@@ -670,7 +778,7 @@ namespace basecross {
 		{
 			auto trackMng = player->GetTrackManager();
 			auto node = trackMng.GetNearTrackNode(pos);
-			auto others = player->GetActiveSubPlayer();
+			auto others = player->GetSunbPlayerManager().GetActiveSubPlayer();
 			auto steeringForce = CalculateSteering(node, others);
 			m_velocity += steeringForce * delta * 5;
 			m_velocity.y = 0;
@@ -690,7 +798,7 @@ namespace basecross {
 
 
 		auto dis = m_playerPos - pos;
-		auto others = player->GetActiveSubPlayer();
+		auto others = player->GetSunbPlayerManager().GetActiveSubPlayer();
 		if (playerVec.length() < 0.1f)
 		{
 			if (dis.length() < 2.0f)
@@ -933,7 +1041,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				player->AddSubPlayer(m_characterNum);
+				player->GetSunbPlayerManager().Add(m_characterNum, m_transComp->GetPosition());
 			}
 		}
 
@@ -987,7 +1095,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->EraseSubPlayer(m_characterNum);
+				b = player->GetSunbPlayerManager().Erase(m_characterNum);
 			}
 		}
 		if (!b)
@@ -1061,7 +1169,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->EraseSubPlayer(m_characterNum);
+				b = player->GetSunbPlayerManager().Erase(m_characterNum);
 			}
 		}
 		if (!b)
@@ -1141,7 +1249,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->EraseSubPlayer(m_characterNum);
+				b = player->GetSunbPlayerManager().Erase(m_characterNum);
 			}
 		}
 		if (!b)
@@ -1229,7 +1337,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->EraseSubPlayer(m_characterNum);
+				b = player->GetSunbPlayerManager().Erase(m_characterNum);
 			}
 		}
 		if (!b)
@@ -1326,7 +1434,7 @@ namespace basecross {
 		auto player = dynamic_pointer_cast<Player>(gameObj);
 		if (player)
 		{
-			player->SetAllMove(true);
+			player->GetSunbPlayerManager().SetAllMove(true);
 		}
 	}
 	void SubPlayerFollowState::Execute(const shared_ptr<SubPlayer>& obj)
