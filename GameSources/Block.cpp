@@ -18,11 +18,8 @@ namespace basecross
 			Vec3(0.0f, 0.0f, 0.0f), // rotation
 			Vec3(0.0f, -0.5f, 0.0f)  // position
 		);
-
 		m_drawComp = AddComponent<PNTStaticDraw>();
-		m_drawComp->SetMeshResource(L"MODEL_BLOCK");
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
-
 	}
 
 	void Block::OnUpdate()
@@ -36,4 +33,8 @@ namespace basecross
 		m_drawComp->SetDiffuse(collar);
 	}
 
+	void Block::SetModel(const wstring& modelKey)
+	{
+		m_drawComp->SetMeshResource(modelKey);
+	}
 }

@@ -21,5 +21,7 @@ namespace basecross
 		void OnUpdate()override;
 
 		void SetCollar(Col4 collar);
+
+		void SetModel(const wstring& modelKey);
 	};
 }
