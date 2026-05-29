@@ -57,12 +57,12 @@ namespace basecross
 			if (m_prevRStick.x <= 0.25f && RStick.x > 0.25f) // 通常時に右に倒した場合
 			{
 				//m_changeAngle = true;
-				m_offsetYaw = 40.0f; // 右に向く角度を決める
+				m_offsetYaw = 45.0f; // 右に向く角度を決める
 				SetCameraAngleState(Right);
 			}
 			if (m_prevRStick.x >= -0.25f && RStick.x < -0.25f) //通常時に左に倒した場合
 			{
-				m_offsetYaw = -40.0f;
+				m_offsetYaw = -45.0f;
 				SetCameraAngleState(Left);
 			}
 			break;
@@ -101,9 +101,9 @@ namespace basecross
 		if (!player) return;
 		auto playerTrans = player->GetComponent<Transform>();
 		Vec3 playerPos = playerTrans->GetPosition();
-		Vec3 up = Vec3(0, 1, -0.5);
+		Vec3 up = Vec3(0, 2, -0.5);
 
-		float distance = 18.0f; // プレイヤーとの距離
+		float distance = 40.0f; // プレイヤーとの距離
 		float height = 13.0f;   // カメラの高さ
 		//float lookAtHeight = 2.0f; // 注視点の高さ調整
 

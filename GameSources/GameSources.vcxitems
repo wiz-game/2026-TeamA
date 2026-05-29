@@ -22,6 +22,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DXModel.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DXModelResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FormationUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameClearStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameOverStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
@@ -44,6 +45,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BreakWall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TurningPoint.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Block.cpp" />
@@ -57,6 +59,7 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)DXModelResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FormationUI.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameClearStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameOverStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
@@ -77,6 +80,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BreakWall.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StageObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TurningPoint.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Wall.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />
   </ItemGroup>
 </Project>
