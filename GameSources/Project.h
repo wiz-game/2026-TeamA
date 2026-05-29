@@ -14,6 +14,8 @@
 // Manager
 #include "StageManager.h"
 
+#include "Option.h"
+
 #include "Character.h"
 #include "StageObject.h"
 #include "Player.h"
@@ -26,6 +28,9 @@
 #include "Goal.h"
 #include "Sprite.h"
 #include "SkyBox.h"
+#include "Board.h"
+#include "TurningPoint.h"
+
 
 #include "GameStage.h"
 #include "GameClearStage.h"

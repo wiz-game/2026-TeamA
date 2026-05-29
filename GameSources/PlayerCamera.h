@@ -34,6 +34,9 @@ namespace basecross
 		const float CameraLerpSpeed = 6.0f; // 補間速度
 		const Vec3 CameraUp = Vec3(0, 1, -0.5f);   // カメラの傾き補正
 
+		Vec3 m_nextEye; //カメラアングル切り替え用
+		Vec3 m_nextAt;  //カメラアングル切り替え用
+
 	public:
 
 		PlayerCamera();
@@ -45,6 +48,12 @@ namespace basecross
 		void SetCameraAngleState(CameraAngleState newAngle)
 		{
 			m_cameraAngleState = newAngle;
+		}
+
+		void SetNextCameraAngle(Vec3 nextEye, Vec3 nextAt)
+		{
+			m_nextEye = nextEye;
+			m_nextAt = nextAt;
 		}
 
 		virtual void OnCreate() override;

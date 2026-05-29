@@ -35,17 +35,6 @@ namespace basecross
 		auto playerTrans = player->GetComponent<Transform>();
 		Vec3 playerPos = playerTrans->GetPosition();
 
-		//bool isOK = playerPos.x >= 10.0f ? true : false; // プレイヤーがこの位置に来たら
-
-		//if(!isOK)
-		//{
-		//	SetCameraToPlayerPos();
-		//}
-		//else if(isOK)
-		//{
-		//	//ChangeAngle();
-		//}
-
 		SetCameraToPlayerPos();
 
 		// アプリケーションオブジェクトを取得
@@ -59,6 +48,8 @@ namespace basecross
 		auto pad = input.GetControlerVec()[0];
 		// 右スティックの値取得
 		Vec2 RStick(pad.fThumbRX, pad.fThumbRY);
+
+		if (!gameStage->GetIsActive()) return; //ポーズ中は動作をしない
 
 		switch (m_cameraAngleState)
 		{
@@ -160,19 +151,19 @@ namespace basecross
 		float delta = App::GetApp()->GetElapsedTime();
 		float fixedDelta = (std::min)(delta * 4.0f, 1.0f);
 
-		Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
-		Vec3 at = Vec3(playerPos.x + 5.0f, playerPos.y, playerPos.z);
+		//Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
+		//Vec3 at = Vec3(playerPos.x + 5.0f, playerPos.y, playerPos.z);
 
 		if (!m_isFirstFrame)
 		{
-			SetEye(eye);
-			SetAt(at);
+			SetEye(m_nextEye);
+			SetAt(m_nextAt);
 		}
 		else
 		{
 			float speed = (std::min)(delta * 5.0f, 1.0f);
-			SetEye(GetEye() + (eye - GetEye()) * speed);
-			SetAt(GetAt() + (at - GetAt()) * speed * 2.0f);
+			SetEye(GetEye() + (m_nextEye - GetEye()) * speed);
+			SetAt(GetAt() + (m_nextAt - GetAt()) * speed * 2.0f);
 		}
 
 	}

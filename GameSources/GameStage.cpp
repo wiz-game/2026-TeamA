@@ -21,14 +21,12 @@ namespace basecross {
 
 		m_playerCameraView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
 		auto playerCamera = ObjectFactory::Create<PlayerCamera>();
-
 		auto camera = ObjectFactory::Create<Camera>();
 		camera->SetEye(Vec3(0.0f, 8.0f, -15.0f));
 		camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 
 		m_playerCameraView->SetCamera(playerCamera);
 		SetView(m_playerCameraView);
-
 
 		//// ビューにカメラを設定
 		//auto view = CreateView<SingleView>();
@@ -49,12 +47,15 @@ namespace basecross {
 			m_jphManger.Initialize();
 			m_mainPlayer = AddGameObject<Player>(); // プレイヤーオブジェクトを追加
 			SetSharedGameObject(L"Player", m_mainPlayer);
+			m_stageObj.push_back(m_mainPlayer);
 			m_mainPlayer->SetPosition(Vec3(0, 2, 0));
 			Vec3 center = m_mainPlayer->GetPosition();
 			Vec3 mainPlayerScale = m_mainPlayer->GetScale();
 			//ビューとライトの作成
 			CreateViewLight();
 
+			m_isActive = true;
+			option = AddGameObject<Option>(); //追加はしておくが表示しない
 
 		}
 		catch (...) {
@@ -69,24 +70,29 @@ namespace basecross {
 		auto scene = App::GetApp()->GetScene<Scene>();
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
-		////デバック用
+		//デバック用
 		wstringstream wss(L"");
 
-
-
-		//scene->SetDebugString(wss.str());
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
+		if (m_isActive)
 		{
-			wss<<L"ハンマー" << endl;;
-			scene->SetDebugString(wss.str());
+			// ゲーム中：STARTボタンでポーズ開始
+			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
+			{
+				SetIsActive(false);       // 関数を使って停止させる
+				option->SetVisible(true); // メニュー表示
+			}
 		}
-
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
+		else
 		{
-			wss << L"キューブ" << endl;;
-			scene->SetDebugString(wss.str());
-		}
+			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
+			{
+				m_isActive = true;
+				option->SetVisible(false);
 
+			}
+
+
+		}
 	}
 
 	void GameStage::OnUpdate2()
@@ -107,7 +113,12 @@ namespace basecross {
 		app->RegisterTexture(L"SkyBoxBelow", texPath + L"SkyBoxBelow.png");
 		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.png");
 		app->RegisterTexture(L"SkyBoxTop", texPath + L"SkyBoxTop.png");
-
+		app->RegisterTexture(L"000_000_000", texPath + L"000_000_000.bmp");
+		app->RegisterTexture(L"000_090_000", texPath + L"000_090_000.bmp");
+		app->RegisterTexture(L"000_180_000", texPath + L"000_180_000.bmp");
+		app->RegisterTexture(L"000_270_000", texPath + L"000_270_000.bmp");
+		app->RegisterTexture(L"090_000_000", texPath + L"090_000_000.bmp");
+		app->RegisterTexture(L"270_000_000", texPath + L"270_000_000.bmp");
 
 	}
 

@@ -221,7 +221,7 @@ namespace basecross
 			}
 			else if (name == L"Board")
 			{
-				auto board = stage->AddGameObject<Block>();
+				auto board = stage->AddGameObject<Board>();
 				board->SetPosition(pos);
 				board->SetRotation(rot);
 				board->SetScale(scale);
