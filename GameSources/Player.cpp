@@ -43,7 +43,7 @@ namespace basecross {
 			subPlayer->SetPlayer(GetThis<GameObject>());
 			m_subPlayers.push_back(subPlayer);
 		}
-		AddSubPlayer(100);
+		AddSubPlayer(30);
 
 		//// ハンマーのオブジェクトの作成
 		//m_hammer = GetStage()->AddGameObject<HammerFormation>();
@@ -144,6 +144,9 @@ namespace basecross {
 		//}
 		//m_position = m_transform->GetPosition();
 
+		auto aabb = AABB(m_position, 100, 100, 100);
+		GetStage()->GetCollisionManager()->SetRootAABB(aabb);
+
 		// 群れに移動用の座標を送る
 		for (auto& obj : m_subPlayers)
 		{
@@ -160,7 +163,7 @@ namespace basecross {
 		}
 
 		// 群れの移動を管理
-		if ((m_desiredVelocity.length() > 0.1f || LStick.length())&& m_allMove)
+		if ((m_desiredVelocity.length() > 0.1f || LStick.length()) && m_allMove)
 		{
 			AllCharacterMove();
 		}
@@ -306,7 +309,17 @@ namespace basecross {
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
 	{
-		m_velocity.y = 0;
+		auto otherTrans = Other->GetComponent<Transform>();
+		auto otherPos = otherTrans->GetPosition();
+		auto otherScale = otherTrans->GetScale();
+		auto pos = m_transform->GetPosition();
+		auto scale = m_transform->GetScale();
+		auto dis = pos - otherPos;
+		auto scaleSum = scale + otherScale;
+		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f || Other->FindTag(L"Cube"))
+		{
+			m_velocity.y = 0;
+		}
 	}
 	void Player::InitializeCharacter()
 	{
@@ -461,12 +474,24 @@ namespace basecross {
 		m_len = static_cast<float>(rand() % 10) / 10.0f * 7.0f;
 
 		m_dif = (float)(rand() % 10) * 0.03f + 0.05f;
+
+		auto col = AddComponent<CollisionSphere>();
+		col->SetDrawActive(true);
 	}
 
 	// 群れのキャラクターの更新
 	void SubPlayer::OnUpdate()
 	{
 		m_state->Update();
+
+		auto pos = m_transComp->GetPosition();
+
+		if (pos.y < -100)
+		{
+			pos.y = m_playerPos.y;
+			m_velocity.y = 0;
+			m_transComp->SetPosition(pos);
+		}
 	}
 
 	void SubPlayer::SetAlive(bool isAlive)
@@ -536,9 +561,16 @@ namespace basecross {
 		auto subPos = Vec3(cosf(m_rad - rotate) * m_len, 0, sinf(m_rad - rotate) * m_len);
 		auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 7.5f;
 		Vec3 moveVec = Vec3(m_playerPos + subPos + playerBack - pos);
+		moveVec.y = 0;
 		moveVec.normalize();
-		pos += moveVec * delta * 8.0f;
-		pos.y = 1.0f;
+		m_velocity += moveVec * 0.5f;
+		auto y = m_velocity.y;
+		m_velocity.y = 0;
+		m_velocity.normalize();
+		// 重力
+		m_velocity.y = y - 9.8f * delta;
+		pos += m_velocity * delta * 8.0f;
+		//pos.y = m_playerPos.y;
 		m_transComp->SetPosition(pos);
 
 		// 回転処理
@@ -554,6 +586,21 @@ namespace basecross {
 
 
 		return false;
+	}
+
+	void SubPlayer::OnCollisionExcute(shared_ptr<GameObject>& Other)
+	{
+		auto otherTrans = Other->GetComponent<Transform>();
+		auto otherPos = otherTrans->GetPosition();
+		auto otherScale = otherTrans->GetScale();
+		auto pos = m_transComp->GetPosition();
+		auto scale = m_transComp->GetScale();
+		auto dis = pos - otherPos;
+		auto scaleSum = scale + otherScale;
+		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f)
+		{
+			m_velocity.y = 0;
+		}
 	}
 
 	shared_ptr<GameObject> SubPlayer::GetPlayer()
@@ -654,7 +701,7 @@ namespace basecross {
 		pos.x = 1;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(Vec3(XM_PIDIV2 / 3, 0, 0));
-		m_transComp->SetScale(Vec3(2.0f, 1.0f, 5.0f));
+		m_transComp->SetScale(Vec3(4.0f, 1.0f, 10.0f));
 		Vec3 scale = m_transComp->GetScale();
 
 		m_characterNum = 15;
@@ -663,6 +710,7 @@ namespace basecross {
 		//col->SetMakedSize(0.5f);
 		col->SetDrawActive(true);
 		col->SetFixed(true);
+		AddTag(L"Cube");
 		// 箱形の当たり判定を作成
 		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
 		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
@@ -722,9 +770,9 @@ namespace basecross {
 		rot.x = XM_PIDIV2 / 3;
 		rot.y += -XM_PIDIV2;
 		auto pos = position;
-		pos.x += cosf(-m_rotation.y) * 3.0f;
-		pos.z += sinf(-m_rotation.y) * 3.0f;
-		pos.y -= 0.5f;
+		pos.x += cosf(-m_rotation.y) * 5.0f;
+		pos.z += sinf(-m_rotation.y) * 5.0f;
+		pos.y += 1.5f;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(rot);
 		m_isActive = true;
@@ -814,7 +862,7 @@ namespace basecross {
 		pos.x = 1;
 		m_transComp->SetPosition(pos);
 		//m_transComp->SetRotation(Vec3(XM_PIDIV2 / 3, 0, 0));
-		m_transComp->SetScale(Vec3(2.0f, 1.0f, 10.0f));
+		m_transComp->SetScale(Vec3(4.0f, 1.0f, 20.0f));
 		Vec3 scale = m_transComp->GetScale();
 
 		m_characterNum = 15;
@@ -882,9 +930,9 @@ namespace basecross {
 		//rot.x = XM_PIDIV2 / 3;
 		rot.y += -XM_PIDIV2;
 		auto pos = position;
-		pos.x += cosf(-m_rotation.y) * 5.5f;
-		pos.z += sinf(-m_rotation.y) * 5.5f;
-		pos.y -= 1.2f;
+		pos.x += cosf(-m_rotation.y) * 10.5f;
+		pos.z += sinf(-m_rotation.y) * 10.5f;
+		pos.y -= 1.0f;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(rot);
 		m_isActive = true;

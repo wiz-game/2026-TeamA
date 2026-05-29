@@ -105,6 +105,7 @@ namespace basecross {
 		float m_len;
 		unique_ptr<StateMachine<SubPlayer>> m_state;
 		weak_ptr<GameObject> m_player;
+		Vec3 m_velocity;
 
 	public:
 		// コンストラクタ
@@ -115,7 +116,8 @@ namespace basecross {
 			m_rotate(0),
 			m_dif(0),
 			m_stay(0),
-			m_follow(false)
+			m_follow(false),
+			m_velocity(Vec3(0))
 		{
 		}
 		SubPlayer(const std::shared_ptr<Stage>& stage, const Vec3& pos) :
@@ -125,7 +127,8 @@ namespace basecross {
 			m_rotate(0),
 			m_dif(0),
 			m_stay(0),
-			m_follow(false)
+			m_follow(false),
+			m_velocity(Vec3(0))
 		{
 		}
 
@@ -146,6 +149,8 @@ namespace basecross {
 		const unique_ptr<StateMachine<SubPlayer>>& GetStateMachine() {
 			return m_state;
 		}
+		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
+
 	};
 
 	class CharacterFormation : public GameObject
