@@ -130,6 +130,7 @@ namespace basecross {
 		void SetFollow(bool follow) { m_follow = follow; }
 		bool Stay();
 		bool FollowPlayer();
+		bool MoveToTargetPosition();
 		void SetPlayer(const shared_ptr<GameObject>& player) { m_player = player; }
 		shared_ptr<GameObject> GetPlayer();
 		Vec3 GetVelocity() { return m_velocity; }
@@ -182,7 +183,7 @@ namespace basecross {
 
 		PlayerTrackManager m_trackMng;
 		FormationManager m_formationMng;
-		SubPlayerManager m_subPlayerMng;
+		shared_ptr<SubPlayerManager> m_subPlayerMng;
 
 		void InitializeCharacter();
 		void UpdateCharacter(float deltaTime);
@@ -217,7 +218,7 @@ namespace basecross {
 		Vec3 GetMoveVelocity() { return m_desiredVelocity; }
 
 		PlayerTrackManager GetTrackManager() const { return m_trackMng; }
-		SubPlayerManager GetSunbPlayerManager() const { return m_subPlayerMng; }
+		shared_ptr<SubPlayerManager> GetSunbPlayerManager() const { return m_subPlayerMng; }
 
 
 		void OnCollisionEnter(const shared_ptr<GameObject>& other);

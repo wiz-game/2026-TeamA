@@ -178,9 +178,8 @@ namespace basecross {
 
 	void SubPlayerManager::AllCharacterMove()
 	{
-		for (auto& obj : m_subPlayers)
+		for (auto& subPlayer : m_subPlayers)
 		{
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
 			if (subPlayer->GetAlive())
 			{
 				subPlayer->SetFollow(true);
@@ -241,8 +240,9 @@ namespace basecross {
 		//AddComponent<Gravity>();
 
 		// 群れのキャラクターの生成
-		m_subPlayerMng.Init(GetStage(), GetThis<GameObject>());
-		m_subPlayerMng.Add(50, m_position);
+		m_subPlayerMng = shared_ptr<SubPlayerManager>(new SubPlayerManager());
+		m_subPlayerMng->Init(GetStage(), GetThis<GameObject>());
+		m_subPlayerMng->Add(50, m_position);
 
 		m_formationMng.Init(GetStage(), GetThis<Player>());
 
@@ -282,7 +282,7 @@ namespace basecross {
 		// 左スティックの入力に応じてプレイヤーを移動させる
 		float moveSpeed = 9.0f; // 移動速度
 		Vec3 moveVec(LStick.x, m_velocity.y, LStick.y); // 移動ベクトル
-		m_velocity.y -= delta;
+		//m_velocity.y -= delta;
 		m_position = m_transform->GetPosition();
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
@@ -314,30 +314,30 @@ namespace basecross {
 		GetStage()->GetCollisionManager()->SetRootAABB(aabb);
 
 		// 群れに移動用の座標を送る
-		m_subPlayerMng.SetPlayerPos(m_position);
+		m_subPlayerMng->SetPlayerPos(m_position);
 
 		// 群れの移動を管理
-		if ((m_desiredVelocity.length() > 0.1f || LStick.length()) && m_subPlayerMng.GetAllMove())
+		if ((m_desiredVelocity.length() > 0.1f || LStick.length()) && m_subPlayerMng->GetAllMove())
 		{
-			m_subPlayerMng.AllCharacterMove();
+			m_subPlayerMng->AllCharacterMove();
 		}
 		else if (m_desiredVelocity.length() < 0.1f)
 		{
 			//m_allMove = false;
-			m_subPlayerMng.SetAllMove(false);
+			m_subPlayerMng->SetAllMove(false);
 		}
 
 		// ボタンで群れの数を変更
 		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
 		{
 			//AddSubPlayer(1);
-			m_subPlayerMng.Add(1, m_position);
+			m_subPlayerMng->Add(1, m_position);
 		}
 
 		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
 		{
 			//EraseSubPlayer(1);
-			m_subPlayerMng.Erase(1);
+			m_subPlayerMng->Erase(1);
 		}
 
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
@@ -656,7 +656,7 @@ namespace basecross {
 		{
 			auto trackMng = player->GetTrackManager();
 			auto node = trackMng.GetNearTrackNode(pos);
-			auto others = player->GetSunbPlayerManager().GetActiveSubPlayer();
+			auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
 			auto steeringForce = CalculateSteering(node, others);
 			m_velocity += steeringForce * delta * 5;
 			m_velocity.y = 0;
@@ -676,7 +676,7 @@ namespace basecross {
 
 
 		auto dis = m_playerPos - pos;
-		auto others = player->GetSunbPlayerManager().GetActiveSubPlayer();
+		auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
 		if (playerVec.length() < 0.1f)
 		{
 			if (dis.length() < 2.0f)
@@ -707,6 +707,11 @@ namespace basecross {
 		}
 
 
+		return false;
+	}
+
+	bool SubPlayer::MoveToTargetPosition()
+	{
 		return false;
 	}
 
@@ -919,7 +924,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				player->GetSunbPlayerManager().Add(m_characterNum, m_transComp->GetPosition());
+				player->GetSunbPlayerManager()->Add(m_characterNum, m_transComp->GetPosition());
 			}
 		}
 
@@ -973,7 +978,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->GetSunbPlayerManager().Erase(m_characterNum);
+				b = player->GetSunbPlayerManager()->Erase(m_characterNum);
 			}
 		}
 		if (!b)
@@ -1047,7 +1052,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->GetSunbPlayerManager().Erase(m_characterNum);
+				b = player->GetSunbPlayerManager()->Erase(m_characterNum);
 			}
 		}
 		if (!b)
@@ -1127,7 +1132,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->GetSunbPlayerManager().Erase(m_characterNum);
+				b = player->GetSunbPlayerManager()->Erase(m_characterNum);
 			}
 		}
 		if (!b)
@@ -1215,7 +1220,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->GetSunbPlayerManager().Erase(m_characterNum);
+				b = player->GetSunbPlayerManager()->Erase(m_characterNum);
 			}
 		}
 		if (!b)
@@ -1312,7 +1317,7 @@ namespace basecross {
 		auto player = dynamic_pointer_cast<Player>(gameObj);
 		if (player)
 		{
-			player->GetSunbPlayerManager().SetAllMove(true);
+			player->GetSunbPlayerManager()->SetAllMove(true);
 		}
 	}
 	void SubPlayerFollowState::Execute(const shared_ptr<SubPlayer>& obj)
