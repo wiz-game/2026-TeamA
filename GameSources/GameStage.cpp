@@ -55,7 +55,8 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			m_isActive = true;
-			option = AddGameObject<Option>(); //�ǉ��͂��Ă������\�����Ȃ�
+			AddGameObject<FormationUI>();
+			option = AddGameObject<Option>(); //オプションを追加しておくが、表示はしない
 
 			//StageBGM
 			auto XAPtr = App::GetApp()->GetXAudio2Manager();
