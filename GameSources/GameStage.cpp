@@ -40,6 +40,7 @@ namespace basecross {
 	void GameStage::OnCreate() {
 		try {
 			auto& app = App::GetApp();
+			auto scene = app->GetScene<Scene>();
 			LoadTextures();
 			AddGameObject<SkyBox>();
 
@@ -54,7 +55,11 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			m_isActive = true;
-			option = AddGameObject<Option>(); //追加はしておくが表示しない
+			option = AddGameObject<Option>(); //�ǉ��͂��Ă������\�����Ȃ�
+
+			//StageBGM
+			auto XAPtr = App::GetApp()->GetXAudio2Manager();
+			m_BGM = XAPtr->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, App::GetApp()->GetScene<Scene>()->m_BGMVolume);
 		}
 		catch (...) {
 			throw;
@@ -88,9 +93,8 @@ namespace basecross {
 				option->SetVisible(false);
 
 			}
-
-
 		}
+		m_BGM->m_SourceVoice->SetVolume(scene->m_BGMVolume); //���ʕύX�̍X�V
 	}
 
 	void GameStage::OnUpdate2()
