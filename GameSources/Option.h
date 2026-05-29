@@ -40,10 +40,17 @@ namespace basecross
 
 	};
 
+	enum class SoundTestItem
+	{
+		BGM,
+		SE
+	};
+
 	class SoundTest : public GameObject
 	{
-		float m_BGMVolume;
-		float m_SEVolume;
+		SoundTestItem m_soundTestItem;
+		float m_newBGMVolume;
+		float m_newSEVolume;
 		Vec2 m_prevLStick;
 		void CreateUI();
 

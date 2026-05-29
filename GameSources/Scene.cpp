@@ -37,6 +37,7 @@ namespace basecross{
 		app->RegisterTexture(L"TEX_BGMICON", texPath + L"BGMIcon.png");
 		app->RegisterTexture(L"TEX_SEICON", texPath + L"SEIcon.png");
 		app->RegisterTexture(L"TEX_BSQUARE", texPath + L"BSquare.png");
+		app->RegisterTexture(L"TEX_ALPHA", texPath + L"alphablended.png");
 
 
 		// playerƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ

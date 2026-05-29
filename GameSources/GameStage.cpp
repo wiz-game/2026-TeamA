@@ -41,6 +41,7 @@ namespace basecross {
 	void GameStage::OnCreate() {
 		try {
 			auto& app = App::GetApp();
+			auto scene = app->GetScene<Scene>();
 			LoadTextures();
 			AddGameObject<SkyBox>();
 
@@ -58,6 +59,9 @@ namespace basecross {
 			m_isActive = true;
 			option = AddGameObject<Option>(); //追加はしておくが表示しない
 
+			//ステージBGM
+			auto XAPtr = App::GetApp()->GetXAudio2Manager();
+			m_BGM = XAPtr->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, App::GetApp()->GetScene<Scene>()->m_BGMVolume);
 		}
 		catch (...) {
 			throw;
@@ -91,9 +95,8 @@ namespace basecross {
 				option->SetVisible(false);
 
 			}
-
-
 		}
+		m_BGM->m_SourceVoice->SetVolume(scene->m_BGMVolume); //音量変更の更新
 	}
 
 	void GameStage::OnUpdate2()

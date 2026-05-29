@@ -125,7 +125,8 @@ namespace basecross
 				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 				{			
 					stage->AddGameObject<SoundTest>();
-					stage->RemoveGameObject<Option>(GetThis<Option>());
+					GetThis<Option>()->SetDrawActive(false);
+					//stage->RemoveGameObject<Option>(GetThis<Option>());
 				}
 				break;
 			case OptionItem::Title:
@@ -156,8 +157,9 @@ namespace basecross
 
 	SoundTest::SoundTest(const shared_ptr<Stage>& stage) :
 		GameObject(stage),
-		m_BGMVolume(1.0f),
-		m_SEVolume(1.0f),
+		m_soundTestItem(SoundTestItem::BGM),
+		m_newBGMVolume(1.0f),
+		m_newSEVolume(1.0f),
 		m_prevLStick(0)
 	{
 	}
@@ -171,9 +173,14 @@ namespace basecross
 	void SoundTest::CreateUI()
 	{
 		auto stage = GetStage();
-		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_BSQUARE", true, Vec3(1280, 800, 0) * 0.01f, Vec3(0, 0, 0)));
+		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_BSQUARE", true, Vec3(1280, 800, 0) * 0.009f, Vec3(0, 0, 0)));
 		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_BGMICON", true, Vec3(1280, 800, 0) * 0.003f, Vec3(-200, 200, 0)));
 		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_SEICON" , true, Vec3(1280, 800, 0) * 0.003f, Vec3(-200, -200, 0)));
+		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_ALPHA", true, Vec3(1280, 800, 0) * 0.008f, Vec3(0, 0, 0)));
+
+		m_soundTestUI[1]->SetDrawLayer(2);
+		m_soundTestUI[2]->SetDrawLayer(2);
+
 	}
 
 	void SoundTest::OnUpdate()
@@ -187,15 +194,41 @@ namespace basecross
 		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
 		float lStickValue = 0.5f;
 
-		if (m_prevLStick.x <= lStickValue && LStick.x >= lStickValue)
+		switch (m_soundTestItem)
 		{
+		case SoundTestItem::BGM:
+			if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
+				m_soundTestItem = SoundTestItem::SE;
+			else if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
+				m_soundTestItem = SoundTestItem::SE;
 
+			if (m_prevLStick.x <= lStickValue && LStick.x >= lStickValue)
+				scene->m_BGMVolume += 0.2f;
+			else if (m_prevLStick.x <= -lStickValue && LStick.x >= -lStickValue)
+				scene->m_BGMVolume -= 0.2f;
+
+			if (scene->m_BGMVolume <= 0.0f)
+				scene->m_BGMVolume = 0.0f;
+			else if (scene->m_BGMVolume >= 1.0f)
+				scene->m_BGMVolume = 1.0f;
+			break;
+		case SoundTestItem::SE:
+			if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
+				m_soundTestItem = SoundTestItem::BGM;
+			else if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
+				m_soundTestItem = SoundTestItem::BGM;
+
+			if (m_prevLStick.x <= lStickValue && LStick.x >= lStickValue)
+				scene->m_SEVolume += 0.2f;
+			else if (m_prevLStick.x <= -lStickValue && LStick.x >= -lStickValue)
+				scene->m_SEVolume -= 0.2f;
+
+			if (scene->m_SEVolume <= 0.0f)
+				scene->m_SEVolume = 0.0f;
+			else if (scene->m_SEVolume >= 1.0f)
+				scene->m_SEVolume = 1.0f;
+			break;
 		}
-		else if (m_prevLStick.x <= -lStickValue && LStick.x >= -lStickValue)
-		{
-
-		}
-
 		m_prevLStick = LStick;
 	}
 }
