@@ -44,7 +44,13 @@ namespace basecross
 		
 	}
 
-
+	Enemy::Enemy(shared_ptr<Stage>& stage) :
+		StageObject(stage),
+		hp(4),
+		m_broken(stage)
+	{
+	}
+	Enemy::~Enemy(){}
 
 	void Enemy::OnCreate()
 	{
@@ -66,9 +72,9 @@ namespace basecross
 
 		isHit = false;
 
-
-		BrokenObjs::OnCreate();
-		BrokenObjs::SetHP(hp);
+		m_broken.SetHP(hp);
+		StageObject::OnCreate();
+		
 	}
 
 	void Enemy::InitTransComp()
@@ -103,11 +109,11 @@ namespace basecross
 			enemyScale = m_transComp->GetScale();
 			enemyPos = m_transComp->GetPosition();
 
-			if (auto player = m_player.lock())
-			{
-				playerScale = player->GetScale();
-				playerPos = player->GetPosition();
-			}
+			//if (auto player = m_player.lock())
+			//{
+			//	playerScale = player->GetScale();
+			//	playerPos = player->GetPosition();
+			//}
 
 
 		//	Vec3 diff = playerPos - enemyPos;
@@ -163,7 +169,6 @@ namespace basecross
 			//	<< L"\nEnemyPos.z" << enemyPos.z
 			//	<< L"\nEnemyLife" << BrokenObjs::GetHP() << endl;
 			//scene->SetDebugString(wss.str());
-		//BrokenObjs::OnUpdate();
 		//}
 
 		m_stateMachine->Update(); //状態の更新	
@@ -179,7 +184,9 @@ namespace basecross
 		{
 			m_stateMachine->ChangeState(WonderingState::Instance());
 		}
-
+		
+		m_broken.OnUpdate();
+		StageObject::OnUpdate();
 	}
 
 	void Enemy::Wondering()
@@ -195,6 +202,7 @@ namespace basecross
 		}
 
 		auto ground = GetStage()->GetSharedGameObject<Ground>(L"Ground");
+		if (!ground) return;
 		Vec3 groundPos = ground->GetComponent<Transform>()->GetPosition();
 
 		if (enemyPos.x < groundPos.x)
@@ -243,8 +251,8 @@ namespace basecross
 		if (other->FindTag(L"Attack"))
 		{
 			isHit = true;
-			BrokenObjs::SetDamage(damage);
-			BrokenObjs::takeDamage();
+			m_broken.SetDamage(damage);
+			m_broken.takeDamage();
 		}
 	}
 }

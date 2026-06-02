@@ -4,7 +4,7 @@
 
 namespace basecross
 {
-	class Enemy : public BrokenObjs
+	class Enemy : public StageObject
 	{
 
 		shared_ptr<Transform> m_transComp;
@@ -37,15 +37,12 @@ namespace basecross
 		float followRange = 5.0f; //追尾を開始する距離
 		float followSpeed = 1.5f;//追尾時の速度
 
-
+		BrokenObjs m_broken;
 
 		unique_ptr<StateMachine<Enemy>> m_stateMachine;
 	public:
-		Enemy(const shared_ptr<Stage>& stage) :
-			BrokenObjs(stage),
-			hp(4)
-		{
-		}
+		Enemy(shared_ptr<Stage>& stage);
+		~Enemy();
 
 		void OnCreate()override;
 		void OnUpdate()override;
