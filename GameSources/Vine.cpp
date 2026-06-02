@@ -17,9 +17,6 @@ namespace basecross
 		StageObject::OnCreate();
 
 		m_transComp = GetComponent<Transform>();
-		m_transComp->SetScale(10, 10, 10);
-		m_transComp->SetPosition(0,50, 0);
-		AddComponent<Gravity>();
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
 

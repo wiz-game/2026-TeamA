@@ -108,7 +108,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Board.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)FormationUI.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Vine.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)FormationUI.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -201,6 +206,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Board.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)FormationUI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Vine.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)FormationUI.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
