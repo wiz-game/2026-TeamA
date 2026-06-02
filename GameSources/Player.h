@@ -61,7 +61,7 @@ namespace basecross {
 		virtual void Finish();
 		bool GetActive() { return m_isActive; }
 		void SetPlayer(const shared_ptr<GameObject>& player) { m_player = player; }
-
+		int GetCharacterNum() { return m_characterNum; }
 	};
 
 	// 隊列オブジェクトの管理クラス
@@ -83,12 +83,13 @@ namespace basecross {
 			if (m_formationNum >= 4)m_formationNum = 3;
 		}
 		int GetFormationNumber() { return m_formationNum; }
+		int GetFormationCharacterNum();
 	};
 
 	// 群れのキャラクター
 	class SubPlayer : public GameObject
 	{
-		//Vec3 m_targetPos;
+		Vec3 m_targetPos;
 		Vec3 m_playerPos;
 		shared_ptr<Transform> m_transComp;
 		//float m_rotate;
@@ -103,26 +104,27 @@ namespace basecross {
 		float m_maxSpeed;
 		int m_randam;
 		float m_dis;
-		Vec3 CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers);
-
+		Vec3 CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers, float seekBase = 2.0f, float sepBase = 1.5f);
+		bool m_isReadyFormation;
 	public:
 		// コンストラクタ
 		SubPlayer(const std::shared_ptr<Stage>& stage) :
 			GameObject(stage),
-			//m_targetPos(Vec3(0)),
+			m_targetPos(Vec3(0)),
 			m_playerPos(Vec3(0)),
 			//m_rotate(0),
 			m_dif(0),
 			m_stay(0),
 			m_follow(false),
 			m_velocity(Vec3(0)),
-			m_maxSpeed(8.0f)
+			m_maxSpeed(8.0f),
+			m_isReadyFormation(false)
 		{
 		}
 
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
-		//void SetTargetPos(const Vec3& pos) { m_targetPos = pos; }
+		void SetTargetPos(const Vec3& pos) { m_targetPos = pos; }
 		void SetPlayerPos(const Vec3& pos) { m_playerPos = pos; }
 		//void SetRotate(float rotate) { m_rotate = rotate; }
 		void SetAlive(bool isAlive); // 生きているかどうかのセッター
@@ -140,7 +142,8 @@ namespace basecross {
 			return m_state;
 		}
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
-
+		void SetReadyFormation(bool b) { m_isReadyFormation = b; }
+		bool GetReadyFormation() { return m_isReadyFormation; }
 	};
 
 
@@ -153,15 +156,20 @@ namespace basecross {
 		int m_activeNum;
 		bool m_allMove;
 		vector<shared_ptr<SubPlayer>> m_subPlayers; // 群れのキャラクター
+		vector<weak_ptr<SubPlayer>> m_formationMenber; // 隊列を組むために動くメンバー
 	public:
-		void Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject> player);
+		void Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject>& player);
 		void Add(int num, const Vec3& pos);
 		bool Erase(int num);
+		bool Erase();
 		void SetAllMove(bool allMove) { m_allMove = allMove; }
 		bool GetAllMove() { return m_allMove; }
 		vector<shared_ptr<GameObject>> GetActiveSubPlayer();
 		void AllCharacterMove();
 		void SetPlayerPos(const Vec3& pos);
+		bool StartForamtionMove(int num, const Vec3& pos);
+		int GetActiveNum() { return m_activeNum; }
+		bool CheckFormationReady();
 	};
 
 	// GameObjectクラスを継承した「Player」クラスを定義
@@ -181,8 +189,8 @@ namespace basecross {
 		Vec3 m_desiredVelocity;
 		JPH::ObjectLayer m_objectLayer;
 
-		PlayerTrackManager m_trackMng;
-		FormationManager m_formationMng;
+		shared_ptr<PlayerTrackManager> m_trackMng;
+		shared_ptr<FormationManager> m_formationMng;
 		shared_ptr<SubPlayerManager> m_subPlayerMng;
 
 		void InitializeCharacter();
@@ -217,7 +225,7 @@ namespace basecross {
 		void SetScale(const Vec3& scale) { m_scale = scale; }
 		Vec3 GetMoveVelocity() { return m_desiredVelocity; }
 
-		PlayerTrackManager GetTrackManager() const { return m_trackMng; }
+		shared_ptr<PlayerTrackManager> GetTrackManager() const { return m_trackMng; }
 		shared_ptr<SubPlayerManager> GetSunbPlayerManager() const { return m_subPlayerMng; }
 
 
