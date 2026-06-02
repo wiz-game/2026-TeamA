@@ -29,6 +29,12 @@ namespace basecross
 		float rx;
 		float rz;
 		Vec3 dir;
+		Vec3 diff;
+		float distance;
+		float elapsedTime;
+		float followRange;
+		float followSpeed;
+
 	public:
 		Enemy(const shared_ptr<Stage>& stage) :
 			BrokenObjs(stage),
@@ -36,9 +42,35 @@ namespace basecross
 		{
 		}
 
+		unique_ptr<StateMachine<Enemy>>  m_stateMachine;//エネミーのステート
+
+		void Wondering();
+		void Chasing();
+
 		void OnCreate()override;
 		void OnUpdate()override;
 
+
+	};
+
+	class WonderingState : public ObjState<Enemy>
+	{
+		WonderingState(){}
+	public:
+		static shared_ptr<WonderingState> Instance();
+		virtual void Enter(const shared_ptr<Enemy>& Obj)override;
+		virtual void Execute(const shared_ptr<Enemy>& Obj)override;
+		virtual void Exit(const shared_ptr<Enemy>& Obj)override;
+	};
+
+	class ChasingState : public ObjState<Enemy>
+	{
+		ChasingState(){}
+	public:
+		static shared_ptr<ChasingState> Instance();
+		virtual void Enter(const shared_ptr<Enemy>& Obj)override;
+		virtual void Execute(const shared_ptr<Enemy>& Obj)override;
+		virtual void Exit(const shared_ptr<Enemy>& Obj)override;
 
 	};
 

@@ -30,7 +30,9 @@
 #include "SkyBox.h"
 #include "Board.h"
 #include "TurningPoint.h"
+#include "Wall.h"
 
+#include "FormationUI.h"
 
 #include "GameStage.h"
 #include "GameClearStage.h"

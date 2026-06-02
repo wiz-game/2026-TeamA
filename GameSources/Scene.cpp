@@ -34,6 +34,16 @@ namespace basecross{
 		// リソースの読込
 		app->RegisterTexture(L"TEX_PAUSEUI", texPath + L"Pause.png");
 		app->RegisterTexture(L"TEX_POINTERUI", texPath + L"pointer.png");
+		app->RegisterTexture(L"TEX_BGMICON", texPath + L"BGMIcon.png");
+		app->RegisterTexture(L"TEX_SEICON", texPath + L"SEIcon.png");
+		app->RegisterTexture(L"TEX_BSQUARE", texPath + L"BSquare.png");
+		app->RegisterTexture(L"TEX_ALPHA", texPath + L"alphablended.png");
+		app->RegisterTexture(L"TEX_YZUI", texPath + L"yz.png");
+		app->RegisterTexture(L"TEX_HAMMERUI", texPath + L"hammer.png");
+		app->RegisterTexture(L"TEX_SPEARUI", texPath + L"spear.png");
+		app->RegisterTexture(L"TEX_STAIRSUI", texPath + L"stairs.png");
+		app->RegisterTexture(L"TEX_BRIDGEUI", texPath + L"bridge.png");
+
 
 		// playerモデルの読み込み
 		app->RegisterTexture(L"TEX_PLAYER", mediaPath + L"Models\\Player\\Sample_Player.png");

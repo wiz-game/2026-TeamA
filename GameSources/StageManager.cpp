@@ -34,12 +34,12 @@ namespace basecross
 		{
 			if (m_StageManager.get() == 0)
 			{
-				throw BaseException
-				(
-					L"StageManagerがまだ作成されてません",
-					L"if (m_StageManager.get() == 0)",
-					L"StageManager::GetStageManager()"
-				);
+				//throw BaseException
+				//(
+				//	L"StageManagerがまだ作成されてません",
+				//	L"if (m_StageManager.get() == 0)",
+				//	L"StageManager::GetStageManager()"
+				//);
 			}
 			return m_StageManager;
 		}
@@ -95,11 +95,11 @@ namespace basecross
 			ifstream file(strPath);
 			if (!file.is_open())
 			{
-				throw BaseException(
-					L"CSVファイルが開けませんでした",
-					L"ifstream file(strPath); if (!file.is_open())",
-					L"StageManager::LoadStageFromCSV()"
-				);
+				//throw BaseException(
+				//	L"CSVファイルが開けませんでした",
+				//	L"ifstream file(strPath); if (!file.is_open())",
+				//	L"StageManager::LoadStageFromCSV()"
+				//);
 			}
 
 			string line;
@@ -160,21 +160,21 @@ namespace basecross
 			auto scene = App::GetApp()->GetScene<Scene>();
 			if (!scene)
 			{
-				throw BaseException(
-					L"Scene が取得できません",
-					L"auto scene = App::GetApp()->GetScene<Scene>()",
-					L"StageManager::CreateObjectFromCSV()"
-				);
+				//throw BaseException(
+				//	L"Scene が取得できません",
+				//	L"auto scene = App::GetApp()->GetScene<Scene>()",
+				//	L"StageManager::CreateObjectFromCSV()"
+				//);
 			}
 
 			auto stage = scene->GetActiveTypeStage<GameStage>();
 			if (!stage)
 			{
-				throw BaseException(
-					L"アクティブなステージがありません",
-					L"scene->GetActiveTypeStage<GameStage>()",
-					L"StageManager::CreateObjectFromCSV()"
-				);
+				//throw BaseException(
+				//	L"アクティブなステージがありません",
+				//	L"scene->GetActiveTypeStage<GameStage>()",
+				//	L"StageManager::CreateObjectFromCSV()"
+				//);
 			}
 
 			// --- オブジェクト生成 ---
@@ -265,6 +265,15 @@ namespace basecross
 			}
 			else if (name == L"PoisonLongMushroom")
 			{
+
+			}
+			else if (name == L"Board")
+			{
+				auto board = stage->AddGameObject<Wall>();
+				board->SetPosition(pos);
+				board->SetRotation(rot);
+				board->SetScale(scale);
+				return;
 
 			}
 			else if (name == L"GameObject")
