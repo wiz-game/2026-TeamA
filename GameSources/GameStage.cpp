@@ -91,7 +91,7 @@ namespace basecross {
 		{
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
 			{
-				m_isActive = true;
+				SetIsActive(true);
 				option->SetVisible(false);
 
 			}

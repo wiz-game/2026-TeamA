@@ -3,12 +3,13 @@
 
 namespace basecross
 {
+	//オプション
 	Option::Option(const shared_ptr<Stage>& stage) :
 		GameObject(stage),
 		m_prevLStick(0),
 		m_isActive(false),
 		m_optionItem(OptionItem::Return),
-		cursolpositon(Vec3(-250,170,0)),
+		cursolpositon(-250,170,0),
 		itemCount(static_cast<int>(OptionItem::Count))
 	{
 	}
@@ -17,9 +18,7 @@ namespace basecross
 	void Option::OnCreate()
 	{
 		CreateUI();
-
 		SetVisible(false);
-
 		m_pauseUI[0]->SetDrawActive(m_isActive);
 	}
 
@@ -59,7 +58,6 @@ namespace basecross
 		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
 		if (!stage->GetIsActive())
 		{
-
 			switch (m_optionItem)
 			{
 			case OptionItem::Return:
@@ -124,9 +122,9 @@ namespace basecross
 				}
 				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 				{			
+					SetVisible(false);
 					stage->AddGameObject<SoundTest>();
-					stage->RemoveGameObject<Option>(GetThis<Option>());
-					//stage->RemoveGameObject<Option>(GetThis<Option>());
+					GetThis<Option>()->SetUpdateActive(false);
 				}
 				break;
 			case OptionItem::Title:
@@ -142,32 +140,33 @@ namespace basecross
 				}
 				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 				{
-					PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToGameClearStage");//ゲームシーンを移動する
+					PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToTitleStage");//ゲームシーンを移動する
 				}
-
 				break;
-
 			}
-		
+
 			m_cursol->GetComponent<Transform>()->SetPosition(cursolpositon);
 			m_prevLStick = LStick;
 		}
-
 	}
 
+	//サウンドテスト
 	SoundTest::SoundTest(const shared_ptr<Stage>& stage) :
 		GameObject(stage),
 		m_soundTestItem(SoundTestItem::BGM),
 		m_newBGMVolume(1.0f),
 		m_newSEVolume(1.0f),
-		m_prevLStick(0)
+		m_prevLStick(0),
+		cursolPosition(-450, 200, 0)
 	{
 	}
 	SoundTest::~SoundTest(){}
 
 	void SoundTest::OnCreate()
 	{
+		auto stage = GetStage()->GetThis<GameStage>();
 		CreateUI();
+		option = stage->GetSharedGameObject<Option>(L"Option");
 	}
 
 	void SoundTest::CreateUI()
@@ -177,6 +176,9 @@ namespace basecross
 		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_BGMICON", true, Vec3(1280, 800, 0) * 0.003f, Vec3(-200, 200, 0)));
 		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_SEICON" , true, Vec3(1280, 800, 0) * 0.003f, Vec3(-200, -200, 0)));
 		m_soundTestUI.push_back(stage->AddGameObject<Sprite>(L"TEX_ALPHA", true, Vec3(1280, 800, 0) * 0.008f, Vec3(0, 0, 0)));
+		m_cursol = stage->AddGameObject<Sprite>(L"TEX_POINTERUI", true, Vec3(200, 200, 0) * 0.01f, cursolPosition); //カーソル
+		m_soundTestUI.push_back(m_cursol);
+
 
 		m_soundTestUI[1]->SetDrawLayer(2);
 		m_soundTestUI[2]->SetDrawLayer(2);
@@ -193,14 +195,21 @@ namespace basecross
 		auto stage = GetStage()->GetThis<GameStage>();
 		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
 		float lStickValue = 0.5f;
+		float cursolIndex = 400.0f; //カーソル移動用変数
 
 		switch (m_soundTestItem)
 		{
 		case SoundTestItem::BGM:
 			if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
+			{
+				cursolPosition.y -= cursolIndex;
 				m_soundTestItem = SoundTestItem::SE;
+			}
 			else if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
+			{
+				cursolPosition.y -= cursolIndex;
 				m_soundTestItem = SoundTestItem::SE;
+			}
 
 			if (m_prevLStick.x <= lStickValue && LStick.x >= lStickValue)
 				scene->m_BGMVolume += 0.2f;
@@ -214,9 +223,15 @@ namespace basecross
 			break;
 		case SoundTestItem::SE:
 			if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
+			{
+				cursolPosition.y += cursolIndex;
 				m_soundTestItem = SoundTestItem::BGM;
+			}
 			else if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
+			{
+				cursolPosition.y += cursolIndex;
 				m_soundTestItem = SoundTestItem::BGM;
+			}
 
 			if (m_prevLStick.x <= lStickValue && LStick.x >= lStickValue)
 				scene->m_SEVolume += 0.2f;
@@ -229,13 +244,19 @@ namespace basecross
 				scene->m_SEVolume = 1.0f;
 			break;
 		}
+		m_cursol->GetComponent<Transform>()->SetPosition(cursolPosition);
 		m_prevLStick = LStick;
+		
 
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
 		{
-			auto option = stage->GetSharedGameObject<Option>(L"Option");
+			for (auto& ui : m_soundTestUI)
+			{
+				stage->RemoveGameObject<Sprite>(ui);
+			}
+			option->SetVisible(true);
 			option->SetUpdateActive(true);
-			
+			stage->RemoveGameObject<SoundTest>(GetThis<SoundTest>());
 		}
 	}
 }
