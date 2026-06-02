@@ -152,9 +152,10 @@ namespace basecross {
 	class SubPlayerManager
 	{
 	private:
-		const static int MAX_CHARACTER_NUM = 150;
+		const static int MAX_CHARACTER_NUM = 100;
 		int m_activeNum;
 		bool m_allMove;
+		Vec3 m_targetPos;
 		vector<shared_ptr<SubPlayer>> m_subPlayers; // 群れのキャラクター
 		vector<weak_ptr<SubPlayer>> m_formationMenber; // 隊列を組むために動くメンバー
 	public:
@@ -170,6 +171,7 @@ namespace basecross {
 		bool StartForamtionMove(int num, const Vec3& pos);
 		int GetActiveNum() { return m_activeNum; }
 		bool CheckFormationReady();
+		Vec3 GetTargetPos() { return m_targetPos; }
 	};
 
 	// GameObjectクラスを継承した「Player」クラスを定義
@@ -183,6 +185,7 @@ namespace basecross {
 		Vec3 m_rotation; // プレイヤーの回転
 		Vec3 m_scale;    // プレイヤーのスケーリング
 		Vec3 m_velocity; // プレイヤーの移動ベクトル
+		float m_roadWidth = 10;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
@@ -231,7 +234,7 @@ namespace basecross {
 
 		void OnCollisionEnter(const shared_ptr<GameObject>& other);
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
-
+		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
 	};
 
 

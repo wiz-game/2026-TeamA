@@ -262,21 +262,49 @@ namespace basecross {
 		{
 			return false;
 		}
+		m_formationMenber.clear();
+		vector<weak_ptr<SubPlayer>> nears;
 		for (auto& subPlayer : m_subPlayers)
 		{
-			if (num <= 0)
-			{
-				break;
-			}
 			if (subPlayer->GetAlive())
 			{
-				subPlayer->GetStateMachine()->ChangeState(SubPlayerMoveToTargetPositionState::Instance());
-				subPlayer->SetTargetPos(pos);
-				//subPlayer->SetReadyFormation(true);
-				m_formationMenber.push_back(subPlayer);
-				num--;
+				if (num > 0)
+				{
+					//subPlayer->GetStateMachine()->ChangeState(SubPlayerMoveToTargetPositionState::Instance());
+					//subPlayer->SetTargetPos(pos);
+					//subPlayer->SetReadyFormation(true);
+					nears.push_back(subPlayer);
+					num--;
+				}
+				else
+				{
+					Vec3 dis = pos - subPlayer->GetComponent<Transform>()->GetPosition();
+					for (int i = 0; i < nears.size() - 1; i++)
+					{
+						auto nearSub = nears[i].lock();
+						if (!nearSub) continue;
+						Vec3 com = pos - nearSub->GetComponent<Transform>()->GetPosition();
+						if (dis.length() < com.length())
+						{
+							nears[i] = subPlayer;
+							break;
+						}
+					}
+				}
 			}
 		}
+		m_formationMenber = nears;
+		for (auto& menber : m_formationMenber)
+		{
+			auto sub = menber.lock();
+			if (sub)
+			{
+				sub->GetStateMachine()->ChangeState(SubPlayerMoveToTargetPositionState::Instance());
+				sub->SetTargetPos(pos);
+
+			}
+		}
+		m_targetPos = pos;
 		return true;
 	}
 
@@ -422,7 +450,8 @@ namespace basecross {
 		{
 			auto rotate = m_rotation;
 			rotate.y += XM_PIDIV2;
-			m_formationMng->StartFormation(m_position, rotate);
+			auto pos = m_subPlayerMng->GetTargetPos();
+			m_formationMng->StartFormation(pos, rotate);
 
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
@@ -478,7 +507,7 @@ namespace basecross {
 		// 軌跡ノードの更新
 		auto rotate = m_rotation.y + XM_PIDIV2;
 		auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 2.5f;
-		m_trackMng->UpdateTrack(m_position + playerBack, 10.0f);
+		m_trackMng->UpdateTrack(m_position + playerBack, m_roadWidth);
 
 		// Debug用文字列
 		//app->GetScene<Scene>()->GetDebugString();
@@ -526,7 +555,19 @@ namespace basecross {
 		{
 			m_velocity.y = 0;
 		}
+
+		if (Other->FindTag(L"Cube"))
+		{
+			m_roadWidth = 5.0f;
+		}
 	}
+
+	void Player::OnCollisionExit(shared_ptr<GameObject>& Other)
+	{
+		m_roadWidth = 10.0f;
+
+	}
+
 	void Player::InitializeCharacter()
 	{
 		m_pPhysicsSystem = JoltManager::GetActiveSystem();
@@ -894,11 +935,11 @@ namespace basecross {
 		auto otherTrans = Other->GetComponent<Transform>();
 		auto otherPos = otherTrans->GetPosition();
 		auto otherScale = otherTrans->GetScale();
-		auto pos = m_transComp->GetPosition();
-		auto scale = m_transComp->GetScale();
+		auto pos = GetComponent<Transform>()->GetPosition();
+		auto scale = GetComponent<Transform>()->GetScale();
 		auto dis = pos - otherPos;
 		auto scaleSum = scale + otherScale;
-		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f)
+		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f || Other->FindTag(L"Cube"))
 		{
 			m_velocity.y = 0;
 		}
@@ -1180,7 +1221,7 @@ namespace basecross {
 		pos.x = 1;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(Vec3(XM_PIDIV2 / 3, 0, 0));
-		m_transComp->SetScale(Vec3(4.0f, 1.0f, 10.0f));
+		m_transComp->SetScale(Vec3(10.0f, 1.0f, 20.0f));
 		Vec3 scale = m_transComp->GetScale();
 
 		m_characterNum = 15;
@@ -1335,7 +1376,7 @@ namespace basecross {
 		pos.x = 1;
 		m_transComp->SetPosition(pos);
 		//m_transComp->SetRotation(Vec3(XM_PIDIV2 / 3, 0, 0));
-		m_transComp->SetScale(Vec3(4.0f, 1.0f, 20.0f));
+		m_transComp->SetScale(Vec3(10.0f, 1.0f, 40.0f));
 		Vec3 scale = m_transComp->GetScale();
 
 		m_characterNum = 15;
@@ -1344,6 +1385,7 @@ namespace basecross {
 		//col->SetMakedSize(0.5f);
 		col->SetDrawActive(true);
 		col->SetFixed(true);
+		AddTag(L"Cube");
 		// 箱形の当たり判定を作成
 		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
 		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
@@ -1407,8 +1449,8 @@ namespace basecross {
 		//rot.x = XM_PIDIV2 / 3;
 		rot.y += -XM_PIDIV2;
 		auto pos = position;
-		pos.x += cosf(-m_rotation.y) * 10.5f;
-		pos.z += sinf(-m_rotation.y) * 10.5f;
+		pos.x += cosf(-m_rotation.y) * 15.5f;
+		pos.z += sinf(-m_rotation.y) * 15.5f;
 		pos.y -= 1.0f;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(rot);
