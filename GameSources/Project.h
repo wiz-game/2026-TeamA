@@ -36,6 +36,7 @@
 #include "FormationUI.h"
 
 #include "GameStage.h"
+#include "TitleStage.h"
 #include "GameClearStage.h"
 #include "GameOverStage.h"
 
