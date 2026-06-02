@@ -28,7 +28,9 @@ namespace basecross
 
 	void GameOverStage::OnCreate()
 	{
-
+		CreateViewLight();
+		LoadTextures();
+		CreateUI();
 	}
 
 	void GameOverStage::OnUpdate()
@@ -42,7 +44,7 @@ namespace basecross
 
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameOverStage");//ゲームシーンを移動する
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");//ゲームシーンを移動する
 		}
 	}
 
@@ -51,7 +53,7 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 
-		AddGameObject<Sprite>(L"TEX_GameOver", true, Vec3(1280, 840, 0), Vec3(0, 0, 0));
+		AddGameObject<Sprite>(L"TEX_GameOver", true, Vec3(1280, 840, 0) * 0.01f, Vec3(0, 0, 0));
 
 	}
 

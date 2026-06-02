@@ -53,6 +53,8 @@ namespace basecross {
 			return m_isActive;
 		}
 
+
+
 		virtual void OnCreate()override; //‰Šú‰»
 		virtual void OnUpdate()override; //XV
 		virtual void OnUpdate2() override;
