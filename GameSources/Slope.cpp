@@ -4,7 +4,7 @@
 
 namespace basecross
 {
-	void Fence::OnCreate()
+	void Slope::OnCreate()
 	{
 		StageObject::OnCreate();
 		m_stage = GetStage();
@@ -13,27 +13,28 @@ namespace basecross
 		Mat4x4 spanMat;
 
 		spanMat.affineTransformation(
-			Vec3(0.5f, 0.5f, 0.5), // scale
+			Vec3(0.5f, 0.5f, 0.25), // scale
 			Vec3(0.0f, 0.0f, 0.0f), // rotation
-			Vec3(0.0f, 0.0f, 0.0f), // rotation
+			Vec3(0.0f, XM_PI, 0.0f), // rotation
 			Vec3(0.0f, -0.5f, 0.0f)  // position
 		);
 		m_drawComp = AddComponent<PNTStaticDraw>();
+		m_drawComp->SetMeshResource(L"MODEL_SLOPE");
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
 	}
 
-	void Fence::OnUpdate()
+	void Slope::OnUpdate()
 	{
 		StageObject::OnUpdate();
 
 	}
 
-	void Fence::SetCollar(Col4 collar)
+	void Slope::SetCollar(Col4 collar)
 	{
 		m_drawComp->SetDiffuse(collar);
 	}
 
-	void Fence::SetModel(const wstring& modelKey)
+	void Slope::SetModel(const wstring& modelKey)
 	{
 		m_drawComp->SetMeshResource(modelKey);
 	}

@@ -212,7 +212,10 @@ namespace basecross
 			}
 			else if(name==L"Slope")
 			{
-
+				auto slope = stage->AddGameObject<Slope>();
+				slope->SetPosition(pos);
+				slope->SetRotation(rot);
+				slope->SetScale(scale);
 			}
 			else if(name==L"Fence")
 			{
