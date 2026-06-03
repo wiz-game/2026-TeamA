@@ -24,10 +24,8 @@
 #include "BrokenObjs.h"
 #include "Enemy.h"
 #include "BreakWall.h"
-#include "Goal.h"
 #include "Sprite.h"
 #include "SkyBox.h"
-#include "Board.h"
 #include "TurningPoint.h"
 #include "Wall.h"
 

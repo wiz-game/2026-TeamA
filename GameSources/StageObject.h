@@ -32,6 +32,23 @@ namespace basecross
 
 	};
 
+	// ゴールクラス
+	class Goal : public StageObject
+	{
+		shared_ptr<PNTStaticDraw> m_drawComp;
+		void OnCollisionEnter(shared_ptr<GameObject>& other)override;
+
+	public:
+
+		Goal(const shared_ptr<Stage>& stage) :
+			StageObject(stage)
+		{
+		}
+		void OnCreate()override;
+		void OnUpdate()override;
+	};
+
+
 	// ブロッククラス
 	class Block : public StageObject
 	{
@@ -90,6 +107,22 @@ namespace basecross
 		void SetCollar(Col4 collar);
 
 	};
+
+	// 板クラス
+	class Board : public StageObject
+	{
+		shared_ptr<PNTStaticDraw> m_drawComp;
+		//void OnCollisionEnter(shared_ptr<GameObject>& other)override;
+	public:
+		Board(const shared_ptr<Stage>& stage) :
+			StageObject(stage)
+		{
+		}
+
+		void OnCreate()override;
+		void OnUpdate()override;
+	};
+
 
 	// 木クラス
 	class FirTree : public StageObject

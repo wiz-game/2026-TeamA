@@ -231,9 +231,8 @@ namespace basecross
 				board->SetPosition(pos);
 				board->SetRotation(rot);
 				board->SetScale(scale);
-				board->SetCollar(Col4(0.5f, 0.35f, 0.2f, 1.0f));
-
 			}
+
 			else if (name == L"Wall")
 			{
 				auto board = stage->AddGameObject<Block>();
@@ -270,18 +269,26 @@ namespace basecross
 				stone->SetScale(scale);
 
 			}
-			//else if(name==L"Mushroom")
-			//{
-			//	auto mushroom = stage->AddGameObject<Mushroom>();
-			//	mushroom->SetPosition(pos);
-			//	mushroom->SetRotation(rot);
-			//	mushroom->SetScale(scale);
-			//	mushroom->SetModel(L"MODEL_MUSHROOM");
-			//	mushroom->SetModelTexture(L"TEX_MUSHROOM");
+			else if(name==L"Mushroom")
+			{
+				auto mushroom = stage->AddGameObject<Mushroom>();
+				mushroom->SetPosition(pos);
+				mushroom->SetRotation(rot);
+				mushroom->SetScale(scale);
+				mushroom->SetModel(L"MODEL_MUSHROOM");
+				mushroom->SetModelTexture(L"TEX_MUSHROOM");
 
-			//	
+				
+				Mat4x4 spanMat;
+				spanMat.affineTransformation(
+					Vec3(1.25f, 2.5f, 1.25f), // scale
+					Vec3(0.0f, 0.0f, 0.0f), // rotation
+					Vec3(0.0f, XM_PI, 0.0f), // rotation
+					Vec3(0.0f, -0.5f, 0.0f)  // position
+				);
+				mushroom->SetModelMatrix(spanMat);
 
-			//}
+			}
 			else if (name == L"PoisonMushroom")
 			{
 				auto poisonMushroom = stage->AddGameObject<Mushroom>();
@@ -301,15 +308,26 @@ namespace basecross
 				poisonMushroom->SetModelMatrix(spanMat);
 
 			}
-			//else if (name == L"LongMushroom")
-			//{
-			//	auto longMushroom = stage->AddGameObject<Mushroom>();
-			//	longMushroom->SetPosition(pos);
-			//	longMushroom->SetRotation(rot);
-			//	longMushroom->SetScale(scale);
-			//	longMushroom->SetModel(L"MODEL_LONG_MUSHROOM");
-			//	longMushroom->SetModelTexture(L"TEX_MUSHROOM");
-			//}
+			else if (name == L"LongMushroom")
+			{
+				auto longMushroom = stage->AddGameObject<Mushroom>();
+				longMushroom->SetPosition(pos);
+				longMushroom->SetRotation(rot);
+				longMushroom->SetScale(scale);
+				longMushroom->SetModel(L"MODEL_LONG_MUSHROOM");
+				longMushroom->SetModelTexture(L"TEX_MUSHROOM");
+			 
+
+				Mat4x4 spanMat;
+				spanMat.affineTransformation(
+					Vec3(1.0f, 1.5f, 1.0f), // scale
+					Vec3(0.0f, 0.0f, 0.0f), // rotation
+					Vec3(0.0f, XM_PI, 0.0f), // rotation
+					Vec3(0.0f, -0.5f, 0.0f)  // position
+				);
+				longMushroom->SetModelMatrix(spanMat);
+
+			}
 			else if (name == L"PoisonLongMushroom")
 			{
 				auto poisonMushroom = stage->AddGameObject<Mushroom>();
