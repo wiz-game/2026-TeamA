@@ -472,8 +472,8 @@ namespace basecross {
 				Vec3 pos = m_position;
 				Vec3 rot = m_rotation;
 				rot.y += XM_PIDIV2;
-				pos.x += cosf(-rot.y) * 10.5f;
-				pos.z += sinf(-rot.y) * 10.5f;
+				pos.x += cosf(-rot.y) * 5.5f;
+				pos.z += sinf(-rot.y) * 5.5f;
 
 				m_subPlayerMng->StartForamtionMove(num, pos);
 			}
@@ -515,6 +515,7 @@ namespace basecross {
 		ss << L"FPS : " << app->GetStepTimer().GetFramesPerSecond() << endl;
 		ss << L"Formation : " << m_formationMng->GetFormationNumber() << endl;
 		ss << L"ActiveNum : " << m_subPlayerMng->GetActiveNum() << endl;
+		ss << L"RoadWidth : " << m_roadWidth << endl;
 		for (auto& obj : m_subPlayerMng->GetActiveSubPlayer())
 		{
 			auto sub = dynamic_pointer_cast<SubPlayer>(obj);
@@ -558,13 +559,21 @@ namespace basecross {
 
 		if (Other->FindTag(L"Cube"))
 		{
-			m_roadWidth = 5.0f;
+			m_roadWidth = 8.5f;
+		}
+		else if (Other->FindTag(L"Bridge"))
+		{
+			m_roadWidth = 6.0f;
+		}
+		else
+		{
+			m_roadWidth = 10.0f;
 		}
 	}
 
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other)
 	{
-		m_roadWidth = 10.0f;
+		//m_roadWidth = 10.0f;
 
 	}
 
@@ -747,6 +756,28 @@ namespace basecross {
 		auto delta = App::GetApp()->GetElapsedTime();
 
 		auto pos = m_transComp->GetPosition();
+		//重力
+		m_velocityY += -9.8f * delta;
+
+		m_velocity *= 0.9f;
+		// プレイヤーへの反発
+		{
+			auto disVec = pos - m_playerPos;
+			auto dis = disVec.length();
+			if (dis > 0.001f && dis < 2.5f)
+			{
+				auto pForce = disVec.normalize() * (200.0f / dis);
+				if (pForce.length() > 200.0f)
+				{
+					pForce = pForce.normalize() * 100.0f;
+				}
+				m_velocity += pForce * delta;
+			}
+
+		}
+
+		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;
+		m_transComp->SetPosition(pos);
 		auto dis = m_playerPos - pos;
 		//auto distance = Vec3(m_targetPos).length() + 1.0f;
 		if (dis.length() > m_dis + 2.5f)
@@ -804,8 +835,8 @@ namespace basecross {
 		//auto y = m_velocity.y;
 		//m_velocity.y = 0;
 		//m_velocity.normalize();
-		 //重力
-		float y = m_velocity.y - 9.8f * delta;
+		//重力
+		m_velocityY += -9.8f * delta;
 
 		if (frame % 5 == m_randam)
 		{
@@ -820,9 +851,7 @@ namespace basecross {
 				m_velocity = m_velocity.normalize() * m_maxSpeed;
 			}
 		}
-		m_velocity.y = y;
-		pos += m_velocity * delta;
-		//pos.y = m_playerPos.y;
+		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;
 		m_transComp->SetPosition(pos);
 
 		// 回転処理
@@ -834,7 +863,7 @@ namespace basecross {
 		auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
 		if (playerVec.length() < 0.1f)
 		{
-			if (dis.length() < 2.0f)
+			if (dis.length() < 3.0f)
 			{
 				m_dis = dis.length();
 				return true;
@@ -876,7 +905,7 @@ namespace basecross {
 		if (!player) return false;
 
 		//重力
-		float y = m_velocity.y - 9.8f * delta;
+		m_velocityY += -9.8f * delta;
 
 		auto pos = m_transComp->GetPosition();
 		{
@@ -890,8 +919,7 @@ namespace basecross {
 				m_velocity = m_velocity.normalize() * m_maxSpeed;
 			}
 		}
-		m_velocity.y = y;
-		pos += m_velocity * delta;
+		pos += (m_velocity + Vec3(0.0f,m_velocityY, 0.0f)) * delta;
 		m_transComp->SetPosition(pos);
 
 		// 回転処理
@@ -941,7 +969,7 @@ namespace basecross {
 		auto scaleSum = scale + otherScale;
 		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f || Other->FindTag(L"Cube"))
 		{
-			m_velocity.y = 0;
+			m_velocityY = 0;
 		}
 	}
 
@@ -1054,7 +1082,7 @@ namespace basecross {
 				auto disVec = pos - otherPos;
 				disVec.y = 0;
 				float dis = disVec.length();
-				if (dis > 0.001f && dis < 3.0f)
+				if (dis > 0.001f && dis < 2.5f)
 				{
 					auto push = disVec.normalize() * (1.0f / dis);
 					sepForce += push;
@@ -1082,10 +1110,10 @@ namespace basecross {
 		{
 			auto disVec = pos - m_playerPos;
 			auto dis = disVec.length();
-			if (dis > 0.001f && dis < 2.0f)
+			if (dis > 0.001f && dis < 2.5f)
 			{
-				auto pForce = disVec.normalize() * (100.0f / dis);
-				if (pForce.length() > 100.0f)
+				auto pForce = disVec.normalize() * (200.0f / dis);
+				if (pForce.length() > 200.0f)
 				{
 					pForce = pForce.normalize() * 100.0f;
 				}
@@ -1280,9 +1308,9 @@ namespace basecross {
 		rot.x = XM_PIDIV2 / 3;
 		rot.y += -XM_PIDIV2;
 		auto pos = position;
-		pos.x += cosf(-m_rotation.y) * 5.0f;
-		pos.z += sinf(-m_rotation.y) * 5.0f;
-		pos.y += 1.5f;
+		pos.x += cosf(-m_rotation.y) * 8.0f;
+		pos.z += sinf(-m_rotation.y) * 8.0f;
+		pos.y += 4.0f;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(rot);
 		m_isActive = true;
@@ -1385,7 +1413,7 @@ namespace basecross {
 		//col->SetMakedSize(0.5f);
 		col->SetDrawActive(true);
 		col->SetFixed(true);
-		AddTag(L"Cube");
+		AddTag(L"Bridge");
 		// 箱形の当たり判定を作成
 		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
 		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();

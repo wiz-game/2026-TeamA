@@ -106,6 +106,7 @@ namespace basecross {
 		float m_dis;
 		Vec3 CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers, float seekBase = 2.0f, float sepBase = 1.5f);
 		bool m_isReadyFormation;
+		float m_velocityY;
 	public:
 		// コンストラクタ
 		SubPlayer(const std::shared_ptr<Stage>& stage) :
@@ -118,7 +119,8 @@ namespace basecross {
 			m_follow(false),
 			m_velocity(Vec3(0)),
 			m_maxSpeed(8.0f),
-			m_isReadyFormation(false)
+			m_isReadyFormation(false),
+			m_velocityY(0)
 		{
 		}
 
