@@ -208,6 +208,10 @@ namespace basecross
 			}
 			else if (name == L"Foothold")
 			{
+				auto foothold = stage->AddGameObject<Foothold>();
+				foothold->SetPosition(pos);
+				foothold->SetRotation(rot);
+				foothold->SetScale(scale);
 
 			}
 			else if(name==L"Slope")
@@ -240,10 +244,18 @@ namespace basecross
 			}
 			else if (name ==L"FallenTree")
 			{
-
+				auto fallenTree = stage->AddGameObject<FallenTree>();
+				fallenTree->SetPosition(pos);
+				fallenTree->SetRotation(rot);
+				fallenTree->SetScale(scale);
+				fallenTree->SetCollar(Col4(0.35f, 0.35f, 0.35f, 1.0f));
 			}
 			else if (name==L"FirTree")
 			{
+				auto firTree = stage->AddGameObject<FirTree>();
+				firTree->SetPosition(pos);
+				firTree->SetRotation(rot);
+				firTree->SetScale(scale);
 
 			}
 			else if (name == L"Shrub")
@@ -252,22 +264,69 @@ namespace basecross
 			}
 			else if(name==L"Stone")
 			{
+				auto stone = stage->AddGameObject<Stone>();
+				stone->SetPosition(pos + Vec3(0.0f, 0.75f, 0.0f));
+				stone->SetRotation(rot);
+				stone->SetScale(scale);
 
 			}
-			else if(name==L"Mushroom")
-			{
+			//else if(name==L"Mushroom")
+			//{
+			//	auto mushroom = stage->AddGameObject<Mushroom>();
+			//	mushroom->SetPosition(pos);
+			//	mushroom->SetRotation(rot);
+			//	mushroom->SetScale(scale);
+			//	mushroom->SetModel(L"MODEL_MUSHROOM");
+			//	mushroom->SetModelTexture(L"TEX_MUSHROOM");
 
-			}
+			//	
+
+			//}
 			else if (name == L"PoisonMushroom")
 			{
+				auto poisonMushroom = stage->AddGameObject<Mushroom>();
+				poisonMushroom->SetPosition(pos);
+				poisonMushroom->SetRotation(rot);
+				poisonMushroom->SetScale(scale);
+				poisonMushroom->SetModel(L"MODEL_MUSHROOM");
+				poisonMushroom->SetModelTexture(L"TEX_LONG_MUSHROOM");
+
+				Mat4x4 spanMat;
+				spanMat.affineTransformation(
+					Vec3(1.25f, 2.5f, 1.25f), // scale
+					Vec3(0.0f, 0.0f, 0.0f), // rotation
+					Vec3(0.0f, XM_PI, 0.0f), // rotation
+					Vec3(0.0f, -0.5f, 0.0f)  // position
+				);
+				poisonMushroom->SetModelMatrix(spanMat);
 
 			}
-			else if (name == L"LongMushroom")
-			{
-
-			}
+			//else if (name == L"LongMushroom")
+			//{
+			//	auto longMushroom = stage->AddGameObject<Mushroom>();
+			//	longMushroom->SetPosition(pos);
+			//	longMushroom->SetRotation(rot);
+			//	longMushroom->SetScale(scale);
+			//	longMushroom->SetModel(L"MODEL_LONG_MUSHROOM");
+			//	longMushroom->SetModelTexture(L"TEX_MUSHROOM");
+			//}
 			else if (name == L"PoisonLongMushroom")
 			{
+				auto poisonMushroom = stage->AddGameObject<Mushroom>();
+				poisonMushroom->SetPosition(pos);
+				poisonMushroom->SetRotation(rot);
+				poisonMushroom->SetScale(scale);
+				poisonMushroom->SetModel(L"MODEL_LONG_MUSHROOM");
+				poisonMushroom->SetModelTexture(L"TEX_LONG_MUSHROOM");
+
+				Mat4x4 spanMat;
+				spanMat.affineTransformation(
+					Vec3(1.0f, 1.5f, 1.0f), // scale
+					Vec3(0.0f, 0.0f, 0.0f), // rotation
+					Vec3(0.0f, XM_PI, 0.0f), // rotation
+					Vec3(0.0f, -0.5f, 0.0f)  // position
+				);
+				poisonMushroom->SetModelMatrix(spanMat);
 
 			}
 			else if (name == L"Board")

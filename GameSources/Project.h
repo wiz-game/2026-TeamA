@@ -23,7 +23,6 @@
 #include "PlayerCamera.h"
 #include "BrokenObjs.h"
 #include "Enemy.h"
-#include "Block.h"
 #include "BreakWall.h"
 #include "Goal.h"
 #include "Sprite.h"
@@ -31,8 +30,6 @@
 #include "Board.h"
 #include "TurningPoint.h"
 #include "Wall.h"
-#include "Fence.h"
-#include "Slope.h"
 
 #include "FormationUI.h"
 

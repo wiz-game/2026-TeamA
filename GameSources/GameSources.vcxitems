@@ -14,7 +14,6 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Block.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Board.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BrokenObjs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
@@ -33,7 +32,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)JoltRigidBody.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Option.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SkyBox.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Slope.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
@@ -49,7 +47,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Wall.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Block.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Board.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BrokenObjs.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
@@ -70,7 +67,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)JoltRigidBody.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Option.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SkyBox.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Slope.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StageManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
