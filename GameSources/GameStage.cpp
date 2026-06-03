@@ -126,5 +126,12 @@ namespace basecross {
 
 	}
 
+	void GameStage::OnDestroy()
+	{
+		auto& app = App::GetApp();
+		auto XAPtr = App::GetApp()->GetXAudio2Manager();
+		XAPtr->Stop(m_BGM);
+	}
+
 }
 //end basecross
