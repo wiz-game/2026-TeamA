@@ -208,6 +208,21 @@ namespace basecross {
 		return true;
 
 	}
+	bool SubPlayerManager::Erase(const shared_ptr<SubPlayer>& subPlayer)
+	{
+		for (auto& obj : GetActiveSubPlayer())
+		{
+			auto active = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer == active)
+			{
+				subPlayer->SetAlive(false);
+				m_activeNum--;
+				break;
+			}
+		}
+		return true;
+
+	}
 
 	void SubPlayerManager::AllCharacterMove()
 	{
@@ -266,7 +281,7 @@ namespace basecross {
 		vector<weak_ptr<SubPlayer>> nears;
 		for (auto& subPlayer : m_subPlayers)
 		{
-			if (subPlayer->GetAlive())
+			if (subPlayer->GetAlive() && subPlayer->GetStateMachine()->IsInState(SubPlayerFollowState::Instance()))
 			{
 				if (num > 0)
 				{
@@ -730,12 +745,20 @@ namespace basecross {
 		m_state->Update();
 
 		auto pos = m_transComp->GetPosition();
+		
+		auto dis = m_playerPos - pos;
+		if (dis.length() > 30.0f)
+		{
+			m_state->ChangeState(SubPlayerStrayState::Instance());
+		}
 
 		if (pos.y < -100)
 		{
-			pos.y = m_playerPos.y;
-			m_velocity.y = 0;
-			m_transComp->SetPosition(pos);
+			auto obj = m_player.lock();
+			if (!obj) return;
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (!player)return;
+			player->GetSunbPlayerManager()->Erase(GetThis<SubPlayer>());
 		}
 	}
 
@@ -955,6 +978,30 @@ namespace basecross {
 			//}
 		}
 		
+		return false;
+	}
+
+	bool SubPlayer::Stray()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+
+		auto pos = m_transComp->GetPosition();
+
+		//重力
+		m_velocityY += -9.8f * delta;
+
+		m_velocity *= 0.9f;
+
+		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;
+		m_transComp->SetPosition(pos);
+		auto dis = m_playerPos - pos;
+
+		if (dis.length() < 10.0f)
+		{
+			return true;
+		}
+
+
 		return false;
 	}
 
@@ -1597,6 +1644,28 @@ namespace basecross {
 	void SubPlayerMoveToTargetPositionState::Exit(const shared_ptr<SubPlayer>& obj)
 	{
 		obj->SetReadyFormation(true);
+	}
+
+	shared_ptr<SubPlayerStrayState> SubPlayerStrayState::Instance()
+	{
+		static shared_ptr<SubPlayerStrayState> instance(new SubPlayerStrayState);
+		return instance;
+	}
+
+	void SubPlayerStrayState::Enter(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+	void SubPlayerStrayState::Execute(const shared_ptr<SubPlayer>& obj)
+	{
+		if (obj->Stray())
+		{
+			obj->GetStateMachine()->ChangeState(SubPlayerFollowState::Instance());
+		}
+	}
+	void SubPlayerStrayState::Exit(const shared_ptr<SubPlayer>& obj)
+	{
+
 	}
 
 }

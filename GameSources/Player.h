@@ -135,6 +135,7 @@ namespace basecross {
 		bool Stay();
 		bool FollowPlayer();
 		bool MoveToTargetPosition();
+		bool Stray();
 		void SetPlayer(const shared_ptr<GameObject>& player) { m_player = player; }
 		shared_ptr<GameObject> GetPlayer();
 		Vec3 GetVelocity() { return m_velocity; }
@@ -165,6 +166,7 @@ namespace basecross {
 		void Add(int num, const Vec3& pos);
 		bool Erase(int num);
 		bool Erase();
+		bool Erase(const shared_ptr<SubPlayer>& subPlayer);
 		void SetAllMove(bool allMove) { m_allMove = allMove; }
 		bool GetAllMove() { return m_allMove; }
 		vector<shared_ptr<GameObject>> GetActiveSubPlayer();
@@ -355,6 +357,18 @@ namespace basecross {
 		SubPlayerMoveToTargetPositionState() {}
 
 		static shared_ptr<SubPlayerMoveToTargetPositionState> Instance();
+		void Enter(const shared_ptr<SubPlayer>& obj) override;
+		void Execute(const shared_ptr<SubPlayer>& obj) override;
+		void Exit(const shared_ptr<SubPlayer>& obj) override;
+
+	};
+
+	class SubPlayerStrayState : public ObjState<SubPlayer>
+	{
+	public:
+		SubPlayerStrayState() {}
+
+		static shared_ptr<SubPlayerStrayState> Instance();
 		void Enter(const shared_ptr<SubPlayer>& obj) override;
 		void Execute(const shared_ptr<SubPlayer>& obj) override;
 		void Exit(const shared_ptr<SubPlayer>& obj) override;
