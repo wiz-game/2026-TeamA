@@ -32,6 +32,7 @@
 #include "TurningPoint.h"
 #include "Wall.h"
 #include "Vine.h"
+#include "Baite.h"
 
 #include "FormationUI.h"
 
