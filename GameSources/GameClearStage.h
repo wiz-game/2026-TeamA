@@ -17,6 +17,7 @@ namespace basecross
 		void CreateViewLight(); //ビューの作成
 		void CreateUI();
 		void LoadTextures();
+		shared_ptr<SoundItem> m_BGM; // サウンド用ポインタ
 
 	public:
 		//構築と破棄
@@ -25,6 +26,7 @@ namespace basecross
 
 		virtual void OnCreate()override; //初期化
 		virtual void OnUpdate()override; //更新
+		void OnDestroy()override;
 
 	};
 }

@@ -30,6 +30,9 @@ namespace basecross{
 
 		//オーディオの登録
 		app->RegisterWav(L"StageBGM", audioPath + L"stagebgm.wav");
+		app->RegisterWav(L"TitleBGM", audioPath + L"titlebgm.wav");
+		app->RegisterWav(L"GameOverBGM", audioPath + L"gameoverbgm.wav");
+		app->RegisterWav(L"GameClearBGM", audioPath + L"gameclearbgm.wav");
 
 		// テクスチャの読込
 		app->RegisterTexture(L"TEX_PAUSEUI", texPath + L"Pause.png");
