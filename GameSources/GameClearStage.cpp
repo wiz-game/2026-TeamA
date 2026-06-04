@@ -34,7 +34,7 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto XAPtr = app->GetXAudio2Manager();
-		m_BGM = XAPtr->Start(L"GameOverBGM", 1, scene->m_BGMVolume);
+		m_BGM = XAPtr->Start(L"GameOverBGM", 0, scene->m_BGMVolume);
 
 
 	}
@@ -60,7 +60,7 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 
-		AddGameObject<Sprite>(L"TEX_GameClear", true, Vec3(1280, 840, 0) * 0.01f, Vec3(0, 0, 0));
+		AddGameObject<Sprite>(L"TEX_GameClear", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 0, 0));
 
 	}
 
