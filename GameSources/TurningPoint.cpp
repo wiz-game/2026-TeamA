@@ -31,7 +31,7 @@ namespace basecross
 	{
 		auto stage = GetStage();
 		auto player = stage->GetSharedGameObject<Player>(L"Player");
-		if (other && player);
+		if (other && player)
 		{
 			playerCamera->SetNextCameraAngle(nextEye = Vec3(0, 0, 0), nextAt = Vec3(0, 0, 0));
 			playerCamera->ChangeAngle();

@@ -31,6 +31,12 @@ namespace basecross
 		CreateViewLight();
 		LoadTextures();
 		CreateUI();
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto XAPtr = app->GetXAudio2Manager();
+		m_BGM = XAPtr->Start(L"GameOverBGM", 1, scene->m_BGMVolume);
+
+
 	}
 
 	void GameClearStage::OnUpdate()
@@ -65,6 +71,13 @@ namespace basecross
 		auto texPath = mediaPath + L"Textures\\";
 
 		app->RegisterTexture(L"TEX_GameClear", texPath + L"GameClear.png");
+	}
+
+	void GameClearStage::OnDestroy()
+	{
+		auto& app = App::GetApp();
+		auto XAPtr = app->GetXAudio2Manager();
+		XAPtr->Stop(m_BGM);
 	}
 
 }
