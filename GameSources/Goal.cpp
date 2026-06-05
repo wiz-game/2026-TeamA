@@ -22,7 +22,9 @@ namespace basecross
 
 	void Goal::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
-		auto stage = GetStage();
+		auto& app = App::GetApp();
+		auto& scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveTypeStage<GameStage>();
 		auto player = stage->GetSharedGameObject<Player>(L"Player");
 		if (other == player)
 		{
