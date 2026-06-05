@@ -550,21 +550,21 @@ namespace basecross {
 		ss << L"Formation : " << m_formationMng->GetFormationNumber() << endl;
 		ss << L"ActiveNum : " << m_subPlayerMng->GetActiveNum() << endl;
 		ss << L"RoadWidth : " << m_roadWidth << endl;
-		for (auto& obj : m_subPlayerMng->GetActiveSubPlayer())
-		{
-			auto sub = dynamic_pointer_cast<SubPlayer>(obj);
-			if (sub)
-			{
-				if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()))
-				{
-					ss << L"Stay ";
-				}
-				else
-				{
-					ss << L"Move ";
-				}
-			}
-		}
+		//for (auto& obj : m_subPlayerMng->GetActiveSubPlayer())
+		//{
+		//	auto sub = dynamic_pointer_cast<SubPlayer>(obj);
+		//	if (sub)
+		//	{
+		//		if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()))
+		//		{
+		//			ss << L"Stay ";
+		//		}
+		//		else
+		//		{
+		//			ss << L"Move ";
+		//		}
+		//	}
+		//}
 		ss << endl;
 		app->GetScene<Scene>()->SetDebugString(ss.str());
 	}
