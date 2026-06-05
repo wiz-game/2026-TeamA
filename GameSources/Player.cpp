@@ -7,6 +7,355 @@
 #include "Project.h"
 
 namespace basecross {
+
+	void PlayerTrackManager::UpdateTrack(const Vec3& playerPos, float width)
+	{
+		// 軌跡がないとき
+		if (m_track.empty())
+		{
+			m_track.push_back({ playerPos, width });
+			return;
+		}
+
+		// 最後の軌跡と今の場所を比較し、移動してたら軌跡を追加
+		auto lastPos = m_track.back().position;
+		auto dis = playerPos - lastPos;
+		dis.y = 0;
+		if (dis.length() > m_interval)
+		{
+			m_track.push_back({ playerPos, width });
+			// 軌跡のノードの最大数を超えたら最初のノードを破棄
+			if (m_track.size() > m_maxNode)
+			{
+				m_track.pop_front();
+			}
+		}
+	}
+
+	TrackNode PlayerTrackManager::GetNearTrackNode(const Vec3& pos)
+	{
+		// 軌跡がないとき
+		if (m_track.empty())
+		{
+			return {pos, 10.0f};
+		}
+
+		// 最も近い軌跡ノードを探す
+		int id = 0;
+		float min = FLT_MAX;
+		for (int i = 0; i < m_track.size(); i++)
+		{
+			auto trackPos = m_track.back().position;
+			auto dis = pos - trackPos;
+			if (dis.length() < min)
+			{
+				id = i;
+			}
+		}
+		id += 1;
+		if (id >= m_track.size())
+		{
+			id = m_track.size() - 1;
+		}
+		return m_track[id];
+	}
+
+	void FormationManager::Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject> player)
+	{
+		m_formation[0] = stage->AddGameObject<HammerFormation>();
+		m_formation[1] = stage->AddGameObject<CubeFormation>();
+		m_formation[2] = stage->AddGameObject<SpearFormation>();
+		m_formation[3] = stage->AddGameObject<BridgeFormation>();
+
+		for (int i = 0; i < 4; i++)
+		{
+			auto formation = m_formation[i].lock();
+			if (formation)
+			{
+				formation->SetUpdateActive(false);
+				formation->SetDrawActive(false);
+				formation->SetPlayer(player);
+			}
+		}
+
+	}
+
+	void FormationManager::StartFormation(const Vec3& pos, const Vec3& rot)
+	{
+		auto formation = m_formation[m_formationNum].lock();
+		if (formation)
+		{
+			formation->Start(pos, rot);
+		}
+	}
+	
+	void FormationManager::FinishFormation()
+	{
+		auto formation = m_formation[m_formationNum].lock();
+		if (formation)
+		{
+			formation->Finish();
+		}
+	}
+
+	bool FormationManager::GetFormationActive()
+	{
+		auto formation = m_formation[m_formationNum].lock();
+		if (formation)
+		{
+			return formation->GetActive();
+		}
+
+		return false;
+	}
+
+	int FormationManager::GetFormationCharacterNum()
+	{
+		auto formation = m_formation[m_formationNum].lock();
+		if (formation)
+		{
+			return formation->GetCharacterNum();
+		}
+
+		return -1;
+	}
+
+	void SubPlayerManager::Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject>& player)
+	{
+		for (int i = 0; i < MAX_CHARACTER_NUM; i++)
+		{
+			auto subPlayer = stage->AddGameObject<SubPlayer>();
+			subPlayer->SetAlive(false);
+			subPlayer->SetPlayer(player);
+			m_subPlayers.push_back(subPlayer);
+		}
+
+	}
+
+	void SubPlayerManager::Add(int num, const Vec3& pos)
+	{
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (num <= 0)
+			{
+				break;
+			}
+			if (!subPlayer->GetAlive())
+			{
+				subPlayer->SetAlive(true);
+				int x = -rand() % 15 + 8;
+				int z = -rand() % 15 + 8;
+				Vec3 v = { (float)x, 0.5f, (float)z };
+				subPlayer->SetPosition(v + pos);
+				//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
+				subPlayer->GetStateMachine()->ChangeState(SubPlayerFollowState::Instance());
+				m_activeNum++;
+				num--;
+			}
+		}
+
+	}
+
+	bool SubPlayerManager::Erase(int num)
+	{
+		int rest = 0;
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (subPlayer->GetAlive())
+			{
+				rest++;
+			}
+		}
+		if (rest < num)
+		{
+			return false;
+		}
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (num <= 0)
+			{
+				break;
+			}
+			if (subPlayer->GetAlive())
+			{
+				subPlayer->SetAlive(false);
+				m_activeNum--;
+				num--;
+			}
+		}
+
+		return true;
+
+	}
+
+	bool SubPlayerManager::Erase()
+	{
+		for (auto& suba : m_formationMenber)
+		{
+			auto sub = suba.lock();
+			for (auto& obj : GetActiveSubPlayer())
+			{
+				auto active = dynamic_pointer_cast<SubPlayer>(obj);
+				if (sub == active)
+				{
+					sub->SetAlive(false);
+					m_activeNum--;
+					break;
+				}
+			}
+		}
+		m_formationMenber.clear();
+		return true;
+
+	}
+	bool SubPlayerManager::Erase(const shared_ptr<SubPlayer>& subPlayer)
+	{
+		for (auto& obj : GetActiveSubPlayer())
+		{
+			auto active = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer == active)
+			{
+				subPlayer->SetAlive(false);
+				m_activeNum--;
+				break;
+			}
+		}
+		return true;
+
+	}
+
+	void SubPlayerManager::AllCharacterMove()
+	{
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (subPlayer->GetAlive())
+			{
+				subPlayer->SetFollow(true);
+			}
+		}
+	}
+
+	vector<shared_ptr<GameObject>> SubPlayerManager::GetActiveSubPlayer()
+	{
+		vector<shared_ptr<GameObject>> objs;
+		for (auto& obj : m_subPlayers)
+		{
+			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
+			if (subPlayer)
+			{
+				if (subPlayer->GetAlive())
+				{
+					objs.push_back(obj);
+				}
+			}
+		}
+
+		return objs;
+	}
+
+
+	void SubPlayerManager::SetPlayerPos(const Vec3& pos)
+	{
+		// 群れに移動用の座標を送る
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (subPlayer)
+			{
+				if (subPlayer->GetAlive())
+				{
+					//subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
+					subPlayer->SetPlayerPos(pos);
+					//subPlayer->SetRotate(m_rotation.y);
+				}
+			}
+		}
+	}
+
+	bool SubPlayerManager::StartForamtionMove(int num, const Vec3& pos)
+	{
+		if (m_activeNum < num)
+		{
+			return false;
+		}
+
+		int followNum = 0;
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (subPlayer->GetAlive() && !subPlayer->GetStateMachine()->IsInState(SubPlayerStrayState::Instance()))
+			{
+				followNum++;
+			}
+		}
+		if (followNum < num) return false;
+
+		m_formationMenber.clear();
+		vector<weak_ptr<SubPlayer>> nears;
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (subPlayer->GetAlive() && !subPlayer->GetStateMachine()->IsInState(SubPlayerStrayState::Instance()))
+			{
+				if (num > 0)
+				{
+					//subPlayer->GetStateMachine()->ChangeState(SubPlayerMoveToTargetPositionState::Instance());
+					//subPlayer->SetTargetPos(pos);
+					//subPlayer->SetReadyFormation(true);
+					nears.push_back(subPlayer);
+					num--;
+				}
+				else
+				{
+					Vec3 dis = pos - subPlayer->GetComponent<Transform>()->GetPosition();
+					float max = 0;
+					int maxNum = 0;
+					for (int i = 0; i < nears.size(); i++)
+					{
+						auto nearSub = nears[i].lock();
+						if (!nearSub) continue;
+						Vec3 com = pos - nearSub->GetComponent<Transform>()->GetPosition();
+						if (max < com.length())
+						{
+							max = com.length();
+							maxNum = i;
+						}
+					}
+					if (dis.length() < max)
+					{
+						nears[maxNum] = subPlayer;
+					}
+				}
+			}
+		}
+		m_formationMenber = nears;
+		for (auto& menber : m_formationMenber)
+		{
+			auto sub = menber.lock();
+			if (sub)
+			{
+				sub->GetStateMachine()->ChangeState(SubPlayerMoveToTargetPositionState::Instance());
+				sub->SetTargetPos(pos);
+
+			}
+		}
+		m_targetPos = pos;
+		return true;
+	}
+
+	bool SubPlayerManager::CheckFormationReady()
+	{
+		bool isCheck = true;
+		if (m_formationMenber.empty()) return false;
+		for (auto& obj : m_formationMenber)
+		{
+			auto sub = obj.lock();
+			if (sub)
+			{
+				isCheck = isCheck && sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()) && sub->GetReadyFormation();
+			}
+		}
+
+		return isCheck;
+	}
+
 	// プレイヤーの初期設定
 	void Player::OnCreate()
 	{
@@ -24,61 +373,16 @@ namespace basecross {
 		//AddComponent<Gravity>();
 
 		// 群れのキャラクターの生成
-		int num[12] = { 10, 12, 12, 14, 14, 14, 14, 14, 12, 12, 12, 10 };
-		int n = 0;;
-		int sum = 0;
-		sum += num[n];
-		for (int i = 0; i < MAX_CHARACTER_NUM; i++)
-		{
-			if (i >= sum)
-			{
-				n++;
-				sum += num[n];
-			}
-			float x = ((float)((i % num[n]) / 2) + 0.5f) * (float)(i % 2 == 0 ? 1 : -1) * 1.0f;
-			float z = n * 1.0f + 1;
-			m_characterPositions[i] = Vec3(x, 0, z);
-			auto subPlayer = GetStage()->AddGameObject<SubPlayer>(m_characterPositions[i]);
-			subPlayer->SetAlive(false);
-			subPlayer->SetPlayer(GetThis<GameObject>());
-			m_subPlayers.push_back(subPlayer);
-		}
-		AddSubPlayer(30);
+		m_subPlayerMng = shared_ptr<SubPlayerManager>(new SubPlayerManager());
+		m_subPlayerMng->Init(GetStage(), GetThis<GameObject>());
+		m_subPlayerMng->Add(20, m_position);
 
-		//// ハンマーのオブジェクトの作成
-		//m_hammer = GetStage()->AddGameObject<HammerFormation>();
-		//auto hammer = dynamic_pointer_cast<HammerFormation>(m_hammer);
-		//if (hammer)
-		//{
-		//	hammer->SetUpdateActive(false);
-		//	hammer->SetDrawActive(false);
-		//	hammer->SetPlayer(GetThis<Player>());
-		//}
+		// 隊列の生成
+		m_formationMng = shared_ptr<FormationManager>(new FormationManager());
+		m_formationMng->Init(GetStage(), GetThis<Player>());
 
-		//m_cube = GetStage()->AddGameObject<CubeFormation>();
-		//auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
-		//if (cube)
-		//{
-		//	cube->SetUpdateActive(false);
-		//	cube->SetDrawActive(false);
-		//	cube->SetPlayer(GetThis<Player>());
-		//}
-
-		m_formation[0] = GetStage()->AddGameObject<HammerFormation>();
-		m_formation[1] = GetStage()->AddGameObject<CubeFormation>();
-		m_formation[2] = GetStage()->AddGameObject<SpearFormation>();
-		m_formation[3] = GetStage()->AddGameObject<BridgeFormation>();
-
-		for (int i = 0; i < 4; i++)
-		{
-			auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[i]);
-			if (formation)
-			{
-				formation->SetUpdateActive(false);
-				formation->SetDrawActive(false);
-				formation->SetPlayer(GetThis<Player>());
-			}
-		}
+		// ノード管理クラスの生成
+		m_trackMng = shared_ptr<PlayerTrackManager>(new PlayerTrackManager());
 
 		//InitializeCharacter();
 
@@ -88,6 +392,8 @@ namespace basecross {
 		col->SetDrawActive(true);
 		//AddComponent<Gravity>();
 
+		// 当たり判定用のタグの追加
+		AddTag(L"Player");
 	}
 
 	// プレイヤーの更新処理
@@ -114,13 +420,13 @@ namespace basecross {
 		}
 
 		// 左スティックの入力に応じてプレイヤーを移動させる
-		float moveSpeed = 8.0f; // 移動速度
+		float moveSpeed = 9.0f; // 移動速度
 		Vec3 moveVec(LStick.x, m_velocity.y, LStick.y); // 移動ベクトル
 		m_velocity.y -= delta;
 		m_position = m_transform->GetPosition();
 		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
-		//m_desiredVelocity = moveVec * moveSpeed;
+		m_desiredVelocity = moveVec * moveSpeed;
 
 		//if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 		//{
@@ -148,163 +454,145 @@ namespace basecross {
 		GetStage()->GetCollisionManager()->SetRootAABB(aabb);
 
 		// 群れに移動用の座標を送る
-		for (auto& obj : m_subPlayers)
-		{
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer)
-			{
-				if (subPlayer->GetAlive())
-				{
-					//subPlayer->SetTargetPos(m_position - Vec3(cosf(m_rotation.y), 0, -sinf(m_rotation.y)) * 7.0f);
-					subPlayer->SetPlayerPos(m_position);
-					subPlayer->SetRotate(m_rotation.y);
-				}
-			}
-		}
+		m_subPlayerMng->SetPlayerPos(m_position);
 
 		// 群れの移動を管理
-		if ((m_desiredVelocity.length() > 0.1f || LStick.length()) && m_allMove)
+		if ((LStick.length() > 0.1f) && m_subPlayerMng->GetAllMove())
 		{
-			AllCharacterMove();
+			m_subPlayerMng->AllCharacterMove();
 		}
 		else if (m_desiredVelocity.length() < 0.1f)
 		{
-			m_allMove = false;
+			//m_allMove = false;
+			m_subPlayerMng->SetAllMove(false);
 		}
 
 		// ボタンで群れの数を変更
-		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP)
 		{
-			AddSubPlayer(1);
+			//AddSubPlayer(1);
+			m_subPlayerMng->Add(5, m_position);
 		}
 
-		if (pad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN)
 		{
-			EraseSubPlayer(1);
+			//EraseSubPlayer(1);
+			m_subPlayerMng->Erase(5);
 		}
+		// 隊列に関する処理
+		if (m_subPlayerMng->CheckFormationReady())
+		{
+			auto rotate = m_rotation;
+			rotate.y += XM_PIDIV2;
+			auto pos = m_subPlayerMng->GetTargetPos();
+			m_formationMng->StartFormation(pos, rotate);
 
-		//if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
-		//{
-		//	auto hammerFormation = dynamic_pointer_cast<HammerFormation>(m_hammer);
-		//	if (hammerFormation)
-		//	{
-		//		hammerFormation->Start(m_position, Vec3(0, m_rotation.y + XM_PIDIV2, 0), 20);
-		//	}
-		//}
-
-		//if (pad.wPressedButtons & XINPUT_GAMEPAD_Y)
-		//{
-		//	auto cube = dynamic_pointer_cast<CubeFormation>(m_cube);
-		//	if (cube)
-		//	{
-		//		auto pos = m_position;
-		//		//auto rot = cube->GetComponent<Transform>()->GetQuaternion().toRotVec();
-		//		pos.x += cosf(-m_rotation.y) * 3.0f;
-		//		pos.z += sinf(-m_rotation.y) * 3.0f;
-		//		pos.y -= 0.5f;
-		//		cube->Start(pos, Vec3(0, m_rotation.y - XM_PIDIV2, 0), 15);
-		//	}
-		//}
+		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
 		{
-			auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
-			if (formation)
+			//auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
+			//if (formation)
+			//{
+			//	auto rotate = m_rotation;
+			//	rotate.y += XM_PIDIV2;
+			//	formation->Start(m_position, rotate);
+			//}
+			if (!m_formationMng->GetFormationActive())
 			{
 				auto rotate = m_rotation;
 				rotate.y += XM_PIDIV2;
-				formation->Start(m_position, rotate);
+				//m_formationMng->StartFormation(m_position, rotate);
+				int num = m_formationMng->GetFormationCharacterNum();
+				Vec3 pos = m_position;
+				Vec3 rot = m_rotation;
+				rot.y += XM_PIDIV2;
+				pos.x += cosf(-rot.y) * 5.5f;
+				pos.z += sinf(-rot.y) * 5.5f;
+
+				m_subPlayerMng->StartForamtionMove(num, pos);
+			}
+			else
+			{
+				m_formationMng->FinishFormation();
+
 			}
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 		{
-			m_formationNumber -= 1;
-			if (m_formationNumber < 0)
-			{
-				m_formationNumber = 0;
-			}
+			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() - 1);
+			//m_formationNumber -= 1;
+			//if (m_formationNumber < 0)
+			//{
+			//	m_formationNumber = 0;
+			//}
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 		{
-			m_formationNumber += 1;
-			if (m_formationNumber >= 4)
-			{
-				m_formationNumber = 3;
-			}
+			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() + 1);
+
+			//m_formationNumber += 1;
+			//if (m_formationNumber >= 4)
+			//{
+			//	m_formationNumber = 3;
+			//}
 
 		}
 
-	}
+		// 軌跡ノードの更新
+		auto rotate = m_rotation.y + XM_PIDIV2;
+		auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 2.5f;
+		m_trackMng->UpdateTrack(m_position + playerBack, m_roadWidth);
 
-	void Player::AddSubPlayer(int num)
-	{
-		for (auto& obj : m_subPlayers)
+		// Debug用文字列
+		//app->GetScene<Scene>()->GetDebugString();
+		wstringstream ss;
+		ss << L"FPS : " << app->GetStepTimer().GetFramesPerSecond() << endl;
+		ss << L"Formation : " << m_formationMng->GetFormationNumber() << endl;
+		ss << L"ActiveNum : " << m_subPlayerMng->GetActiveNum() << endl;
+		ss << L"RoadWidth : " << m_roadWidth << endl;
+		for (auto& obj : m_subPlayerMng->GetActiveSubPlayer())
 		{
-			if (num <= 0)
+			auto sub = dynamic_pointer_cast<SubPlayer>(obj);
+			if (sub)
 			{
-				break;
-			}
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (!subPlayer->GetAlive())
-			{
-				subPlayer->SetAlive(true);
-				//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
-				m_activeNum++;
-				num--;
-			}
-		}
-	}
-
-	bool Player::EraseSubPlayer(int num)
-	{
-		int rest = 0;
-		for (auto& obj : m_subPlayers)
-		{
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer->GetAlive())
-			{
-				rest++;
+				if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()))
+				{
+					ss << L"Stay ";
+				}
+				else
+				{
+					ss << L"Move ";
+				}
 			}
 		}
-		if (rest < num)
-		{
-			return false;
-		}
-		for (auto& obj : m_subPlayers)
-		{
-			if (num <= 0)
-			{
-				break;
-			}
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer->GetAlive())
-			{
-				subPlayer->SetAlive(false);
-				m_activeNum--;
-				num--;
-			}
-		}
-
-		// 場所をただす
-		//int i = 0;
-		//for (auto& obj : m_subPlayers)
-		//{
-		//	auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-		//	if (subPlayer->GetAlive())
-		//	{
-		//		subPlayer->SetTargetPos(m_characterPositions[i]);
-		//		i++;
-		//	}
-		//}
-		return true;
+		ss << endl;
+		app->GetScene<Scene>()->SetDebugString(ss.str());
 	}
 
 
-
-	void Player::OnCollisionEnter(const shared_ptr<GameObject>& other)
+	void Player::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
 		if (other->FindTag(L"Ground"))
 		{
 		}
+
+		if (other->FindTag(L"Bridge"))
+		{
+			auto bridge = dynamic_pointer_cast<BridgeFormation>(other);
+			if (bridge)
+			{
+				bridge->SetOnPlayer(true);
+			}
+		}
+		if (other->FindTag(L"Cube"))
+		{
+			auto cube = dynamic_pointer_cast<CubeFormation>(other);
+			if (cube)
+			{
+				cube->SetOnPlayer(true);
+			}
+		}
+
 	}
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
@@ -320,7 +608,43 @@ namespace basecross {
 		{
 			m_velocity.y = 0;
 		}
+
+		if (Other->FindTag(L"Cube"))
+		{
+			m_roadWidth = 8.5f;
+		}
+		else if (Other->FindTag(L"Bridge"))
+		{
+			m_roadWidth = 6.0f;
+		}
+		else
+		{
+			m_roadWidth = 10.0f;
+		}
 	}
+
+	void Player::OnCollisionExit(shared_ptr<GameObject>& Other)
+	{
+		//m_roadWidth = 10.0f;
+		if (Other->FindTag(L"Bridge"))
+		{
+			auto bridge = dynamic_pointer_cast<BridgeFormation>(Other);
+			if (bridge)
+			{
+				bridge->SetOnPlayer(false);
+			}
+		}
+		if (Other->FindTag(L"Cube"))
+		{
+			auto cube = dynamic_pointer_cast<CubeFormation>(Other);
+			if (cube)
+			{
+				cube->SetOnPlayer(false);
+			}
+		}
+
+	}
+
 	void Player::InitializeCharacter()
 	{
 		m_pPhysicsSystem = JoltManager::GetActiveSystem();
@@ -442,18 +766,6 @@ namespace basecross {
 
 	}
 
-	void Player::AllCharacterMove()
-	{
-		for (auto& obj : m_subPlayers)
-		{
-			auto subPlayer = dynamic_pointer_cast<SubPlayer>(obj);
-			if (subPlayer->GetAlive())
-			{
-				subPlayer->SetFollow(true);
-			}
-		}
-
-	}
 
 	// 群れのキャラクターの初期化
 	void SubPlayer::OnCreate()
@@ -470,13 +782,14 @@ namespace basecross {
 		m_state.reset(new StateMachine<SubPlayer>(GetThis<SubPlayer>()));
 		m_state->ChangeState(SubPlayerFollowState::Instance());
 
-		m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
-		m_len = static_cast<float>(rand() % 10) / 10.0f * 7.0f;
+		//m_rad = static_cast<float>(rand() % 6282) / 1000.0f;
+		//m_len = static_cast<float>(rand() % 10) / 10.0f * 7.0f;
 
-		m_dif = (float)(rand() % 10) * 0.03f + 0.05f;
-
+		m_dif = (float)(rand() % 10) * 0.06f + 0.05f;
+		m_randam = rand() % 5;
 		auto col = AddComponent<CollisionSphere>();
 		col->SetDrawActive(true);
+
 	}
 
 	// 群れのキャラクターの更新
@@ -485,12 +798,20 @@ namespace basecross {
 		m_state->Update();
 
 		auto pos = m_transComp->GetPosition();
+		
+		auto dis = m_playerPos - pos;
+		if (dis.length() > 30.0f && !m_state->IsInState(SubPlayerMoveToTargetPositionState::Instance()))
+		{
+			m_state->ChangeState(SubPlayerStrayState::Instance());
+		}
 
 		if (pos.y < -100)
 		{
-			pos.y = m_playerPos.y;
-			m_velocity.y = 0;
-			m_transComp->SetPosition(pos);
+			auto obj = m_player.lock();
+			if (!obj) return;
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (!player)return;
+			player->GetSunbPlayerManager()->Erase(GetThis<SubPlayer>());
 		}
 	}
 
@@ -498,6 +819,9 @@ namespace basecross {
 	{
 		SetUpdateActive(isAlive);
 		SetDrawActive(isAlive);
+		SetReadyFormation(false);
+		m_velocity = { 0 };
+		m_velocityY = 0;
 
 	}
 	bool SubPlayer::GetAlive()
@@ -510,13 +834,39 @@ namespace basecross {
 		auto delta = App::GetApp()->GetElapsedTime();
 
 		auto pos = m_transComp->GetPosition();
+		//重力
+		m_velocityY += -9.8f * delta;
+
+		m_velocity *= 0.9f;
+		// プレイヤーへの反発
+		{
+			auto disVec = pos - m_playerPos;
+			auto dis = disVec.length();
+			if (dis > 0.001f && dis < 2.5f)
+			{
+				auto pForce = disVec.normalize() * (200.0f / dis);
+				if (pForce.length() > 200.0f)
+				{
+					pForce = pForce.normalize() * 100.0f;
+				}
+				m_velocity += pForce * delta;
+			}
+
+		}
+
+		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;
+		m_transComp->SetPosition(pos);
 		auto dis = m_playerPos - pos;
 		//auto distance = Vec3(m_targetPos).length() + 1.0f;
-		if (dis.length() > 14)
+		if (dis.length() > m_dis + 2.5f)
 		{
 			m_follow = true;
 		}
-		if (m_follow)
+		else
+		{
+			//m_follow = false;
+		}
+		if (m_follow && !m_isReadyFormation)
 		{
 			m_stay += delta;
 			if (m_stay > m_dif)
@@ -531,20 +881,16 @@ namespace basecross {
 	bool SubPlayer::FollowPlayer()
 	{
 		auto delta = App::GetApp()->GetElapsedTime();
+		auto frame = App::GetApp()->GetStepTimer().GetFrameCount();
 
 		Vec3 playerVec = Vec3(0);
-		if (!m_player.expired())
-		{
-			auto obj = m_player.lock();
-			if (obj)
-			{
-				auto player = dynamic_pointer_cast<Player>(obj);
-				if (player)
-				{
-					playerVec = player->GetMoveVelocity();
-				}
-			}
-		}
+		if (m_player.expired()) return false;
+		auto obj = m_player.lock();
+		if (!obj) return false;
+		auto player = dynamic_pointer_cast<Player>(obj);
+		if (!player) return false;
+		playerVec = player->GetMoveVelocity();
+		
 
 		//auto pos = m_transComp->GetPosition();
 		//auto rotate = -m_rotate + XM_PIDIV2;
@@ -557,33 +903,167 @@ namespace basecross {
 		//m_transComp->SetPosition(pos);
 
 		auto pos = m_transComp->GetPosition();
-		auto rotate = m_rotate + XM_PIDIV2;
-		auto subPos = Vec3(cosf(m_rad - rotate) * m_len, 0, sinf(m_rad - rotate) * m_len);
-		auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 7.5f;
-		Vec3 moveVec = Vec3(m_playerPos + subPos + playerBack - pos);
-		moveVec.y = 0;
-		moveVec.normalize();
-		m_velocity += moveVec * 0.5f;
-		auto y = m_velocity.y;
-		m_velocity.y = 0;
-		m_velocity.normalize();
-		// 重力
-		m_velocity.y = y - 9.8f * delta;
-		pos += m_velocity * delta * 8.0f;
-		//pos.y = m_playerPos.y;
+		//auto rotate = m_rotate + XM_PIDIV2;
+		//auto subPos = Vec3(cosf(m_rad - rotate) * m_len, 0, sinf(m_rad - rotate) * m_len);
+		//auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 7.5f;
+		//Vec3 moveVec = Vec3(m_playerPos + subPos + playerBack - pos);
+		//moveVec.y = 0;
+		//moveVec.normalize();
+		//m_velocity += moveVec * 0.5f;
+		//auto y = m_velocity.y;
+		//m_velocity.y = 0;
+		//m_velocity.normalize();
+		//重力
+		m_velocityY += -9.8f * delta;
+
+		if (frame % 5 == m_randam)
+		{
+			auto trackMng = player->GetTrackManager();
+			auto node = trackMng->GetNearTrackNode(pos);
+			auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
+			auto steeringForce = CalculateSteering(node, others);
+			m_velocity += steeringForce * delta * 5;
+			m_velocity.y = 0;
+			if (m_velocity.length() > m_maxSpeed)
+			{
+				m_velocity = m_velocity.normalize() * m_maxSpeed;
+			}
+		}
+		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;
 		m_transComp->SetPosition(pos);
 
 		// 回転処理
-		auto rad = atan2f(moveVec.x, moveVec.z) + XM_PI;
+		auto rad = atan2f(m_velocity.x, m_velocity.z) + XM_PI;
 		m_transComp->SetRotation(Vec3(0, rad, 0));
 
 
-		auto dis = m_playerPos + subPos + playerBack - pos;
-		if (dis.length() < 1.0f && playerVec.length() < 0.1f)
+		auto dis = m_playerPos - pos;
+		auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
+		if (playerVec.length() < 0.1f)
+		{
+			if (dis.length() < 3.0f)
+			{
+				m_dis = dis.length();
+				return true;
+			}
+			else
+			{
+				for (auto& other : others)
+				{
+					auto sub = dynamic_pointer_cast<SubPlayer>(other);
+					if (sub)
+					{
+						if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()))
+						{
+							auto otherPos = sub->GetComponent<Transform>()->GetPosition();
+							auto otherDis = otherPos - pos;
+							if (otherDis.length() < 1.3f)
+							{
+								m_dis = dis.length();
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+		return false;
+	}
+
+	bool SubPlayer::MoveToTargetPosition()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+
+		if (m_player.expired()) return false;
+		auto obj = m_player.lock();
+		if (!obj) return false;
+		auto player = dynamic_pointer_cast<Player>(obj);
+		if (!player) return false;
+
+		//重力
+		m_velocityY += -9.8f * delta;
+
+		auto pos = m_transComp->GetPosition();
+		{
+			TrackNode node{ m_targetPos, 10 };
+			auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
+			auto steeringForce = CalculateSteering(node, others, 4.0f, 1.0f);
+			m_velocity += steeringForce * delta;
+			m_velocity.y = 0;
+			if (m_velocity.length() > m_maxSpeed)
+			{
+				m_velocity = m_velocity.normalize() * m_maxSpeed;
+			}
+		}
+		pos += (m_velocity + Vec3(0.0f,m_velocityY, 0.0f)) * delta;
+		m_transComp->SetPosition(pos);
+
+		// 回転処理
+		auto rad = atan2f(m_velocity.x, m_velocity.z) + XM_PI;
+		m_transComp->SetRotation(Vec3(0, rad, 0));
+
+
+		auto dis = m_targetPos - pos;
+		auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
+		if (dis.length() < 3.0f)
+		{
+			m_dis = dis.length();
+			return true;
+		}
+		else
+		{
+			//for (auto& other : others)
+			//{
+			//	auto sub = dynamic_pointer_cast<SubPlayer>(other);
+			//	if (sub)
+			//	{
+			//		if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()))
+			//		{
+			//			auto otherPos = sub->GetComponent<Transform>()->GetPosition();
+			//			auto otherDis = otherPos - pos;
+			//			if (otherDis.length() < 1.3f)
+			//			{
+			//				m_dis = dis.length();
+			//				return true;
+			//			}
+			//		}
+			//	}
+			//}
+		}
+		
+		return false;
+	}
+
+	bool SubPlayer::Stray()
+	{
+		auto delta = App::GetApp()->GetElapsedTime();
+
+		auto pos = m_transComp->GetPosition();
+
+		//重力
+		m_velocityY += -9.8f * delta;
+
+		m_velocity *= 0.9f;
+
+		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;
+		m_transComp->SetPosition(pos);
+		auto dis = m_playerPos - pos;
+
+		if (dis.length() < 10.0f)
 		{
 			return true;
 		}
 
+		if (dis.length() > 60.0f)
+		{
+			auto obj = m_player.lock();
+			if (!obj) return false;
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (!player)return false;
+			player->GetSunbPlayerManager()->Erase(GetThis<SubPlayer>());
+		}
 
 		return false;
 	}
@@ -593,13 +1073,13 @@ namespace basecross {
 		auto otherTrans = Other->GetComponent<Transform>();
 		auto otherPos = otherTrans->GetPosition();
 		auto otherScale = otherTrans->GetScale();
-		auto pos = m_transComp->GetPosition();
-		auto scale = m_transComp->GetScale();
+		auto pos = GetComponent<Transform>()->GetPosition();
+		auto scale = GetComponent<Transform>()->GetScale();
 		auto dis = pos - otherPos;
 		auto scaleSum = scale + otherScale;
-		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f)
+		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f || Other->FindTag(L"Cube"))
 		{
-			m_velocity.y = 0;
+			m_velocityY = 0;
 		}
 	}
 
@@ -616,15 +1096,189 @@ namespace basecross {
 		return nullptr;
 	}
 
+	void SubPlayer::SetPosition(const Vec3& pos)
+	{
+		m_transComp->SetPosition(pos);
+	}
+
+	Vec3 SubPlayer::CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers, float seekBase, float sepBase)
+	{
+		Vec3 force = Vec3(0);
+
+		auto pos = m_transComp->GetPosition();
+		// プレイヤーとの距離をもとに分離の値を変更
+		// 群れの数も参照する
+		float playerDis = 0;
+		if (!m_player.expired())
+		{
+			auto obj = m_player.lock();
+			if (obj)
+			{
+				auto playerPos = obj->GetComponent<Transform>()->GetPosition();
+				playerDis = Vec3(playerPos - pos).length();
+			}
+		}
+		float separateRatio = (7.0f / playerDis);
+		if (separateRatio < 0.2f)
+		{
+			separateRatio = 0.2f;
+		}
+		else if (separateRatio > 1.f)
+		{
+			separateRatio = 1.0f;
+		}
+		int num = subPlayers.size();
+		float sepRatio = (float)num / 100.0f;
+		if (sepRatio < 0.5f)
+		{
+			sepRatio = 0.5f;
+		}
+		else if (sepRatio > 2.0f)
+		{
+			sepRatio = 2;
+		}
+
+
+		// 道幅をもとに追従、分散の大きさの割合を決める
+		// 基準を10.0fとして比率を計算
+		float spreadRatio = targetNode.roadWidth / 10.0f;
+		if (spreadRatio > 1.0f)
+		{
+			spreadRatio = 1.0f;
+		}
+		else if (spreadRatio < 0.1f)
+		{
+			spreadRatio = 0.1f;
+		}
+
+		// Seekは狭いと強くなる
+		float seekWeight = (1.0f + (1.0f - spreadRatio) * 2.0f) * seekBase;
+		// Separationは狭いと弱くなる
+		float sepWeight = spreadRatio * sepBase * separateRatio + sepRatio;
+
+		// Seek(軌跡への追従)の処理
+		{
+			Vec3 disVec = targetNode.position - pos;
+			disVec.y = 0;
+			float dis = disVec.length();
+
+			// ノードの範囲内にいるときはスピードを緩める
+			float speedScale = ((dis * dis) < (targetNode.roadWidth / 2.0f) * (targetNode.roadWidth / 2.0f)) ? 0.6f : 1.0f;
+
+			disVec *= m_maxSpeed * speedScale;
+			auto seekForce = disVec - m_velocity;
+
+			// 力の制限
+			if (seekForce.length() > 10.0f)
+			{
+				seekForce = seekForce.normalize() * 10.0f;
+			}
+
+			force += seekForce * seekWeight;
+		}
+
+		// Separation(衝突回避の反発)の処理
+		{
+			Vec3 sepForce = Vec3(0);
+			int sepCount = 0;
+
+			for (auto& obj : subPlayers)
+			{
+				auto other = dynamic_pointer_cast<SubPlayer>(obj);
+				if (!other) continue;
+				if (other == GetThis<SubPlayer>()) continue;
+
+				auto otherPos = other->GetComponent<Transform>()->GetPosition();
+				auto disVec = pos - otherPos;
+				disVec.y = 0;
+				float dis = disVec.length();
+				if (dis > 0.001f && dis < 2.5f)
+				{
+					auto push = disVec.normalize() * (1.0f / dis);
+					sepForce += push;
+					sepCount++;
+				}
+			}
+
+			if (sepCount > 0)
+			{
+				sepForce /= sepCount;
+				// 現在の速度を引いてステアリング力に変換
+				sepForce = sepForce.normalize() * m_maxSpeed - m_velocity;
+
+				// 力の制限
+				if (sepForce.length() > 10.0f)
+				{
+					sepForce = sepForce.normalize() * 10.0f;
+				}
+
+				force += sepForce * sepWeight;
+			}
+		}
+
+		// プレイヤーへの反発
+		{
+			auto disVec = pos - m_playerPos;
+			auto dis = disVec.length();
+			if (dis > 0.001f && dis < 2.5f)
+			{
+				auto pForce = disVec.normalize() * (200.0f / dis);
+				if (pForce.length() > 200.0f)
+				{
+					pForce = pForce.normalize() * 100.0f;
+				}
+				force += pForce;
+			}
+
+		}
+
+		// Aligment(群れの進行方向を合わせる)処理
+		{
+			Vec3 aliForce = Vec3(0);
+			int count = 0;
+
+			for (auto& obj : subPlayers)
+			{
+				auto other = dynamic_pointer_cast<SubPlayer>(obj);
+				if (!other) continue;
+				if (other == GetThis<SubPlayer>()) continue;
+
+				auto otherPos = other->GetComponent<Transform>()->GetPosition();
+				auto disVec = pos - otherPos;
+				disVec.y = 0;
+				float dis = disVec.length();
+				if (dis > 0.001f && dis < 5.0f)
+				{
+					aliForce += other->GetVelocity();
+					count++;
+				}
+			}
+
+			if (count > 0)
+			{
+				aliForce /= count;
+				aliForce = (aliForce.normalize() * m_maxSpeed) - m_velocity;
+
+				force += aliForce;
+			}
+		}
+		return force;
+	}
+
+
 	void CharacterFormation::Finish()
 	{
 		m_isActive = false;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			player->AddSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				player->GetSunbPlayerManager()->Add(m_characterNum, m_transComp->GetPosition());
+			}
 		}
 
 	}
@@ -671,10 +1325,14 @@ namespace basecross {
 	void HammerFormation::Start(const Vec3& position, const Vec3& rotation)
 	{
 		bool b = true;
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			b = player->EraseSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				b = player->GetSunbPlayerManager()->Erase();
+			}
 		}
 		if (!b)
 		{
@@ -701,7 +1359,7 @@ namespace basecross {
 		pos.x = 1;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(Vec3(XM_PIDIV2 / 3, 0, 0));
-		m_transComp->SetScale(Vec3(4.0f, 1.0f, 10.0f));
+		m_transComp->SetScale(Vec3(10.0f, 1.0f, 20.0f));
 		Vec3 scale = m_transComp->GetScale();
 
 		m_characterNum = 15;
@@ -711,26 +1369,19 @@ namespace basecross {
 		col->SetDrawActive(true);
 		col->SetFixed(true);
 		AddTag(L"Cube");
-		// 箱形の当たり判定を作成
-		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
-		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
-
-		//JoltRigidBody::Settings rbSettings;
-		//rbSettings.shape = boxShape; // 共通の形状を使い回す
-		//rbSettings.motionType = JPH::EMotionType::Kinematic; // 物理演算で動く設定
-		//rbSettings.objectLayer = Layers::MOVING; // レイヤー 1 (例: MOVING)
-		//rbSettings.mass = 10.0f; // 重さ 10kg
-		//rbSettings.restitution = 0.5f; // 反発係数 0.5 (弾む)
-		//rbSettings.friction = 0.5f;
-		//m_rigidBody = AddComponent<JoltRigidBody>();
-		//m_rigidBody->Initialize(rbSettings);
-
 	}
 
 	void CubeFormation::OnUpdate()
 	{
 		auto delta = App::GetApp()->GetElapsedTime();
-		m_time += delta;
+		if (!m_onPlayer)
+		{
+			m_time += delta;
+		}
+		else
+		{
+			m_time = 0;
+		}
 		if (m_time > 3.0f)
 		{
 			//m_isActive = false;
@@ -755,10 +1406,14 @@ namespace basecross {
 			return;
 		}
 		bool b = true;
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			b = player->EraseSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				b = player->GetSunbPlayerManager()->Erase();
+			}
 		}
 		if (!b)
 		{
@@ -770,9 +1425,9 @@ namespace basecross {
 		rot.x = XM_PIDIV2 / 3;
 		rot.y += -XM_PIDIV2;
 		auto pos = position;
-		pos.x += cosf(-m_rotation.y) * 5.0f;
-		pos.z += sinf(-m_rotation.y) * 5.0f;
-		pos.y += 1.5f;
+		pos.x += cosf(-m_rotation.y) * 8.0f;
+		pos.z += sinf(-m_rotation.y) * 8.0f;
+		pos.y += 4.0f;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(rot);
 		m_isActive = true;
@@ -831,10 +1486,14 @@ namespace basecross {
 	void SpearFormation::Start(const Vec3& position, const Vec3& rotation)
 	{
 		bool b = true;
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			b = player->EraseSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				b = player->GetSunbPlayerManager()->Erase();
+			}
 		}
 		if (!b)
 		{
@@ -862,7 +1521,7 @@ namespace basecross {
 		pos.x = 1;
 		m_transComp->SetPosition(pos);
 		//m_transComp->SetRotation(Vec3(XM_PIDIV2 / 3, 0, 0));
-		m_transComp->SetScale(Vec3(4.0f, 1.0f, 20.0f));
+		m_transComp->SetScale(Vec3(10.0f, 1.0f, 40.0f));
 		Vec3 scale = m_transComp->GetScale();
 
 		m_characterNum = 15;
@@ -871,6 +1530,7 @@ namespace basecross {
 		//col->SetMakedSize(0.5f);
 		col->SetDrawActive(true);
 		col->SetFixed(true);
+		AddTag(L"Bridge");
 		// 箱形の当たり判定を作成
 		//JPH::BoxShapeSettings boxShapeSettings(JPH::Vec3(0.5f, 0.5f, 0.5f));
 		//JPH::ShapeRefC boxShape = boxShapeSettings.Create().Get();
@@ -890,7 +1550,14 @@ namespace basecross {
 	void BridgeFormation::OnUpdate()
 	{
 		auto delta = App::GetApp()->GetElapsedTime();
-		m_time += delta;
+		if (!m_onPlayer)
+		{
+			m_time += delta;
+		}
+		else
+		{
+			m_time = 0;
+		}
 		if (m_time > 3.0f)
 		{
 			//m_isActive = false;
@@ -908,6 +1575,7 @@ namespace basecross {
 		}
 	}
 
+
 	void BridgeFormation::Start(const Vec3& position, const Vec3& rotation)
 	{
 		if (m_isActive)
@@ -915,10 +1583,14 @@ namespace basecross {
 			return;
 		}
 		bool b = true;
-		auto player = m_player.lock();
-		if (player)
+		auto obj = m_player.lock();
+		if (obj)
 		{
-			b = player->EraseSubPlayer(m_characterNum);
+			auto player = dynamic_pointer_cast<Player>(obj);
+			if (player)
+			{
+				b = player->GetSunbPlayerManager()->Erase();
+			}
 		}
 		if (!b)
 		{
@@ -930,8 +1602,8 @@ namespace basecross {
 		//rot.x = XM_PIDIV2 / 3;
 		rot.y += -XM_PIDIV2;
 		auto pos = position;
-		pos.x += cosf(-m_rotation.y) * 10.5f;
-		pos.z += sinf(-m_rotation.y) * 10.5f;
+		pos.x += cosf(-m_rotation.y) * 15.5f;
+		pos.z += sinf(-m_rotation.y) * 15.5f;
 		pos.y -= 1.0f;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(rot);
@@ -1014,7 +1686,8 @@ namespace basecross {
 		auto player = dynamic_pointer_cast<Player>(gameObj);
 		if (player)
 		{
-			player->SetAllMove(true);
+			player->GetSunbPlayerManager()->SetAllMove(true);
+			obj->SetReadyFormation(false);
 		}
 	}
 	void SubPlayerFollowState::Execute(const shared_ptr<SubPlayer>& obj)
@@ -1025,6 +1698,51 @@ namespace basecross {
 		}
 	}
 	void SubPlayerFollowState::Exit(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+
+	shared_ptr<SubPlayerMoveToTargetPositionState> SubPlayerMoveToTargetPositionState::Instance()
+	{
+		static shared_ptr<SubPlayerMoveToTargetPositionState> instance(new SubPlayerMoveToTargetPositionState);
+		return instance;
+	}
+
+	void SubPlayerMoveToTargetPositionState::Enter(const shared_ptr<SubPlayer>& obj)
+	{
+		obj->GetComponent<PNTStaticDraw>()->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
+	}
+	void SubPlayerMoveToTargetPositionState::Execute(const shared_ptr<SubPlayer>& obj)
+	{
+		if (obj->MoveToTargetPosition())
+		{
+			obj->GetStateMachine()->ChangeState(SubPlayerStayState::Instance());
+		}
+	}
+	void SubPlayerMoveToTargetPositionState::Exit(const shared_ptr<SubPlayer>& obj)
+	{
+		obj->SetReadyFormation(true);
+		obj->GetComponent<PNTStaticDraw>()->SetDiffuse(Col4(0.5f, 0.5f, 0.5f, 1.0f));
+	}
+
+	shared_ptr<SubPlayerStrayState> SubPlayerStrayState::Instance()
+	{
+		static shared_ptr<SubPlayerStrayState> instance(new SubPlayerStrayState);
+		return instance;
+	}
+
+	void SubPlayerStrayState::Enter(const shared_ptr<SubPlayer>& obj)
+	{
+
+	}
+	void SubPlayerStrayState::Execute(const shared_ptr<SubPlayer>& obj)
+	{
+		if (obj->Stray())
+		{
+			obj->GetStateMachine()->ChangeState(SubPlayerFollowState::Instance());
+		}
+	}
+	void SubPlayerStrayState::Exit(const shared_ptr<SubPlayer>& obj)
 	{
 
 	}
