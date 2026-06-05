@@ -24,7 +24,7 @@ namespace basecross
 	{
 		auto stage = GetStage();
 		auto player = stage->GetSharedGameObject<Player>(L"Player");
-		if (other && player)
+		if (other == player)
 		{
 			auto& app = App::GetApp();
 			auto scene = app->GetScene<Scene>();
