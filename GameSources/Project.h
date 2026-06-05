@@ -40,5 +40,6 @@
 #include "TitleStage.h"
 #include "GameClearStage.h"
 #include "GameOverStage.h"
+#include "SelectStage.h"
 
 
