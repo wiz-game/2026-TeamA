@@ -118,7 +118,7 @@ namespace basecross {
 			m_stay(0),
 			m_follow(false),
 			m_velocity(Vec3(0)),
-			m_maxSpeed(8.0f),
+			m_maxSpeed(9.0f),
 			m_isReadyFormation(false),
 			m_velocityY(0)
 		{
@@ -236,7 +236,7 @@ namespace basecross {
 		shared_ptr<SubPlayerManager> GetSunbPlayerManager() const { return m_subPlayerMng; }
 
 
-		void OnCollisionEnter(const shared_ptr<GameObject>& other);
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& other) override;
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
 	};
@@ -261,16 +261,18 @@ namespace basecross {
 	class CubeFormation : public CharacterFormation
 	{
 		shared_ptr<JoltRigidBody> m_rigidBody;
+		bool m_onPlayer;
 
 	public:
 		CubeFormation(const std::shared_ptr<Stage>& stage) :
-			CharacterFormation(stage)
+			CharacterFormation(stage),
+			m_onPlayer(false)
 		{
 		}
 
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
-
+		void SetOnPlayer(bool b) { m_onPlayer = b; }
 		void Start(const Vec3& position, const Vec3& rotation);
 
 	};
@@ -294,16 +296,19 @@ namespace basecross {
 	class BridgeFormation : public CharacterFormation
 	{
 		Vec3 m_position;
+		bool m_onPlayer;
 	public:
 		BridgeFormation(const std::shared_ptr<Stage>& stage) :
-			CharacterFormation(stage)
+			CharacterFormation(stage),
+			m_position(Vec3(0)),
+			m_onPlayer(false)
 		{
 
 		}
 
 		void OnCreate() override; // 初期化
 		void OnUpdate() override; // 更新
-
+		void SetOnPlayer(bool b) { m_onPlayer = b; }
 		void Start(const Vec3& position, const Vec3& rotation) override;
 	};
 
