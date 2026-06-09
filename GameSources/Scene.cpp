@@ -30,8 +30,11 @@ namespace basecross{
 
 		//オーディオの登録
 		app->RegisterWav(L"StageBGM", audioPath + L"stagebgm.wav");
+		app->RegisterWav(L"TitleBGM", audioPath + L"titlebgm.wav");
+		app->RegisterWav(L"GameOverBGM", audioPath + L"gameoverbgm.wav");
+		app->RegisterWav(L"GameClearBGM", audioPath + L"gameclearbgm.wav");
 
-		// リソースの読込
+		// テクスチャの読込
 		app->RegisterTexture(L"TEX_PAUSEUI", texPath + L"Pause.png");
 		app->RegisterTexture(L"TEX_POINTERUI", texPath + L"pointer.png");
 		app->RegisterTexture(L"TEX_BGMICON", texPath + L"BGMIcon.png");
@@ -43,6 +46,7 @@ namespace basecross{
 		app->RegisterTexture(L"TEX_SPEARUI", texPath + L"spear.png");
 		app->RegisterTexture(L"TEX_STAIRSUI", texPath + L"stairs.png");
 		app->RegisterTexture(L"TEX_BRIDGEUI", texPath + L"bridge.png");
+		app->RegisterTexture(L"TEX_TITLEUI", texPath + L"title.png");
 
 
 		// playerモデルの読み込み
@@ -137,7 +141,8 @@ namespace basecross{
 
 			//自分自身にイベントを送る
 			//これによりゲームステージのオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+			//PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 
 			//GameManager::CreateGameManager();
 
@@ -157,6 +162,10 @@ namespace basecross{
 			StageManager::CreateStageManager();
 
 			StageManager::GetStageManager()->LoadStageFromCSV(L"stage1_1.csv");
+		}
+		if (event->m_MsgStr == L"ToTitleStage")
+		{
+			ResetActiveStage<TitleStage>();
 		}
 		if (event->m_MsgStr == L"ToGameClearStage")
 		{

@@ -4,6 +4,7 @@
 
 namespace basecross
 {
+	//オプション
 	enum class OptionItem
 	{
 		Return,
@@ -41,6 +42,7 @@ namespace basecross
 
 	};
 
+	//サウンドテスト
 	enum class SoundTestItem
 	{
 		BGM,
@@ -50,6 +52,9 @@ namespace basecross
 	class SoundTest : public GameObject
 	{
 		SoundTestItem m_soundTestItem;
+		shared_ptr<Option> option;
+		shared_ptr<GameObject> m_cursol;
+		Vec3 cursolPosition;
 		float m_newBGMVolume;
 		float m_newSEVolume;
 		Vec2 m_prevLStick;

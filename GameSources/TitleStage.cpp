@@ -1,19 +1,18 @@
 /*!
 @file GameClearStage.cpp
-@brief ゲームクリアステージ実体
+@brief タイトルステージクラス実体
 */
 
 #include "stdafx.h"
 #include "Project.h"
 
-namespace basecross 
+namespace basecross
 {
-
 	//--------------------------------------------------------------------------------------
-	//	ゲームクリアステージクラス実体
+	//	タイトルステージクラス実体
 	//--------------------------------------------------------------------------------------
 
-	void GameClearStage::CreateViewLight() 
+	void TitleStage::CreateViewLight()
 	{
 		auto camera = ObjectFactory::Create<Camera>();
 		camera->SetEye(Vec3(0.0, 2.0f, -5.0f));
@@ -26,20 +25,23 @@ namespace basecross
 		light->SetDefaultLighting();
 	}
 
-	void GameClearStage::OnCreate()
+	void TitleStage::OnCreate()
 	{
 		CreateViewLight();
-		LoadTextures();
 		CreateUI();
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto XAPtr = app->GetXAudio2Manager();
-		m_BGM = XAPtr->Start(L"GameOverBGM", 0, scene->m_BGMVolume);
-
+		m_BGM = XAPtr->Start(L"TitleBGM", XAUDIO2_LOOP_INFINITE, scene->m_BGMVolume);
 
 	}
 
-	void GameClearStage::OnUpdate()
+	void TitleStage::CreateUI()
+	{
+		AddGameObject<Sprite>(L"TEX_TITLEUI", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 0, 0));
+	}
+
+	void TitleStage::OnUpdate()
 	{
 		// アプリケーションオブジェクトを取得
 		auto& app = App::GetApp();
@@ -55,29 +57,10 @@ namespace basecross
 
 	}
 
-	void GameClearStage::CreateUI()
-	{
-		auto& app = App::GetApp();
-		auto scene = app->GetScene<Scene>();
-
-		AddGameObject<Sprite>(L"TEX_GameClear", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 0, 0));
-
-	}
-
-	void GameClearStage::LoadTextures()
-	{
-		auto& app = App::GetApp();
-		auto mediaPath = app->GetDataDirWString();
-		auto texPath = mediaPath + L"Textures\\";
-
-		app->RegisterTexture(L"TEX_GameClear", texPath + L"GameClear.png");
-	}
-
-	void GameClearStage::OnDestroy()
+	void TitleStage::OnDestroy()
 	{
 		auto& app = App::GetApp();
 		auto XAPtr = app->GetXAudio2Manager();
 		XAPtr->Stop(m_BGM);
 	}
-
 }

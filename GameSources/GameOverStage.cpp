@@ -28,6 +28,13 @@ namespace basecross
 
 	void GameOverStage::OnCreate()
 	{
+		CreateViewLight();
+		LoadTextures();
+		CreateUI();
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto XAPtr = app->GetXAudio2Manager();
+		m_BGM = XAPtr->Start(L"GameOverBGM", 0, scene->m_BGMVolume);
 
 	}
 
@@ -42,7 +49,7 @@ namespace basecross
 
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameOverStage");//ゲームシーンを移動する
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");//ゲームシーンを移動する
 		}
 	}
 
@@ -51,7 +58,7 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 
-		AddGameObject<Sprite>(L"TEX_GameOver", true, Vec3(1280, 840, 0), Vec3(0, 0, 0));
+		AddGameObject<Sprite>(L"TEX_GameOver", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 0, 0));
 
 	}
 
@@ -62,6 +69,13 @@ namespace basecross
 		auto texPath = mediaPath + L"Textures\\";
 
 		app->RegisterTexture(L"TEX_GameOver", texPath + L"GameOver.png");
+	}
+
+	void GameOverStage::OnDestroy()
+	{
+		auto& app = App::GetApp();
+		auto XAPtr = app->GetXAudio2Manager();
+		XAPtr->Stop(m_BGM);
 	}
 
 }

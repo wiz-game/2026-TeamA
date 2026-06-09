@@ -28,11 +28,15 @@
 #include "SkyBox.h"
 #include "TurningPoint.h"
 #include "Wall.h"
+#include "Vine.h"
+#include "Baite.h"
 
 #include "FormationUI.h"
 
 #include "GameStage.h"
+#include "TitleStage.h"
 #include "GameClearStage.h"
 #include "GameOverStage.h"
+#include "SelectStage.h"
 
 

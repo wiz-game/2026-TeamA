@@ -57,6 +57,7 @@ namespace basecross {
 			m_isActive = true;
 			AddGameObject<FormationUI>();
 			option = AddGameObject<Option>(); //オプションを追加しておくが、表示はしない
+			SetSharedGameObject(L"Option", option);
 
 			//StageBGM
 			auto XAPtr = App::GetApp()->GetXAudio2Manager();
@@ -90,7 +91,7 @@ namespace basecross {
 		{
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
 			{
-				m_isActive = true;
+				SetIsActive(true);
 				option->SetVisible(false);
 
 			}
@@ -123,6 +124,13 @@ namespace basecross {
 		app->RegisterTexture(L"090_000_000", texPath + L"090_000_000.bmp");
 		app->RegisterTexture(L"270_000_000", texPath + L"270_000_000.bmp");
 
+	}
+
+	void GameStage::OnDestroy()
+	{
+		auto& app = App::GetApp();
+		auto XAPtr = App::GetApp()->GetXAudio2Manager();
+		XAPtr->Stop(m_BGM);
 	}
 
 }

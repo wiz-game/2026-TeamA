@@ -18,11 +18,11 @@ namespace basecross
 	void FormationUI::CreateUI()
 	{
 		auto stage = GetStage();
-		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_YZUI", true, Vec3(1280, 800, 0) * 0.003f, Vec3(450, -250, 0)));     //0:矢印
-		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_HAMMERUI", true, Vec3(1280, 800, 0) * 0.002f, Vec3(450, -270, 0))); //1:ハンマー
-		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_STAIRSUI", true, Vec3(1280, 800, 0) * 0.002f, Vec3(450, -270, 0))); //2:階段(スロープ)
-		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_SPEARUI", true, Vec3(1280, 800, 0) * 0.002f, Vec3(450, -270, 0)));  //3:スピアー
-		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_BRIDGEUI", true, Vec3(1280, 800, 0) * 0.002f, Vec3(450, -270, 0))); //4:橋
+		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_YZUI", true, Vec3(1280, 840, 0) * 0.003f, Vec3(450, -250, 0)));     //0:矢印
+		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_HAMMERUI", true, Vec3(1280, 840, 0) * 0.002f, Vec3(450, -270, 0))); //1:ハンマー
+		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_STAIRSUI", true, Vec3(1280, 840, 0) * 0.002f, Vec3(450, -270, 0))); //2:階段(スロープ)
+		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_SPEARUI", true, Vec3(1280, 840, 0) * 0.002f, Vec3(450, -270, 0)));  //3:スピアー
+		m_formationUI.push_back(stage->AddGameObject<Sprite>(L"TEX_BRIDGEUI", true, Vec3(1280, 840, 0) * 0.002f, Vec3(450, -270, 0))); //4:橋
 
 		m_formationUI[2]->SetDrawActive(false);
 		m_formationUI[3]->SetDrawActive(false);

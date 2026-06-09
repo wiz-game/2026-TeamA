@@ -1,6 +1,6 @@
 /*!
-@file GameOverStage.h
-@brief ゲームオーバーステージ
+@file GameClearStage.h
+@brief ステージセレクト
 */
 
 #pragma once
@@ -10,9 +10,9 @@
 namespace basecross
 {
 	//--------------------------------------------------------------------------------------
-	//	ゲームオーバーステージクラス
+	//	ステージセレクトクラス
 	//--------------------------------------------------------------------------------------
-	class GameOverStage : public Stage
+	class SelectStage : public Stage
 	{
 		void CreateViewLight(); //ビューの作成
 		void CreateUI();
@@ -21,8 +21,8 @@ namespace basecross
 
 	public:
 		//構築と破棄
-		GameOverStage() :Stage() {}
-		virtual ~GameOverStage() {}
+		SelectStage() :Stage() {}
+		virtual ~SelectStage() {}
 
 		virtual void OnCreate()override; //初期化
 		virtual void OnUpdate()override; //更新
