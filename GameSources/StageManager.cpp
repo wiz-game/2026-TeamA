@@ -220,6 +220,12 @@ namespace basecross
 				slope->SetPosition(pos);
 				slope->SetRotation(rot);
 				slope->SetScale(scale);
+
+				auto collision = stage->AddGameObject<SlopeCollisionObject>();
+				collision->SetPosition(pos+Vec3(-1.0f, -4.5f, 0.0f));
+				collision->SetRotation(rot+Vec3(XMConvertToRadians(14.03f), 0.0f, 0.0f));
+				collision->SetScale(scale + Vec3(0.0f, 0.0f, 1.0f));
+
 			}
 			else if(name==L"Fence")
 			{

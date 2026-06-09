@@ -90,6 +90,20 @@ namespace basecross
 		void SetCollar(Col4 collar);
 	};
 
+	class SlopeCollisionObject : public StageObject
+	{
+
+		public:
+			SlopeCollisionObject(const shared_ptr<Stage>& stage) :
+			StageObject(stage)
+		{
+		}
+
+		void OnCreate()override;
+		void OnUpdate()override;
+	};
+
+
 	// ‘«êƒNƒ‰ƒX
 	class Foothold : public StageObject
 	{

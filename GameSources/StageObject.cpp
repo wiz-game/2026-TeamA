@@ -29,10 +29,6 @@ namespace basecross
 		m_transComp->SetScale(m_scale);
 		m_transComp->SetRotation(m_rotation);
 
-		auto collision = AddComponent<CollisionObb>();
-		collision->SetFixed(true);
-		collision->SetDrawActive(true);
-
 	}
 
 	void StageObject::OnUpdate()
@@ -74,6 +70,11 @@ namespace basecross
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
 		m_drawComp->SetDiffuse(Col4(1, 0, 1, 1));
+
+		auto collision = AddComponent<CollisionObb>();
+		collision->SetFixed(true);
+		collision->SetDrawActive(true);
+
 	}
 
 	void Goal::OnUpdate()
@@ -118,6 +119,11 @@ namespace basecross
 		);
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
+
+		auto collision = AddComponent<CollisionObb>();
+		collision->SetFixed(true);
+		//collision->SetDrawActive(true);
+
 	}
 
 	void Block::OnUpdate()
@@ -154,6 +160,7 @@ namespace basecross
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_SLOPE");
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
+
 	}
 
 	void Slope::OnUpdate()
@@ -166,6 +173,21 @@ namespace basecross
 	{
 		m_drawComp->SetDiffuse(collar);
 	}
+
+	void SlopeCollisionObject::OnCreate()
+	{
+		StageObject::OnCreate();
+		m_stage = GetStage();
+		auto collision = AddComponent<CollisionObb>();
+		collision->SetFixed(true);
+		collision->SetDrawActive(true);
+	}
+
+	void SlopeCollisionObject::OnUpdate()
+	{
+		StageObject::OnUpdate();
+	}
+
 
 	// ”ÂƒNƒ‰ƒX
 	void Board::OnCreate()
@@ -186,6 +208,10 @@ namespace basecross
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_BOARD");
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
+
+		auto collision = AddComponent<CollisionObb>();
+		collision->SetFixed(true);
+		collision->SetDrawActive(true);
 
 	}
 
@@ -208,13 +234,15 @@ namespace basecross
 			Vec3(0.0f, 0.0f, 0.0f), // rotation
 			Vec3(0.0f, -15.5f, 0.0f)  // position
 		);
+
+		auto collision = AddComponent<CollisionObb>();
+		collision->SetFixed(true);
+		collision->SetDrawActive(true);
+
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_FOOTHOLD");
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
 	}
-
-
-
 
 
 	void Foothold::OnUpdate()
@@ -240,6 +268,10 @@ namespace basecross
 			Vec3(0.0f, 0.0f, 0.0f), // rotation
 			Vec3(0.0f, -0.5f, 0.0f)  // position
 		);
+		auto collision = AddComponent<CollisionObb>();
+		collision->SetFixed(true);
+		collision->SetDrawActive(true);
+
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_FIRTREE");
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
@@ -267,6 +299,10 @@ namespace basecross
 			Vec3(0.0f, XM_PI, 0.0f), // rotation
 			Vec3(0.0f, 0.3f, 0.0f)  // position
 		);
+		auto collision = AddComponent<CollisionObb>();
+		collision->SetFixed(true);
+		collision->SetDrawActive(true);
+
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_FALLENTREE");
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
@@ -294,6 +330,10 @@ namespace basecross
 			Vec3(0.0f, 0.0f, 0.0f), // rotation
 			Vec3(0.0f, 0.0f, 0.0f)  // position
 		);
+		auto collision = AddComponent<CollisionObb>();
+		collision->SetFixed(true);
+		collision->SetDrawActive(true);
+
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_STONE");
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
@@ -315,6 +355,11 @@ namespace basecross
 		StageObject::OnCreate();
 		m_stage = GetStage();
 		m_drawComp = AddComponent<PNTStaticDraw>();
+
+		auto collision = AddComponent<CollisionObb>();
+		collision->SetFixed(true);
+		collision->SetDrawActive(true);
+
 	}
 
 	void Mushroom::OnUpdate()
