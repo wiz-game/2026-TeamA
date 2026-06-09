@@ -4,14 +4,14 @@
 
 namespace basecross
 {
-	class Block : public StageObject
+	class Fence : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
 
 		//void OnCollisionEnter(shared_ptr<GameObject>& other)override;
 
 	public:
-		Block(const shared_ptr<Stage>& stage) :
+		Fence(const shared_ptr<Stage>& stage) :
 			StageObject(stage)
 		{
 

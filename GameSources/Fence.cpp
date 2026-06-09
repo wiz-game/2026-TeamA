@@ -4,7 +4,7 @@
 
 namespace basecross
 {
-	void Block::OnCreate()
+	void Fence::OnCreate()
 	{
 		StageObject::OnCreate();
 		m_stage = GetStage();
@@ -22,18 +22,18 @@ namespace basecross
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
 	}
 
-	void Block::OnUpdate()
+	void Fence::OnUpdate()
 	{
 		StageObject::OnUpdate();
 
 	}
 
-	void Block::SetCollar(Col4 collar)
+	void Fence::SetCollar(Col4 collar)
 	{
 		m_drawComp->SetDiffuse(collar);
 	}
 
-	void Block::SetModel(const wstring& modelKey)
+	void Fence::SetModel(const wstring& modelKey)
 	{
 		m_drawComp->SetMeshResource(modelKey);
 	}
