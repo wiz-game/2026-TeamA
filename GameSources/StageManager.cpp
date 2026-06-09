@@ -362,6 +362,10 @@ namespace basecross
 				return;
 
 			}
+			else if (name == L"CameraSpot")
+			{
+
+			}
 			else if (name == L"GameObject")
 			{
 				return;
