@@ -98,6 +98,16 @@ namespace basecross {
 		}
 	}
 
+	void FormationManager::DrawFormationRange(const Vec3& pos, const Vec3& rot)
+	{
+		auto formation = m_formation[m_formationNum].lock();
+		if (formation)
+		{
+			formation->EffectRangeDraw(pos, rot);
+		}
+	}
+
+
 	bool FormationManager::GetFormationActive()
 	{
 		auto formation = m_formation[m_formationNum].lock();
@@ -517,6 +527,23 @@ namespace basecross {
 
 			}
 		}
+
+		// 隊列の範囲を表示
+		if (pad.wButtons & XINPUT_GAMEPAD_X)
+		{
+			if (!m_formationMng->GetFormationActive())
+			{
+				Vec3 pos = m_position;
+				Vec3 rot = m_rotation;
+				rot.y += XM_PIDIV2;
+				pos.x += cosf(-rot.y) * 5.5f;
+				pos.z += sinf(-rot.y) * 5.5f;
+
+				m_formationMng->DrawFormationRange(pos, rot);
+			}
+		}
+
+
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 		{
 			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() - 1);
@@ -1286,9 +1313,9 @@ namespace basecross {
 	void HammerFormation::OnCreate()
 	{
 		// ドローコンポーネントを追加
-		auto draw = AddComponent<PNTStaticDraw>();
-		draw->SetMeshResource(L"DEFAULT_CUBE");
-		draw->SetDiffuse(Col4(0, 1, 0, 1));
+		m_drawComp = AddComponent<PNTStaticDraw>();
+		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		m_drawComp->SetDiffuse(Col4(0, 1, 0, 1));
 
 		m_transComp = GetComponent<Transform>();
 		Vec3 pos = m_transComp->GetPosition();
@@ -1345,14 +1372,33 @@ namespace basecross {
 		m_isActive = true;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
+		auto col = m_drawComp->GetDiffuse();
+		col.w = 1.0f;
+		m_drawComp->SetDiffuse(col);
+		SetAlphaActive(false);
+
+	}
+
+	void HammerFormation::EffectRangeDraw(const Vec3& position, const Vec3& rotation)
+	{
+		m_rotation = rotation;
+		m_rotation.y += XM_PIDIV2;
+		m_transComp->SetPosition(position);
+		m_transComp->SetRotation(m_rotation);
+
+		SetDrawActive(true);
+		auto col = m_drawComp->GetDiffuse();
+		col.w = 0.5f;
+		m_drawComp->SetDiffuse(col);
+		SetAlphaActive(true);
 	}
 
 	void CubeFormation::OnCreate()
 	{
 		// ドローコンポーネントを追加
-		auto draw = AddComponent<PNTStaticDraw>();
-		draw->SetMeshResource(L"DEFAULT_CUBE");
-		draw->SetDiffuse(Col4(0, 1, 0, 1));
+		m_drawComp = AddComponent<PNTStaticDraw>();
+		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		m_drawComp->SetDiffuse(Col4(0, 1, 0, 1));
 
 		m_transComp = GetComponent<Transform>();
 		Vec3 pos = m_transComp->GetPosition();
@@ -1433,6 +1479,12 @@ namespace basecross {
 		m_isActive = true;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
+
+		auto col = m_drawComp->GetDiffuse();
+		col.w = 1.0f;
+		m_drawComp->SetDiffuse(col);
+		SetAlphaActive(false);
+
 		//GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
 
 		// 箱形の当たり判定を再設定
@@ -1451,12 +1503,37 @@ namespace basecross {
 
 	}
 
+	void CubeFormation::EffectRangeDraw(const Vec3& position, const Vec3& rotation)
+	{
+		if (m_isActive)
+		{
+			return;
+		}
+		m_rotation = rotation;
+		auto rot = rotation;
+		rot.x = XM_PIDIV2 / 3;
+		rot.y += -XM_PIDIV2;
+		auto pos = position;
+		pos.x += cosf(-m_rotation.y) * 8.0f;
+		pos.z += sinf(-m_rotation.y) * 8.0f;
+		pos.y += 4.0f;
+		m_transComp->SetPosition(pos);
+		m_transComp->SetRotation(rot);
+
+		SetDrawActive(true);
+		auto col = m_drawComp->GetDiffuse();
+		col.w = 0.5f;
+		m_drawComp->SetDiffuse(col);
+		SetAlphaActive(true);
+	}
+
+
 	void SpearFormation::OnCreate()
 	{
 		// ドローコンポーネントを追加
-		auto draw = AddComponent<PNTStaticDraw>();
-		draw->SetMeshResource(L"DEFAULT_CUBE");
-		draw->SetDiffuse(Col4(0, 1, 0, 1));
+		m_drawComp = AddComponent<PNTStaticDraw>();
+		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		m_drawComp->SetDiffuse(Col4(0, 1, 0, 1));
 
 		m_transComp = GetComponent<Transform>();
 		Vec3 pos = m_transComp->GetPosition();
@@ -1507,14 +1584,36 @@ namespace basecross {
 		m_isActive = true;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
+
+		auto col = m_drawComp->GetDiffuse();
+		col.w = 1.0f;
+		m_drawComp->SetDiffuse(col);
+		SetAlphaActive(false);
+
 	}
+
+	void SpearFormation::EffectRangeDraw(const Vec3& position, const Vec3& rotation)
+	{
+		m_rotation = rotation;
+		m_rotation.y += XM_PIDIV2;
+		m_position = position;
+		m_transComp->SetPosition(position);
+		m_transComp->SetRotation(m_rotation);
+
+		SetDrawActive(true);
+		auto col = m_drawComp->GetDiffuse();
+		col.w = 0.5f;
+		m_drawComp->SetDiffuse(col);
+		SetAlphaActive(true);
+	}
+
 
 	void BridgeFormation::OnCreate()
 	{
 		// ドローコンポーネントを追加
-		auto draw = AddComponent<PNTStaticDraw>();
-		draw->SetMeshResource(L"DEFAULT_CUBE");
-		draw->SetDiffuse(Col4(0, 1, 0, 1));
+		m_drawComp = AddComponent<PNTStaticDraw>();
+		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		m_drawComp->SetDiffuse(Col4(0, 1, 0, 1));
 
 		m_transComp = GetComponent<Transform>();
 		Vec3 pos = m_transComp->GetPosition();
@@ -1610,6 +1709,12 @@ namespace basecross {
 		m_isActive = true;
 		SetDrawActive(m_isActive);
 		SetUpdateActive(m_isActive);
+
+		auto col = m_drawComp->GetDiffuse();
+		col.w = 1.0f;
+		m_drawComp->SetDiffuse(col);
+		SetAlphaActive(false);
+
 		//GetComponent<CollisionObb>()->SetUpdateActive(m_isActive);
 
 		// 箱形の当たり判定を再設定
@@ -1628,6 +1733,26 @@ namespace basecross {
 
 	}
 
+	void BridgeFormation::EffectRangeDraw(const Vec3& position, const Vec3& rotation)
+	{
+		m_rotation = rotation;
+		auto rot = rotation;
+		//rot.x = XM_PIDIV2 / 3;
+		rot.y += -XM_PIDIV2;
+		auto pos = position;
+		pos.x += cosf(-m_rotation.y) * 15.5f;
+		pos.z += sinf(-m_rotation.y) * 15.5f;
+		pos.y -= 1.0f;
+		m_transComp->SetPosition(pos);
+		m_transComp->SetRotation(rot);
+
+		SetDrawActive(true);
+		auto col = m_drawComp->GetDiffuse();
+		col.w = 0.5f;
+		m_drawComp->SetDiffuse(col);
+		SetAlphaActive(true);
+
+	}
 
 	void AttackCollisionObj::OnCreate()
 	{
