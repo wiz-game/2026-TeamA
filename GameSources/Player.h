@@ -195,6 +195,7 @@ namespace basecross {
 		Vec3 m_velocity; // プレイヤーの移動ベクトル
 		float m_roadWidth = 10;
 		Vec3 m_formationRot;
+		bool m_isStartedFormation;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;

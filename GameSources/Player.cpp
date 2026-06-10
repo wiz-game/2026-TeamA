@@ -504,6 +504,7 @@ namespace basecross {
 			rotate.y += XM_PIDIV2;
 			auto pos = m_subPlayerMng->GetTargetPos();
 			m_formationMng->StartFormation(pos, rotate);
+			m_isStartedFormation = false;
 
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
@@ -528,6 +529,8 @@ namespace basecross {
 				pos.z += sinf(-rot.y) * 5.5f;
 				m_formationRot = m_rotation;
 				m_subPlayerMng->StartForamtionMove(num, pos);
+				m_formationMng->DrawFormationRange(pos, rot);
+				m_isStartedFormation = true;
 			}
 			else
 			{
@@ -539,7 +542,7 @@ namespace basecross {
 		// 隊列の範囲を表示
 		if (pad.wButtons & XINPUT_GAMEPAD_X)
 		{
-			if (!m_formationMng->GetFormationActive())
+			if (!m_formationMng->GetFormationActive() && !m_isStartedFormation)
 			{
 				Vec3 pos = m_position;
 				Vec3 rot = m_rotation;
@@ -552,7 +555,7 @@ namespace basecross {
 		}
 		if (pad.wReleasedButtons & XINPUT_GAMEPAD_X)
 		{
-			if (!m_formationMng->GetFormationActive())
+			if (!m_formationMng->GetFormationActive() && !m_isStartedFormation)
 			{
 				m_formationMng->ResetDraw();
 			}
