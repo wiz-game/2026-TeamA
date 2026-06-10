@@ -42,6 +42,7 @@ namespace basecross {
 	{
 	protected:
 		shared_ptr<Transform> m_transComp;
+		shared_ptr<PNTStaticDraw> m_drawComp;
 		weak_ptr<GameObject> m_player;
 		Vec3 m_rotation;
 		float m_time;
@@ -59,6 +60,7 @@ namespace basecross {
 
 		virtual void Start(const Vec3& position, const Vec3& rotation) {}
 		virtual void Finish();
+		virtual void EffectRangeDraw(const Vec3& position, const Vec3& rotation){}
 		bool GetActive() { return m_isActive; }
 		void SetPlayer(const shared_ptr<GameObject>& player) { m_player = player; }
 		int GetCharacterNum() { return m_characterNum; }
@@ -75,6 +77,8 @@ namespace basecross {
 		void Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject> player);
 		void StartFormation(const Vec3& pos, const Vec3& rot);
 		void FinishFormation();
+		void DrawFormationRange(const Vec3& pos, const Vec3& rot);
+		void ResetDraw();
 		bool GetFormationActive();
 		void SetFormationNumber(int num)
 		{ 
@@ -190,6 +194,8 @@ namespace basecross {
 		Vec3 m_scale;    // プレイヤーのスケーリング
 		Vec3 m_velocity; // プレイヤーの移動ベクトル
 		float m_roadWidth = 10;
+		Vec3 m_formationRot;
+		bool m_isStartedFormation;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
@@ -256,6 +262,8 @@ namespace basecross {
 		void OnUpdate() override; // 更新
 
 		void Start(const Vec3& position, const Vec3& rotation) override;
+		void EffectRangeDraw(const Vec3& position, const Vec3& rotation) override;
+
 	};
 
 	class CubeFormation : public CharacterFormation
@@ -274,6 +282,7 @@ namespace basecross {
 		void OnUpdate() override; // 更新
 		void SetOnPlayer(bool b) { m_onPlayer = b; }
 		void Start(const Vec3& position, const Vec3& rotation);
+		void EffectRangeDraw(const Vec3& position, const Vec3& rotation) override;
 
 	};
 
@@ -291,6 +300,8 @@ namespace basecross {
 		void OnUpdate() override; // 更新
 
 		void Start(const Vec3& position, const Vec3& rotation) override;
+		void EffectRangeDraw(const Vec3& position, const Vec3& rotation) override;
+
 	};
 
 	class BridgeFormation : public CharacterFormation
@@ -310,6 +321,8 @@ namespace basecross {
 		void OnUpdate() override; // 更新
 		void SetOnPlayer(bool b) { m_onPlayer = b; }
 		void Start(const Vec3& position, const Vec3& rotation) override;
+		void EffectRangeDraw(const Vec3& position, const Vec3& rotation) override;
+
 	};
 
 
