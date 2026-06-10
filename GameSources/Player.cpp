@@ -107,6 +107,14 @@ namespace basecross {
 		}
 	}
 
+	void FormationManager::ResetDraw()
+	{
+		auto formation = m_formation[m_formationNum].lock();
+		if (formation)
+		{
+			formation->SetDrawActive(false);
+		}
+	}
 
 	bool FormationManager::GetFormationActive()
 	{
@@ -492,7 +500,7 @@ namespace basecross {
 		// 隊列に関する処理
 		if (m_subPlayerMng->CheckFormationReady())
 		{
-			auto rotate = m_rotation;
+			auto rotate = m_formationRot;
 			rotate.y += XM_PIDIV2;
 			auto pos = m_subPlayerMng->GetTargetPos();
 			m_formationMng->StartFormation(pos, rotate);
@@ -518,7 +526,7 @@ namespace basecross {
 				rot.y += XM_PIDIV2;
 				pos.x += cosf(-rot.y) * 5.5f;
 				pos.z += sinf(-rot.y) * 5.5f;
-
+				m_formationRot = m_rotation;
 				m_subPlayerMng->StartForamtionMove(num, pos);
 			}
 			else
@@ -542,10 +550,22 @@ namespace basecross {
 				m_formationMng->DrawFormationRange(pos, rot);
 			}
 		}
+		if (pad.wReleasedButtons & XINPUT_GAMEPAD_X)
+		{
+			if (!m_formationMng->GetFormationActive())
+			{
+				m_formationMng->ResetDraw();
+			}
+
+		}
 
 
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 		{
+			if (!m_formationMng->GetFormationActive())
+			{
+				m_formationMng->ResetDraw();
+			}
 			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() - 1);
 			//m_formationNumber -= 1;
 			//if (m_formationNumber < 0)
@@ -555,14 +575,23 @@ namespace basecross {
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 		{
+			if (!m_formationMng->GetFormationActive())
+			{
+				m_formationMng->ResetDraw();
+			}
 			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() + 1);
-
 			//m_formationNumber += 1;
 			//if (m_formationNumber >= 4)
 			//{
 			//	m_formationNumber = 3;
 			//}
 
+		}
+
+		// ゲームオーバーの処理
+		if (m_position.y < -50.0f)
+		{
+			PostEvent(0.0f, GetThis<ObjectInterface>(), app->GetScene<Scene>(), L"ToGameOverStage");
 		}
 
 		// 軌跡ノードの更新
@@ -627,18 +656,53 @@ namespace basecross {
 		auto otherTrans = Other->GetComponent<Transform>();
 		auto otherPos = otherTrans->GetPosition();
 		auto otherScale = otherTrans->GetScale();
+		auto otherRot = otherTrans->GetQuaternion().toRotVec();
 		auto pos = m_transform->GetPosition();
 		auto scale = m_transform->GetScale();
 		auto dis = pos - otherPos;
 		auto scaleSum = scale + otherScale;
-		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f || Other->FindTag(L"Cube"))
+		bool isRotX = otherRot.x != 0.0f;
+		bool isRotY = otherRot.y != 0.0f;
+		bool isRotZ = otherRot.x != 0.0f;
+		if (isRotX /*|| isRotY*/ || isRotZ)
 		{
 			m_velocity.y = 0;
+			//Vec3 cPos = dis;
+			//if (isRotX)
+			//{
+			//	auto y = cPos.y * cosf(-otherRot.x) - cPos.z * sinf(-otherRot.x);
+			//	auto z = cPos.y * sinf(-otherRot.x) + cPos.z * cosf(-otherRot.x);
+			//	cPos.y = y;
+			//	cPos.z = z;
+			//}
+			//if (isRotY)
+			//{
+			//	auto x =  cPos.x * cosf(-otherRot.y) + cPos.z * sinf(-otherRot.y);
+			//	auto z = -cPos.x * sinf(-otherRot.y) + cPos.z * cosf(-otherRot.y);
+			//	cPos.x = x;
+			//	cPos.z = z;
+			//}
+			//if (isRotZ)
+			//{
+			//	auto x = cPos.x * cosf(-otherRot.z) - cPos.y * sinf(-otherRot.z);
+			//	auto y = cPos.x * sinf(-otherRot.z) + cPos.y * cosf(-otherRot.z);
+			//	cPos.x = x;
+			//	cPos.y = y;
+			//}
+			//dis.y = cPos.y;
 		}
 
+		if ((scaleSum.y / 2.0f) - dis.y <= scale.y)
+		{
+			m_velocity.y = 0;
+			pos.y += 0.01f;
+			//m_position = pos;
+			m_transform->SetPosition(pos);
+		}
 		if (Other->FindTag(L"Cube"))
 		{
 			m_roadWidth = 8.5f;
+			m_velocity.y = 0;
 		}
 		else if (Other->FindTag(L"Bridge"))
 		{
@@ -1014,7 +1078,7 @@ namespace basecross {
 
 		auto pos = m_transComp->GetPosition();
 		{
-			TrackNode node{ m_targetPos, 10 };
+			TrackNode node{ m_targetPos, 15 };
 			auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
 			auto steeringForce = CalculateSteering(node, others, 4.0f, 1.0f);
 			m_velocity += steeringForce * delta;
@@ -1099,13 +1163,34 @@ namespace basecross {
 	{
 		auto otherTrans = Other->GetComponent<Transform>();
 		auto otherPos = otherTrans->GetPosition();
+		auto otherRot = otherTrans->GetQuaternion().toRotVec();
 		auto otherScale = otherTrans->GetScale();
 		auto pos = GetComponent<Transform>()->GetPosition();
 		auto scale = GetComponent<Transform>()->GetScale();
 		auto dis = pos - otherPos;
 		auto scaleSum = scale + otherScale;
-		if ((dis.y / (scaleSum.y / 2.0f)) >= 0.9f || Other->FindTag(L"Cube"))
+		bool isRotX = otherRot.x != 0.0f;
+		bool isRotY = otherRot.y != 0.0f;
+		bool isRotZ = otherRot.x != 0.0f;
+		if (isRotX || isRotZ)
 		{
+			m_velocity.y = 0;
+			m_velocityY = 0;
+			pos.y += 0.01f;
+			m_transComp->SetPosition(pos);
+		}
+
+		if ((scaleSum.y / 2.0f) - dis.y <= scale.y)
+		{
+			m_velocity.y = 0;
+			m_velocityY = 0;
+			pos.y += 0.01f;
+			//m_position = pos;
+			m_transComp->SetPosition(pos);
+		}
+		if (Other->FindTag(L"Cube"))
+		{
+			m_velocity.y = 0;
 			m_velocityY = 0;
 		}
 	}
@@ -1304,7 +1389,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				player->GetSunbPlayerManager()->Add(m_characterNum, m_transComp->GetPosition());
+				player->GetSunbPlayerManager()->Add(m_characterNum, m_transComp->GetPosition() + Vec3(0.0f, 1.0f, 0.0f));
 			}
 		}
 
@@ -1701,9 +1786,9 @@ namespace basecross {
 		//rot.x = XM_PIDIV2 / 3;
 		rot.y += -XM_PIDIV2;
 		auto pos = position;
-		pos.x += cosf(-m_rotation.y) * 15.5f;
-		pos.z += sinf(-m_rotation.y) * 15.5f;
-		pos.y -= 1.0f;
+		pos.x += cosf(-m_rotation.y) * 16.0f;
+		pos.z += sinf(-m_rotation.y) * 16.0f;
+		pos.y -= 1.01f;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(rot);
 		m_isActive = true;
@@ -1740,9 +1825,9 @@ namespace basecross {
 		//rot.x = XM_PIDIV2 / 3;
 		rot.y += -XM_PIDIV2;
 		auto pos = position;
-		pos.x += cosf(-m_rotation.y) * 15.5f;
-		pos.z += sinf(-m_rotation.y) * 15.5f;
-		pos.y -= 1.0f;
+		pos.x += cosf(-m_rotation.y) * 16.0f;
+		pos.z += sinf(-m_rotation.y) * 16.0f;
+		pos.y -= 1.01f;
 		m_transComp->SetPosition(pos);
 		m_transComp->SetRotation(rot);
 

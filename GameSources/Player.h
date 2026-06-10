@@ -78,6 +78,7 @@ namespace basecross {
 		void StartFormation(const Vec3& pos, const Vec3& rot);
 		void FinishFormation();
 		void DrawFormationRange(const Vec3& pos, const Vec3& rot);
+		void ResetDraw();
 		bool GetFormationActive();
 		void SetFormationNumber(int num)
 		{ 
@@ -193,6 +194,7 @@ namespace basecross {
 		Vec3 m_scale;    // プレイヤーのスケーリング
 		Vec3 m_velocity; // プレイヤーの移動ベクトル
 		float m_roadWidth = 10;
+		Vec3 m_formationRot;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
