@@ -96,6 +96,7 @@ namespace basecross {
 		Vec3 m_targetPos;
 		Vec3 m_playerPos;
 		shared_ptr<Transform> m_transComp;
+		shared_ptr<PNTBoneModelDraw> m_drawComp;
 		//float m_rotate;
 		float m_dif;
 		float m_stay;

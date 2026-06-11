@@ -161,8 +161,10 @@ namespace basecross {
 			if (!subPlayer->GetAlive())
 			{
 				subPlayer->SetAlive(true);
-				int x = -rand() % 15 + 8;
-				int z = -rand() % 15 + 8;
+				int ran = rand() % 6 + 1;
+				int x = ran * ((ran % 2 == 0) ? 1 : -1);
+				ran = rand() % 6 + 1;
+				int z = ran * ((ran % 2 == 0) ? 1 : -1);
 				Vec3 v = { (float)x, 0.5f, (float)z };
 				subPlayer->SetPosition(v + pos);
 				//subPlayer->SetTargetPos(m_characterPositions[m_activeNum]);
@@ -614,17 +616,10 @@ namespace basecross {
 		//	auto sub = dynamic_pointer_cast<SubPlayer>(obj);
 		//	if (sub)
 		//	{
-		//		if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()))
-		//		{
-		//			ss << L"Stay ";
-		//		}
-		//		else
-		//		{
-		//			ss << L"Move ";
-		//		}
+		//		ss << sub->GetComponent<PNTBoneModelDraw>()->GetCurrentAnimation() << " ";
 		//	}
 		//}
-		ss << endl;
+		//ss << endl;
 		app->GetScene<Scene>()->SetDebugString(ss.str());
 	}
 
@@ -714,6 +709,17 @@ namespace basecross {
 		else
 		{
 			m_roadWidth = 10.0f;
+		}
+
+		auto obj = dynamic_pointer_cast<StageObject>(Other);
+		if (obj)
+		{
+			// Debug用文字列
+			wstringstream ss;
+			ss << App::GetApp()->GetScene<Scene>()->GetDebugString() << endl;
+			ss << L"Object" << endl;
+			App::GetApp()->GetScene<Scene>()->SetDebugString(ss.str());
+
 		}
 	}
 
@@ -865,9 +871,12 @@ namespace basecross {
 	void SubPlayer::OnCreate()
 	{
 		// ドローコンポーネントを追加
-		auto draw = AddComponent<PNTStaticDraw>();
-		draw->SetMeshResource(L"MODEL_PLAYER");
+		m_drawComp = AddComponent<PNTBoneModelDraw>();
+		m_drawComp->SetMultiMeshResource(L"MODEL_PON");
 		//draw->SetDiffuse(Col4(1, 0, 0, 1));
+		m_drawComp->AddAnimation(L"ANIM_IDLE", 0, 43, true);
+		m_drawComp->AddAnimation(L"ANIM_WALK", 70, 60, true);
+		m_drawComp->ChangeCurrentAnimation(L"ANIM_IDLE");
 
 		m_transComp = GetComponent<Transform>();
 		//m_transComp->SetPosition(m_targetPos);
@@ -882,7 +891,7 @@ namespace basecross {
 		m_dif = (float)(rand() % 10) * 0.06f + 0.05f;
 		m_randam = rand() % 5;
 		auto col = AddComponent<CollisionSphere>();
-		col->SetDrawActive(true);
+		//col->SetDrawActive(true);
 
 	}
 
@@ -947,6 +956,9 @@ namespace basecross {
 			}
 
 		}
+
+		// アニメーションの更新
+		m_drawComp->UpdateAnimation(delta);
 
 		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;
 		m_transComp->SetPosition(pos);
@@ -1027,9 +1039,11 @@ namespace basecross {
 		m_transComp->SetPosition(pos);
 
 		// 回転処理
-		auto rad = atan2f(m_velocity.x, m_velocity.z) + XM_PI;
+		auto rad = atan2f(m_velocity.x, m_velocity.z) + XM_PIDIV2;
 		m_transComp->SetRotation(Vec3(0, rad, 0));
 
+		// アニメーションの更新
+		m_drawComp->UpdateAnimation(delta);
 
 		auto dis = m_playerPos - pos;
 		auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
@@ -1164,6 +1178,9 @@ namespace basecross {
 
 	void SubPlayer::OnCollisionExcute(shared_ptr<GameObject>& Other)
 	{
+		auto same = dynamic_pointer_cast<SubPlayer>(Other);
+		if (same)return;
+
 		auto otherTrans = Other->GetComponent<Transform>();
 		auto otherPos = otherTrans->GetPosition();
 		auto otherRot = otherTrans->GetQuaternion().toRotVec();
@@ -1873,7 +1890,7 @@ namespace basecross {
 
 	void SubPlayerStayState::Enter(const shared_ptr<SubPlayer>& obj)
 	{
-
+		obj->GetComponent<PNTBoneModelDraw>()->ChangeCurrentAnimation(L"ANIM_IDLE");
 	}
 	void SubPlayerStayState::Execute(const shared_ptr<SubPlayer>& obj)
 	{
@@ -1902,6 +1919,7 @@ namespace basecross {
 			player->GetSunbPlayerManager()->SetAllMove(true);
 			obj->SetReadyFormation(false);
 		}
+		obj->GetComponent<PNTBoneModelDraw>()->ChangeCurrentAnimation(L"ANIM_WALK");
 	}
 	void SubPlayerFollowState::Execute(const shared_ptr<SubPlayer>& obj)
 	{
@@ -1923,7 +1941,8 @@ namespace basecross {
 
 	void SubPlayerMoveToTargetPositionState::Enter(const shared_ptr<SubPlayer>& obj)
 	{
-		obj->GetComponent<PNTStaticDraw>()->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
+		//obj->GetComponent<PNTBoneModelDraw>()->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
+		obj->GetComponent<PNTBoneModelDraw>()->ChangeCurrentAnimation(L"ANIM_WALK");
 	}
 	void SubPlayerMoveToTargetPositionState::Execute(const shared_ptr<SubPlayer>& obj)
 	{
@@ -1935,7 +1954,7 @@ namespace basecross {
 	void SubPlayerMoveToTargetPositionState::Exit(const shared_ptr<SubPlayer>& obj)
 	{
 		obj->SetReadyFormation(true);
-		obj->GetComponent<PNTStaticDraw>()->SetDiffuse(Col4(0.5f, 0.5f, 0.5f, 1.0f));
+		//obj->GetComponent<PNTBoneModelDraw>()->SetDiffuse(Col4(0.5f, 0.5f, 0.5f, 1.0f));
 	}
 
 	shared_ptr<SubPlayerStrayState> SubPlayerStrayState::Instance()
@@ -1946,7 +1965,7 @@ namespace basecross {
 
 	void SubPlayerStrayState::Enter(const shared_ptr<SubPlayer>& obj)
 	{
-
+		obj->GetComponent<PNTBoneModelDraw>()->ChangeCurrentAnimation(L"ANIM_IDLE");
 	}
 	void SubPlayerStrayState::Execute(const shared_ptr<SubPlayer>& obj)
 	{
