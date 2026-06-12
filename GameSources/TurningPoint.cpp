@@ -5,36 +5,47 @@ namespace basecross
 {
 	TurningPoint::TurningPoint(const shared_ptr<Stage>& stage) :
 		StageObject(stage),
-		m_scale(1.0f, 1.0f, 0.0f),
-		m_rotation(0.0f),
-		m_position(0.0f)
+		m_trigger(false)
 	{
 	}
 	TurningPoint::~TurningPoint(){}
 
 	void TurningPoint::OnCreate()
 	{
-		AddTag(L"CameraTrigger");
-		m_transComp = AddComponent<Transform>();
-		m_transComp->SetScale(m_scale);
-		m_transComp->SetRotation(m_rotation);
-		m_transComp->SetPosition(m_position);
+		m_transComp = GetComponent<Transform>();
+
+		m_position = m_transComp->GetPosition();
+
+		auto col = AddComponent<CollisionObb>();
+		col->SetFixed(false);
+		col->SetDrawActive(true);
+		m_drawComp = AddComponent<PNTStaticDraw>();
+		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		StageObject::OnCreate();
 
 	}
 
 	void TurningPoint::OnUpdate()
 	{
-
+		StageObject::OnUpdate();
 	}
 	
 	void TurningPoint::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
-		auto stage = GetStage();
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveTypeStage<GameStage>();
 		auto player = stage->GetSharedGameObject<Player>(L"Player");
-		if (other && player)
+		if (other->FindTag(L"Player"))
 		{
-			playerCamera->SetNextCameraAngle(nextEye = Vec3(0, 0, 0), nextAt = Vec3(0, 0, 0));
-			playerCamera->ChangeAngle();
+			//auto mView = dynamic_pointer_cast<SingleView>(stage->GetView());
+			//auto camera = mView->GetCamera();
+			//auto playerCamera = dynamic_pointer_cast<PlayerCamera>(camera);
+
+			//playerCamera->SetNextCameraAngle(nextEye = Vec3(100, 100, 100), nextAt = Vec3(0, 0, 0));
+			//playerCamera->ChangeAngle();
+
+			m_trigger = true;
 		}
 	}
 }

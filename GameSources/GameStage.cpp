@@ -21,16 +21,17 @@ namespace basecross {
 
 		m_playerCameraView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
 		auto playerCamera = ObjectFactory::Create<PlayerCamera>();
-		auto camera = ObjectFactory::Create<Camera>();
-		camera->SetEye(Vec3(0.0f, 8.0f, -15.0f));
-		camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
-
+		//auto camera = ObjectFactory::Create<Camera>();
+		//camera->SetEye(Vec3(0.0f, 8.0f, -15.0f));
+		//camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
+		
 		m_playerCameraView->SetCamera(playerCamera);
 		SetView(m_playerCameraView);
+		
 
 		//// ビューにカメラを設定
-		//auto view = CreateView<SingleView>();
-		//view->SetCamera(camera);
+		auto view = CreateView<SingleView>();
+		view->SetCamera(playerCamera);
 
 		//マルチライトの作成
 		auto light = CreateLight<MultiLight>();

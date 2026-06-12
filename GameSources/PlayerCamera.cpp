@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "Project.h"
+#include "GameStage.h"
+#include "TurningPoint.h"
+
 
 namespace basecross
 {
@@ -11,7 +14,8 @@ namespace basecross
 		m_prevRStick(0,0),
 		m_baseYaw(0.0f),
 		m_offsetYaw(0.0f),
-		m_cameraAngleState(Center)
+		m_cameraAngleState(Center),
+		On(true)
 	{
 	}
 	PlayerCamera::~PlayerCamera() {}
@@ -22,6 +26,9 @@ namespace basecross
 		//if (!gameStage) return;
 		//auto player = gameStage->GetSharedGameObject<Player>(L"Player");
 		//if (!player) return;
+		auto gameStage = m_gameStage.lock();
+		if (!gameStage) return;
+
 	}
 
 	void PlayerCamera::OnUpdate()
@@ -34,8 +41,16 @@ namespace basecross
 		if (!player) return;
 		auto playerTrans = player->GetComponent<Transform>();
 		Vec3 playerPos = playerTrans->GetPosition();
+		for (int i = 0; i < gameStage->count; i++)
+		{
+			auto tp = gameStage->GetSharedGameObject<TurningPoint>(L"TurningPoint_" + std::to_wstring(i));
+			if (!tp)break;
+			m_tp.push_back(tp);
+		}
 
+		if(On)
 		SetCameraToPlayerPos();
+		
 
 		// アプリケーションオブジェクトを取得
 		auto& app = App::GetApp();
@@ -83,14 +98,25 @@ namespace basecross
 			break;
 		}
 
-		if (m_changeAngle)
+		//if (m_changeAngle)
+		//{
+		//	Vec3 view = GetAt();
+		//	SetAt(view.x + 0.5f, view.y, view.z);
+		//}
+
+		m_prevRStick = RStick;
+
+		for (auto& tp : m_tp)
 		{
-			Vec3 view = GetAt();
-			SetAt(view.x + 0.5f, view.y, view.z);
+			if (tp->GetTrigger()) //TurningPointのどれかに触れたら角度を変える動作を行う
+			{
+				SetNextCameraAngle(Vec3(playerPos.x + 50.0f,playerPos.y + 40.0f, playerPos.z + 30.0f), Vec3(playerPos.x, playerPos.y , playerPos.z + 40));
+				m_changeAngle = true;
+				On = false;
+				ChangeAngle();
+			}
 		}
 
-		//ChangeViewWithStick();
-		m_prevRStick = RStick;
 	}
 
 	void PlayerCamera::SetCameraToPlayerPos()
@@ -121,11 +147,12 @@ namespace basecross
 		Vec3 eye = playerPos - rotatedForward * distance + up * height;
 		Vec3 at = playerPos + rotatedForward * 8.0f;
 
-		if (!m_isFirstFrame)
+		if (m_isFirstFrame)
 		{
 
 			SetEye(eye);
 			SetAt(at);
+			m_isFirstFrame = false;
 		}
 		else
 		{
@@ -154,10 +181,11 @@ namespace basecross
 		//Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
 		//Vec3 at = Vec3(playerPos.x + 5.0f, playerPos.y, playerPos.z);
 
-		if (!m_isFirstFrame)
+		if (m_changeAngle)
 		{
 			SetEye(m_nextEye);
 			SetAt(m_nextAt);
+			m_changeAngle = false;
 		}
 		else
 		{
