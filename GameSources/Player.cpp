@@ -56,6 +56,10 @@ namespace basecross {
 		if (id >= m_track.size())
 		{
 			id = m_track.size() - 1;
+			if (m_track.size() >= 2)
+			{
+				id -= 1;
+			}
 		}
 		return m_track[id];
 	}
@@ -386,8 +390,23 @@ namespace basecross {
 		m_transform->SetScale(m_scale); // スケーリングを設定
 		// ドローコンポーネントを追加
 		//m_draw = AddComponent<PNTDXModelDraw>();
-		m_draw = AddComponent<PNTStaticDraw>();
-		m_draw->SetMeshResource(L"MODEL_PLAYER");
+		m_drawComp = AddComponent<PNTBoneModelDraw>();
+		m_drawComp->SetMultiMeshResource(L"MODEL_PON");
+		m_drawComp->AddAnimation(L"ANIM_IDLE", 0, 120, true);
+		m_drawComp->AddAnimation(L"ANIM_WALK", 140, 120, true);
+		m_drawComp->ChangeCurrentAnimation(L"ANIM_IDLE");
+
+		//Mat4x4 spanMat;
+
+		//spanMat.affineTransformation(
+		//	Vec3(1.0f, 1.0f, 1.0f), // scale
+		//	Vec3(0.0f, 0.0f, 0.0f), // rotation
+		//	Vec3(0.0f, 0.0f, 0.0f), // rotation
+		//	Vec3(0.0f, -0.3f, 0.0f)  // position
+		//);
+
+		//m_drawComp->SetMeshToTransformMatrix(spanMat);
+
 		//m_draw->SetTextureResource(L"TEX_PLAYER");
 		//m_draw->SetDiffuse(Col4(1, 0, 0, 1));
 		//AddComponent<Gravity>();
@@ -409,7 +428,7 @@ namespace basecross {
 		auto col = AddComponent<CollisionSphere>();
 		//col->SetMakedDiameter(0.5f);
 		//col->SetMakedHeight(1.0f);
-		col->SetDrawActive(true);
+		//col->SetDrawActive(true);
 		//AddComponent<Gravity>();
 
 		// 当たり判定用のタグの追加
@@ -435,7 +454,7 @@ namespace basecross {
 
 		if (LStick.length() > 0.1f)
 		{
-			m_rotation.y = -atan2f(LStick.y, LStick.x) - XM_PIDIV2;
+			m_rotation.y = -atan2f(LStick.y, LStick.x) + XM_PI;
 			m_transform->SetRotation(m_rotation);
 		}
 
@@ -600,9 +619,27 @@ namespace basecross {
 		}
 
 		// 軌跡ノードの更新
-		auto rotate = m_rotation.y + XM_PIDIV2;
-		auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 2.5f;
-		m_trackMng->UpdateTrack(m_position + playerBack, m_roadWidth);
+		//auto rotate = m_rotation.y + XM_PIDIV2;
+		//auto playerBack = Vec3(-cosf(rotate), 0, sinf(rotate)) * 2.5f;
+		//m_trackMng->UpdateTrack(m_position + playerBack, m_roadWidth);
+		m_trackMng->UpdateTrack(m_position, m_roadWidth);
+
+		// アニメーションの更新
+		m_drawComp->UpdateAnimation(delta);
+		if (abs(m_desiredVelocity.x + m_desiredVelocity.z) < 0.1f)
+		{
+			if (m_drawComp->GetCurrentAnimation() != L"ANIM_IDLE")
+			{
+				m_drawComp->ChangeCurrentAnimation(L"ANIM_IDLE");
+			}
+		}
+		else
+		{
+			if (m_drawComp->GetCurrentAnimation() != L"ANIM_WALK")
+			{
+				m_drawComp->ChangeCurrentAnimation(L"ANIM_WALK");
+			}
+		}
 
 		// Debug用文字列
 		//app->GetScene<Scene>()->GetDebugString();
@@ -611,6 +648,7 @@ namespace basecross {
 		ss << L"Formation : " << m_formationMng->GetFormationNumber() << endl;
 		ss << L"ActiveNum : " << m_subPlayerMng->GetActiveNum() << endl;
 		ss << L"RoadWidth : " << m_roadWidth << endl;
+		ss << L"CollisionObject : " << m_debugStr << endl;
 		//for (auto& obj : m_subPlayerMng->GetActiveSubPlayer())
 		//{
 		//	auto sub = dynamic_pointer_cast<SubPlayer>(obj);
@@ -697,14 +735,25 @@ namespace basecross {
 			//m_position = pos;
 			m_transform->SetPosition(pos);
 		}
+
+		auto foothold = dynamic_pointer_cast<Foothold>(Other);
+		auto board = dynamic_pointer_cast<Board>(Other);
 		if (Other->FindTag(L"Cube"))
 		{
-			m_roadWidth = 8.5f;
+			m_roadWidth = 8.0f;
 			m_velocity.y = 0;
 		}
 		else if (Other->FindTag(L"Bridge"))
 		{
 			m_roadWidth = 6.0f;
+		}
+		else if (foothold)
+		{
+			m_roadWidth = 8.0f;
+		}
+		else if (board)
+		{
+			m_roadWidth = 5.0f;
 		}
 		else
 		{
@@ -715,11 +764,29 @@ namespace basecross {
 		if (obj)
 		{
 			// Debug用文字列
-			wstringstream ss;
-			ss << App::GetApp()->GetScene<Scene>()->GetDebugString() << endl;
-			ss << L"Object" << endl;
-			App::GetApp()->GetScene<Scene>()->SetDebugString(ss.str());
-
+			m_debugStr = L"Object";
+			auto block = dynamic_pointer_cast<Block>(obj);
+			if (block) m_debugStr = L"Block";
+			auto slope = dynamic_pointer_cast<Slope>(obj);
+			if (slope) m_debugStr = L"Slope";
+			auto slopeCol = dynamic_pointer_cast<SlopeCollisionObject>(obj);
+			if (slopeCol) m_debugStr = L"SlopeCollision";
+			auto foothold = dynamic_pointer_cast<Foothold>(obj);
+			if (foothold) m_debugStr = L"Foothold";
+			auto board = dynamic_pointer_cast<Board>(obj);
+			if (board) m_debugStr = L"Board";
+			auto firtree = dynamic_pointer_cast<FirTree>(obj);
+			if (firtree) m_debugStr = L"FirTree";
+			auto fallentree = dynamic_pointer_cast<FallenTree>(obj);
+			if (fallentree) m_debugStr = L"FallenTree";
+			auto stone = dynamic_pointer_cast<Stone>(obj);
+			if (stone) m_debugStr = L"Stone";
+			auto mushroom = dynamic_pointer_cast<Mushroom>(obj);
+			if (mushroom) m_debugStr = L"Mushroom";
+		}
+		else
+		{
+			m_debugStr = L"NULL";
 		}
 	}
 
@@ -874,8 +941,8 @@ namespace basecross {
 		m_drawComp = AddComponent<PNTBoneModelDraw>();
 		m_drawComp->SetMultiMeshResource(L"MODEL_PON");
 		//draw->SetDiffuse(Col4(1, 0, 0, 1));
-		m_drawComp->AddAnimation(L"ANIM_IDLE", 0, 43, true);
-		m_drawComp->AddAnimation(L"ANIM_WALK", 70, 60, true);
+		m_drawComp->AddAnimation(L"ANIM_IDLE", 0, 120, true);
+		m_drawComp->AddAnimation(L"ANIM_WALK", 140, 120, true);
 		m_drawComp->ChangeCurrentAnimation(L"ANIM_IDLE");
 
 		m_transComp = GetComponent<Transform>();
