@@ -125,6 +125,12 @@ namespace basecross{
 		stoneModel->SetTextureResource(L"TEX_STONE");
 		app->RegisterResource(L"MODEL_STONE", stoneModel);
 
+		// ƒ|ƒ“‚Ì“Ç‚Ýž‚Ý
+		app->RegisterTexture(L"TEX_PON", modelPath + L"Pon\\T_Pon.png");
+		auto ponModel = MultiMeshResource::CreateBoneModelMultiMesh(modelPath + L"Pon\\", L"M_Pon.bmf");
+		ponModel->SetTextureResource(L"TEX_PON", 1);
+		app->RegisterResource(L"MODEL_PON", ponModel);
+
 	}
 
 

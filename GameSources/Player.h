@@ -96,6 +96,7 @@ namespace basecross {
 		Vec3 m_targetPos;
 		Vec3 m_playerPos;
 		shared_ptr<Transform> m_transComp;
+		shared_ptr<PNTBoneModelDraw> m_drawComp;
 		//float m_rotate;
 		float m_dif;
 		float m_stay;
@@ -187,7 +188,7 @@ namespace basecross {
 	{
 		std::shared_ptr<Transform> m_transform; // トランスフォームはよく使うのでメンバにしておく
 		//std::shared_ptr<PNTDXModelDraw> m_draw; // ドローコンポーネント
-		std::shared_ptr<PNTStaticDraw> m_draw; // ドローコンポーネント
+		std::shared_ptr<PNTBoneModelDraw> m_drawComp; // ドローコンポーネント
 
 		Vec3 m_position; // プレイヤーの位置
 		Vec3 m_rotation; // プレイヤーの回転
@@ -196,6 +197,7 @@ namespace basecross {
 		float m_roadWidth = 10;
 		Vec3 m_formationRot;
 		bool m_isStartedFormation;
+		wstring m_debugStr;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
