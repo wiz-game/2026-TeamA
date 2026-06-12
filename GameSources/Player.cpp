@@ -522,7 +522,7 @@ namespace basecross {
 		if (m_subPlayerMng->CheckFormationReady())
 		{
 			auto rotate = m_formationRot;
-			rotate.y += XM_PIDIV2;
+			rotate.y += XM_PI;
 			auto pos = m_subPlayerMng->GetTargetPos();
 			m_formationMng->StartFormation(pos, rotate);
 			m_isStartedFormation = false;
@@ -545,7 +545,7 @@ namespace basecross {
 				int num = m_formationMng->GetFormationCharacterNum();
 				Vec3 pos = m_position;
 				Vec3 rot = m_rotation;
-				rot.y += XM_PIDIV2;
+				rot.y += XM_PI;
 				pos.x += cosf(-rot.y) * 5.5f;
 				pos.z += sinf(-rot.y) * 5.5f;
 				m_formationRot = m_rotation;
@@ -567,7 +567,7 @@ namespace basecross {
 			{
 				Vec3 pos = m_position;
 				Vec3 rot = m_rotation;
-				rot.y += XM_PIDIV2;
+				rot.y += XM_PI;
 				pos.x += cosf(-rot.y) * 5.5f;
 				pos.z += sinf(-rot.y) * 5.5f;
 
