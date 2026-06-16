@@ -9,15 +9,14 @@ namespace basecross
 	PlayerCamera::PlayerCamera() :
 		Camera(),
 		m_isFirstFrame(true),
-		m_changeAngle(false),
+		m_changeAngle(true),
 		m_currentCameraForward(0, 0, 1),
-		m_prevRStick(0,0),
+		m_prevRStick(0, 0),
 		m_baseYaw(0.0f),
 		m_offsetYaw(0.0f),
 		m_cameraAngleState(Center),
 		On(true)
-	{
-	}
+	{}
 	PlayerCamera::~PlayerCamera() {}
 
 	void PlayerCamera::OnCreate()
@@ -28,19 +27,6 @@ namespace basecross
 		//if (!player) return;
 		auto gameStage = m_gameStage.lock();
 		if (!gameStage) return;
-
-	}
-
-	void PlayerCamera::OnUpdate()
-	{
-		m_gameStage = App::GetApp()->GetScene<Scene>()->GetActiveStage()->GetThis<GameStage>();
-
-		auto gameStage = m_gameStage.lock();
-		if (!gameStage) return;
-		auto player = gameStage->GetSharedGameObject<Player>(L"Player");
-		if (!player) return;
-		auto playerTrans = player->GetComponent<Transform>();
-		Vec3 playerPos = playerTrans->GetPosition();
 		for (int i = 0; i < gameStage->count; i++)
 		{
 			auto tp = gameStage->GetSharedGameObject<TurningPoint>(L"TurningPoint_" + std::to_wstring(i));
@@ -48,9 +34,61 @@ namespace basecross
 			m_tp.push_back(tp);
 		}
 
-		if(On)
-		SetCameraToPlayerPos();
-		
+	}
+
+	void PlayerCamera::OnUpdate()
+	{
+		m_gameStage = App::GetApp()->GetScene<Scene>()->GetActiveStage()->GetThis<GameStage>();
+		auto gameStage = m_gameStage.lock();
+		if (!gameStage) return;
+		auto player = gameStage->GetSharedGameObject<Player>(L"Player");
+		if (!player) return;
+		auto playerTrans = player->GetComponent<Transform>();
+		Vec3 playerPos = playerTrans->GetPosition();
+
+		if (!gameStage->GetIsActive()) return; //ポーズ中は動作をしない
+
+		if (m_tp.empty()) //空の場合に追加する
+		{
+			for (int i = 0; i < gameStage->count; i++)
+			{
+				auto tp = gameStage->GetSharedGameObject<TurningPoint>(L"TurningPoint_" + std::to_wstring(i));
+				if (tp) m_tp.push_back(tp);
+			}
+		}
+
+
+		for (int i = 0; i < m_tp.size(); i++)
+		{
+			if (m_tp[i]->GetTrigger()) //TurningPointに触れたら角度を変える動作を行う
+			{
+				//SetNextCameraAngle(newEye, newAt);
+				tpCount = i;
+				m_changeAngle = true;
+				On = false;
+			}
+		}
+
+		if (!On)
+		{
+			switch (tpCount)
+			{
+			case 0:
+				m_nextEye = Vec3(playerPos.x + 60.0f, playerPos.y + 40.0f, playerPos.z - 30.0f);
+				m_nextAt = Vec3(playerPos.x, playerPos.y, playerPos.z + 40);
+				break;
+			case 1:
+				m_nextEye = Vec3(playerPos.x + 20.0f, playerPos.y + 40.0f, playerPos.z - 30.0f);
+				m_nextAt = Vec3(playerPos.x + 20.0f, playerPos.y, playerPos.z + 20.0f);
+				break;
+			case 2:
+				m_nextEye = Vec3(playerPos.x + 20.0f, playerPos.y + 40.0f, playerPos.z - 30.0f);
+				m_nextAt = Vec3(playerPos.x + 20.0f, playerPos.y, playerPos.z + 20.0f);
+				break;
+
+			}
+		}
+
 
 		// アプリケーションオブジェクトを取得
 		auto& app = App::GetApp();
@@ -64,14 +102,12 @@ namespace basecross
 		// 右スティックの値取得
 		Vec2 RStick(pad.fThumbRX, pad.fThumbRY);
 
-		if (!gameStage->GetIsActive()) return; //ポーズ中は動作をしない
 
 		switch (m_cameraAngleState)
 		{
 		case Center:
 			if (m_prevRStick.x <= 0.25f && RStick.x > 0.25f) // 通常時に右に倒した場合
 			{
-				//m_changeAngle = true;
 				m_offsetYaw = 45.0f; // 右に向く角度を決める
 				SetCameraAngleState(Right);
 			}
@@ -84,7 +120,6 @@ namespace basecross
 		case Right:
 			if (m_prevRStick.x >= -0.25f && RStick.x < -0.25f) // 右を向いているときに左に倒した場合
 			{
-				//m_changeAngle = false;
 				m_offsetYaw = 0.0f;
 				SetCameraAngleState(Center);
 			}
@@ -93,29 +128,17 @@ namespace basecross
 			if (m_prevRStick.x <= 0.25f && RStick.x > 0.25f) // 左を向いているときに右に倒した場合
 			{
 				m_offsetYaw = 0.0f;
-				SetCameraAngleState(Center); 
+				SetCameraAngleState(Center);
 			}
 			break;
 		}
-
-		//if (m_changeAngle)
-		//{
-		//	Vec3 view = GetAt();
-		//	SetAt(view.x + 0.5f, view.y, view.z);
-		//}
-
 		m_prevRStick = RStick;
 
-		for (auto& tp : m_tp)
-		{
-			if (tp->GetTrigger()) //TurningPointのどれかに触れたら角度を変える動作を行う
-			{
-				SetNextCameraAngle(Vec3(playerPos.x + 50.0f,playerPos.y + 40.0f, playerPos.z + 30.0f), Vec3(playerPos.x, playerPos.y , playerPos.z + 40));
-				m_changeAngle = true;
-				On = false;
-				ChangeAngle();
-			}
-		}
+
+		if (On)
+			SetCameraToPlayerPos(); //通常時は普通のプレイヤー追従カメラ
+		else
+			ChangeAngle();          //切り替えオブジェクトに触れた場合はアングルを変える
 
 	}
 
@@ -157,7 +180,7 @@ namespace basecross
 		else
 		{
 			//補間
-			float speed = (std::min)(delta * 6.0f, 1.0f);
+			float speed = (std::min)(delta * 6.0f, 1.0f); //目標を通り過ぎないために1.0fを超えないよう調整
 			SetEye(GetEye() + (eye - GetEye()) * speed);
 			SetAt(GetAt() + (at - GetAt()) * speed * 2.0f);
 		}
@@ -177,19 +200,25 @@ namespace basecross
 		float height = 10.0f;   // upの補間
 		float delta = App::GetApp()->GetElapsedTime();
 		float fixedDelta = (std::min)(delta * 4.0f, 1.0f);
+		float yaw = m_baseYaw + m_offsetYaw;
+		float rad = XMConvertToRadians(yaw);
+
+		Vec3 rotatedForward = Vec3(sin(rad), 0, cos(rad));
+
 
 		//Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
 		//Vec3 at = Vec3(playerPos.x + 5.0f, playerPos.y, playerPos.z);
 
 		if (m_changeAngle)
 		{
-			SetEye(m_nextEye);
-			SetAt(m_nextAt);
+			SetEye(m_nextEye - rotatedForward);
+			SetAt(m_nextAt + rotatedForward);
 			m_changeAngle = false;
 		}
 		else
 		{
-			float speed = (std::min)(delta * 5.0f, 1.0f);
+			//補間
+			float speed = (std::min)(delta * 6.0f, 1.0f); //目標を通り過ぎないために1.0fを超えないよう調整
 			SetEye(GetEye() + (m_nextEye - GetEye()) * speed);
 			SetAt(GetAt() + (m_nextAt - GetAt()) * speed * 2.0f);
 		}

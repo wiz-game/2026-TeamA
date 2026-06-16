@@ -17,7 +17,6 @@ namespace basecross
 		m_position = m_transComp->GetPosition();
 
 		auto col = AddComponent<CollisionObb>();
-		col->SetFixed(false);
 		col->SetDrawActive(true);
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
@@ -27,25 +26,31 @@ namespace basecross
 
 	void TurningPoint::OnUpdate()
 	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveTypeStage<GameStage>();
+		auto player = stage->GetSharedGameObject<Player>(L"Player");
+		Vec3 playerPos = player->GetPosition();
+		Vec3 dir = m_position - playerPos;
+		float diff = dir.length();
+		if (diff <= 10.0f)
+			m_trigger = true;
+		else if (diff <= 9.0f)
+			m_trigger = false;
+
+
 		StageObject::OnUpdate();
 	}
 	
 	void TurningPoint::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
-		auto& app = App::GetApp();
-		auto scene = app->GetScene<Scene>();
-		auto stage = scene->GetActiveTypeStage<GameStage>();
-		auto player = stage->GetSharedGameObject<Player>(L"Player");
-		if (other->FindTag(L"Player"))
-		{
-			//auto mView = dynamic_pointer_cast<SingleView>(stage->GetView());
-			//auto camera = mView->GetCamera();
-			//auto playerCamera = dynamic_pointer_cast<PlayerCamera>(camera);
-
-			//playerCamera->SetNextCameraAngle(nextEye = Vec3(100, 100, 100), nextAt = Vec3(0, 0, 0));
-			//playerCamera->ChangeAngle();
-
-			m_trigger = true;
-		}
+		//auto& app = App::GetApp();
+		//auto scene = app->GetScene<Scene>();
+		//auto stage = scene->GetActiveTypeStage<GameStage>();
+		//auto player = stage->GetSharedGameObject<Player>(L"Player");
+		//if (other->FindTag(L"Player"))
+		//{
+		//	m_trigger = true;
+		//}
 	}
 }
