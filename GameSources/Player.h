@@ -195,6 +195,7 @@ namespace basecross {
 		Vec3 m_rotation; // プレイヤーの回転
 		Vec3 m_scale;    // プレイヤーのスケーリング
 		Vec3 m_velocity; // プレイヤーの移動ベクトル
+		float m_velocityY;
 		float m_roadWidth = 10;
 		Vec3 m_formationRot;
 		bool m_isStartedFormation;

@@ -466,20 +466,30 @@ namespace basecross {
 		// 左スティックの入力を取得する
 		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
 
-		if (LStick.length() > 0.1f)
-		{
-			m_rotation.y = -atan2f(LStick.y, LStick.x) + XM_PI;
-			m_transform->SetRotation(m_rotation);
-		}
 
 		// 左スティックの入力に応じてプレイヤーを移動させる
-		float moveSpeed = 9.0f; // 移動速度
-		Vec3 moveVec(LStick.x, m_velocity.y, LStick.y); // 移動ベクトル
-		m_velocity.y -= delta;
+		float moveSpeed = 10.0f; // 移動速度
+		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
+		m_velocityY -= delta;
+		m_velocity *= 0.95f;
+		m_velocity += moveVec * delta * 100;
+		if (m_velocity.length() > moveSpeed)
+		{
+			m_velocity = m_velocity.normalize() * moveSpeed;
+		}
 		m_position = m_transform->GetPosition();
-		m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
+		//m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
+		m_position += m_velocity * delta;
+		m_position.y += m_velocityY;
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
 		m_desiredVelocity = moveVec * moveSpeed;
+
+		// 回転処理
+		if (m_velocity.length() > 0.1f)
+		{
+			m_rotation.y = -atan2f(m_velocity.z, m_velocity.x) + XM_PI;
+			m_transform->SetRotation(m_rotation);
+		}
 
 		//if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 		//{
@@ -724,7 +734,7 @@ namespace basecross {
 		bool isRotZ = otherRot.x != 0.0f;
 		if (isRotX /*|| isRotY*/ || isRotZ)
 		{
-			m_velocity.y = 0;
+			m_velocityY = 0;
 			//Vec3 cPos = dis;
 			//if (isRotX)
 			//{
@@ -752,7 +762,7 @@ namespace basecross {
 
 		if ((scaleSum.y / 2.0f) - dis.y <= scale.y)
 		{
-			m_velocity.y = 0;
+			m_velocityY = 0;
 			pos.y += 0.01f;
 			//m_position = pos;
 			m_transform->SetPosition(pos);
@@ -763,7 +773,7 @@ namespace basecross {
 		if (Other->FindTag(L"Cube"))
 		{
 			m_roadWidth = 8.0f;
-			m_velocity.y = 0;
+			m_velocityY = 0;
 		}
 		else if (Other->FindTag(L"Bridge"))
 		{
