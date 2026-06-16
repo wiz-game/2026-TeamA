@@ -302,14 +302,14 @@ namespace basecross {
 			return false;
 		}
 
-		int followNum = 0;
-		for (auto& subPlayer : m_subPlayers)
-		{
-			if (subPlayer->GetAlive() && !subPlayer->GetStateMachine()->IsInState(SubPlayerStrayState::Instance()))
-			{
-				followNum++;
-			}
-		}
+		int followNum = GetFollowNum();
+		//for (auto& subPlayer : m_subPlayers)
+		//{
+		//	if (subPlayer->GetAlive() && !subPlayer->GetStateMachine()->IsInState(SubPlayerStrayState::Instance()))
+		//	{
+		//		followNum++;
+		//	}
+		//}
 		if (followNum < num) return false;
 
 		m_formationMenber.clear();
@@ -362,6 +362,20 @@ namespace basecross {
 		}
 		m_targetPos = pos;
 		return true;
+	}
+
+	int SubPlayerManager::GetFollowNum()
+	{
+		int followNum = 0;
+		for (auto& subPlayer : m_subPlayers)
+		{
+			if (subPlayer->GetAlive() && !subPlayer->GetStateMachine()->IsInState(SubPlayerStrayState::Instance()))
+			{
+				followNum++;
+			}
+		}
+
+		return followNum;
 	}
 
 	bool SubPlayerManager::CheckFormationReady()
@@ -549,9 +563,12 @@ namespace basecross {
 				pos.x += cosf(-rot.y) * 5.5f;
 				pos.z += sinf(-rot.y) * 5.5f;
 				m_formationRot = m_rotation;
-				m_subPlayerMng->StartForamtionMove(num, pos);
-				m_formationMng->DrawFormationRange(pos, rot);
-				m_isStartedFormation = true;
+				bool b = m_subPlayerMng->StartForamtionMove(num, pos);
+				if (b)
+				{
+					m_formationMng->DrawFormationRange(pos, rot);
+					m_isStartedFormation = true;
+				}
 			}
 			else
 			{
@@ -565,13 +582,18 @@ namespace basecross {
 		{
 			if (!m_formationMng->GetFormationActive() && !m_isStartedFormation)
 			{
-				Vec3 pos = m_position;
-				Vec3 rot = m_rotation;
-				rot.y += XM_PI;
-				pos.x += cosf(-rot.y) * 5.5f;
-				pos.z += sinf(-rot.y) * 5.5f;
+				int num = m_formationMng->GetFormationCharacterNum();
+				int followNum = m_subPlayerMng->GetFollowNum();
+				if (followNum >= num)
+				{
+					Vec3 pos = m_position;
+					Vec3 rot = m_rotation;
+					rot.y += XM_PI;
+					pos.x += cosf(-rot.y) * 5.5f;
+					pos.z += sinf(-rot.y) * 5.5f;
 
-				m_formationMng->DrawFormationRange(pos, rot);
+					m_formationMng->DrawFormationRange(pos, rot);
+				}
 			}
 		}
 		if (pad.wReleasedButtons & XINPUT_GAMEPAD_X)

@@ -179,6 +179,7 @@ namespace basecross {
 		void SetPlayerPos(const Vec3& pos);
 		bool StartForamtionMove(int num, const Vec3& pos);
 		int GetActiveNum() { return m_activeNum; }
+		int GetFollowNum();
 		bool CheckFormationReady();
 		Vec3 GetTargetPos() { return m_targetPos; }
 	};
