@@ -152,6 +152,11 @@ namespace basecross {
 			m_subPlayers.push_back(subPlayer);
 		}
 
+		for (auto& subPlayer : m_subPlayers)
+		{
+			subPlayer->GetComponent<CollisionSphere>()->AddExcludeCollisionTag(L"SubPlayer");
+		}
+
 	}
 
 	void SubPlayerManager::Add(int num, const Vec3& pos)
@@ -447,11 +452,16 @@ namespace basecross {
 
 		// 当たり判定用のタグの追加
 		AddTag(L"Player");
+
+		// デバッグ用文字列のレイヤーを上げる
+		//GetStage()->GetSharedGameObject<GameObject>(L"DebugString")->SetDrawLayer(5);
 	}
 
 	// プレイヤーの更新処理
 	void Player::OnUpdate()
 	{
+		// デバッグ用文字列のレイヤーを上げる
+		GetStage()->GetSharedGameObject<GameObject>(L"DebugString")->SetDrawLayer(5);
 
 		// アプリケーションオブジェクトを取得
 		auto& app = App::GetApp();
@@ -468,11 +478,11 @@ namespace basecross {
 
 
 		// 左スティックの入力に応じてプレイヤーを移動させる
-		float moveSpeed = 10.0f; // 移動速度
+		float moveSpeed = 9.0f; // 移動速度
 		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
-		m_velocityY -= delta;
+		m_velocityY -= delta * 9.8f;
 		m_velocity *= 0.95f;
-		m_velocity += moveVec * delta * 100;
+		m_velocity += moveVec * delta * 80;
 		if (m_velocity.length() > moveSpeed)
 		{
 			m_velocity = m_velocity.normalize() * moveSpeed;
@@ -480,7 +490,7 @@ namespace basecross {
 		m_position = m_transform->GetPosition();
 		//m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_position += m_velocity * delta;
-		m_position.y += m_velocityY;
+		m_position.y += m_velocityY * delta;
 		m_transform->SetPosition(m_position); // プレイヤーを移動させる
 		m_desiredVelocity = moveVec * moveSpeed;
 
@@ -657,7 +667,7 @@ namespace basecross {
 		m_trackMng->UpdateTrack(m_position, m_roadWidth);
 
 		// アニメーションの更新
-		m_drawComp->UpdateAnimation(delta);
+		m_drawComp->UpdateAnimation(delta * 2.0f);
 		if (abs(m_desiredVelocity.x + m_desiredVelocity.z) < 0.1f)
 		{
 			if (m_drawComp->GetCurrentAnimation() != L"ANIM_IDLE")
@@ -992,6 +1002,8 @@ namespace basecross {
 		auto col = AddComponent<CollisionSphere>();
 		//col->SetDrawActive(true);
 
+		AddTag(L"SubPlayer");
+
 	}
 
 	// 群れのキャラクターの更新
@@ -1057,7 +1069,7 @@ namespace basecross {
 		}
 
 		// アニメーションの更新
-		m_drawComp->UpdateAnimation(delta);
+		m_drawComp->UpdateAnimation(delta * 2.0f);
 
 		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;
 		m_transComp->SetPosition(pos);
@@ -1121,12 +1133,15 @@ namespace basecross {
 		//重力
 		m_velocityY += -9.8f * delta;
 
+		// プレイヤーとキャラクターとの距離
+		auto dis = m_playerPos - pos;
+
 		if (frame % 5 == m_randam)
 		{
 			auto trackMng = player->GetTrackManager();
 			auto node = trackMng->GetNearTrackNode(pos);
 			auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
-			auto steeringForce = CalculateSteering(node, others);
+			auto steeringForce = CalculateSteering(node, others, 2.0f, 1.8f);
 			m_velocity += steeringForce * delta * 5;
 			m_velocity.y = 0;
 			if (m_velocity.length() > m_maxSpeed)
@@ -1142,9 +1157,8 @@ namespace basecross {
 		m_transComp->SetRotation(Vec3(0, rad, 0));
 
 		// アニメーションの更新
-		m_drawComp->UpdateAnimation(delta);
+		m_drawComp->UpdateAnimation(delta * 2.0f);
 
-		auto dis = m_playerPos - pos;
 		auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
 		if (playerVec.length() < 0.1f)
 		{
@@ -1211,6 +1225,8 @@ namespace basecross {
 		auto rad = atan2f(m_velocity.x, m_velocity.z) + XM_PI;
 		m_transComp->SetRotation(Vec3(0, rad, 0));
 
+		// アニメーションの更新
+		m_drawComp->UpdateAnimation(delta * 2.0f);
 
 		auto dis = m_targetPos - pos;
 		auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
