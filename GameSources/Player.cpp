@@ -152,11 +152,6 @@ namespace basecross {
 			m_subPlayers.push_back(subPlayer);
 		}
 
-		for (auto& subPlayer : m_subPlayers)
-		{
-			subPlayer->GetComponent<CollisionSphere>()->AddExcludeCollisionTag(L"SubPlayer");
-		}
-
 	}
 
 	void SubPlayerManager::Add(int num, const Vec3& pos)
@@ -562,15 +557,67 @@ namespace basecross {
 			m_isStartedFormation = false;
 
 		}
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_B)
+		//if (pad.wReleasedButtons & XINPUT_GAMEPAD_B)
+		//{
+		//	//auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
+		//	//if (formation)
+		//	//{
+		//	//	auto rotate = m_rotation;
+		//	//	rotate.y += XM_PIDIV2;
+		//	//	formation->Start(m_position, rotate);
+		//	//}
+		//	if (!m_formationMng->GetFormationActive())
+		//	{
+		//		auto rotate = m_rotation;
+		//		rotate.y += XM_PIDIV2;
+		//		//m_formationMng->StartFormation(m_position, rotate);
+		//		int num = m_formationMng->GetFormationCharacterNum();
+		//		Vec3 pos = m_position;
+		//		Vec3 rot = m_rotation;
+		//		rot.y += XM_PI;
+		//		pos.x += cosf(-rot.y) * 5.5f;
+		//		pos.z += sinf(-rot.y) * 5.5f;
+		//		m_formationRot = m_rotation;
+		//		bool b = m_subPlayerMng->StartForamtionMove(num, pos);
+		//		if (b)
+		//		{
+		//			m_formationMng->DrawFormationRange(pos, rot);
+		//			m_isStartedFormation = true;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		m_formationMng->FinishFormation();
+
+		//	}
+		//}
+
+		// 隊列の範囲を表示
+		if (pad.wButtons & XINPUT_GAMEPAD_B)
 		{
-			//auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
-			//if (formation)
-			//{
-			//	auto rotate = m_rotation;
-			//	rotate.y += XM_PIDIV2;
-			//	formation->Start(m_position, rotate);
-			//}
+			if (!m_formationMng->GetFormationActive() && !m_isStartedFormation)
+			{
+				int num = m_formationMng->GetFormationCharacterNum();
+				int followNum = m_subPlayerMng->GetFollowNum();
+				if (followNum >= num)
+				{
+					Vec3 pos = m_position;
+					Vec3 rot = m_rotation;
+					rot.y += XM_PI;
+					pos.x += cosf(-rot.y) * 5.5f;
+					pos.z += sinf(-rot.y) * 5.5f;
+
+					m_formationMng->DrawFormationRange(pos, rot);
+				}
+			}
+		}
+		if (pad.wReleasedButtons & XINPUT_GAMEPAD_B)
+		{
+			if (!m_formationMng->GetFormationActive() && !m_isStartedFormation)
+			{
+				m_formationMng->ResetDraw();
+			}
+
 			if (!m_formationMng->GetFormationActive())
 			{
 				auto rotate = m_rotation;
@@ -594,33 +641,6 @@ namespace basecross {
 			{
 				m_formationMng->FinishFormation();
 
-			}
-		}
-
-		// 隊列の範囲を表示
-		if (pad.wButtons & XINPUT_GAMEPAD_X)
-		{
-			if (!m_formationMng->GetFormationActive() && !m_isStartedFormation)
-			{
-				int num = m_formationMng->GetFormationCharacterNum();
-				int followNum = m_subPlayerMng->GetFollowNum();
-				if (followNum >= num)
-				{
-					Vec3 pos = m_position;
-					Vec3 rot = m_rotation;
-					rot.y += XM_PI;
-					pos.x += cosf(-rot.y) * 5.5f;
-					pos.z += sinf(-rot.y) * 5.5f;
-
-					m_formationMng->DrawFormationRange(pos, rot);
-				}
-			}
-		}
-		if (pad.wReleasedButtons & XINPUT_GAMEPAD_X)
-		{
-			if (!m_formationMng->GetFormationActive() && !m_isStartedFormation)
-			{
-				m_formationMng->ResetDraw();
 			}
 
 		}
@@ -1003,6 +1023,7 @@ namespace basecross {
 		//col->SetDrawActive(true);
 
 		AddTag(L"SubPlayer");
+		col->AddExcludeCollisionTag(L"SubPlayer");
 
 	}
 
@@ -1025,7 +1046,7 @@ namespace basecross {
 			if (!obj) return;
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (!player)return;
-			player->GetSunbPlayerManager()->Erase(GetThis<SubPlayer>());
+			player->GetSubPlayerManager()->Erase(GetThis<SubPlayer>());
 		}
 	}
 
@@ -1140,7 +1161,7 @@ namespace basecross {
 		{
 			auto trackMng = player->GetTrackManager();
 			auto node = trackMng->GetNearTrackNode(pos);
-			auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
+			auto others = player->GetSubPlayerManager()->GetActiveSubPlayer();
 			auto steeringForce = CalculateSteering(node, others, 2.0f, 1.8f);
 			m_velocity += steeringForce * delta * 5;
 			m_velocity.y = 0;
@@ -1159,7 +1180,7 @@ namespace basecross {
 		// アニメーションの更新
 		m_drawComp->UpdateAnimation(delta * 2.0f);
 
-		auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
+		auto others = player->GetSubPlayerManager()->GetActiveSubPlayer();
 		if (playerVec.length() < 0.1f)
 		{
 			if (dis.length() < 3.0f)
@@ -1178,7 +1199,7 @@ namespace basecross {
 						{
 							auto otherPos = sub->GetComponent<Transform>()->GetPosition();
 							auto otherDis = otherPos - pos;
-							if (otherDis.length() < 1.3f)
+							if (otherDis.length() < 1.5f)
 							{
 								m_dis = dis.length();
 								return true;
@@ -1209,7 +1230,7 @@ namespace basecross {
 		auto pos = m_transComp->GetPosition();
 		{
 			TrackNode node{ m_targetPos, 15 };
-			auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
+			auto others = player->GetSubPlayerManager()->GetActiveSubPlayer();
 			auto steeringForce = CalculateSteering(node, others, 4.0f, 1.0f);
 			m_velocity += steeringForce * delta;
 			m_velocity.y = 0;
@@ -1229,7 +1250,7 @@ namespace basecross {
 		m_drawComp->UpdateAnimation(delta * 2.0f);
 
 		auto dis = m_targetPos - pos;
-		auto others = player->GetSunbPlayerManager()->GetActiveSubPlayer();
+		auto others = player->GetSubPlayerManager()->GetActiveSubPlayer();
 		if (dis.length() < 3.0f)
 		{
 			m_dis = dis.length();
@@ -1285,7 +1306,7 @@ namespace basecross {
 			if (!obj) return false;
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (!player)return false;
-			player->GetSunbPlayerManager()->Erase(GetThis<SubPlayer>());
+			player->GetSubPlayerManager()->Erase(GetThis<SubPlayer>());
 		}
 
 		return false;
@@ -1524,7 +1545,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				player->GetSunbPlayerManager()->Add(m_characterNum, m_transComp->GetPosition() + Vec3(0.0f, 1.0f, 0.0f));
+				player->GetSubPlayerManager()->Add(m_characterNum, m_transComp->GetPosition() + Vec3(0.0f, 1.0f, 0.0f));
 			}
 		}
 
@@ -1578,7 +1599,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->GetSunbPlayerManager()->Erase();
+				b = player->GetSubPlayerManager()->Erase();
 			}
 		}
 		if (!b)
@@ -1678,7 +1699,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->GetSunbPlayerManager()->Erase();
+				b = player->GetSubPlayerManager()->Erase();
 			}
 		}
 		if (!b)
@@ -1789,7 +1810,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->GetSunbPlayerManager()->Erase();
+				b = player->GetSubPlayerManager()->Erase();
 			}
 		}
 		if (!b)
@@ -1908,7 +1929,7 @@ namespace basecross {
 			auto player = dynamic_pointer_cast<Player>(obj);
 			if (player)
 			{
-				b = player->GetSunbPlayerManager()->Erase();
+				b = player->GetSubPlayerManager()->Erase();
 			}
 		}
 		if (!b)
@@ -2031,7 +2052,7 @@ namespace basecross {
 		auto player = dynamic_pointer_cast<Player>(gameObj);
 		if (player)
 		{
-			player->GetSunbPlayerManager()->SetAllMove(true);
+			player->GetSubPlayerManager()->SetAllMove(true);
 			obj->SetReadyFormation(false);
 		}
 		obj->GetComponent<PNTBoneModelDraw>()->ChangeCurrentAnimation(L"ANIM_WALK");

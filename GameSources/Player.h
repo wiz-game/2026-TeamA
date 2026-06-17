@@ -243,7 +243,7 @@ namespace basecross {
 		Vec3 GetMoveVelocity() { return m_desiredVelocity; }
 
 		shared_ptr<PlayerTrackManager> GetTrackManager() const { return m_trackMng; }
-		shared_ptr<SubPlayerManager> GetSunbPlayerManager() const { return m_subPlayerMng; }
+		shared_ptr<SubPlayerManager> GetSubPlayerManager() const { return m_subPlayerMng; }
 
 
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& other) override;
