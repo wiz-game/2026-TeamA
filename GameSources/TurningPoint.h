@@ -14,6 +14,7 @@ namespace basecross
 		//shared_ptr<PlayerCamera>* playerCamera;
 		bool m_trigger;
 		void OnCollisionEnter(shared_ptr<GameObject>& other)override;
+		bool m_isInRange;
 
 	public:
 		TurningPoint(const shared_ptr<Stage>& stage);

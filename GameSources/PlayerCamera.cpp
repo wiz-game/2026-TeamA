@@ -30,7 +30,7 @@ namespace basecross
 		for (int i = 0; i < gameStage->count; i++)
 		{
 			auto tp = gameStage->GetSharedGameObject<TurningPoint>(L"TurningPoint_" + std::to_wstring(i));
-			if (!tp)break;
+			if (!tp)return;
 			m_tp.push_back(tp);
 		}
 
@@ -60,7 +60,7 @@ namespace basecross
 
 		for (int i = 0; i < m_tp.size(); i++)
 		{
-			if (m_tp[i]->GetTrigger()) //TurningPointに触れたら角度を変える動作を行う
+			if (m_tp[i]->GetTrigger()) //TurningPointの場所にきたら角度を変える動作を行う
 			{
 				//SetNextCameraAngle(newEye, newAt);
 				tpCount = i;
@@ -200,19 +200,15 @@ namespace basecross
 		float height = 10.0f;   // upの補間
 		float delta = App::GetApp()->GetElapsedTime();
 		float fixedDelta = (std::min)(delta * 4.0f, 1.0f);
-		float yaw = m_baseYaw + m_offsetYaw;
-		float rad = XMConvertToRadians(yaw);
+		//float yaw = m_baseYaw + m_offsetYaw;
+		//float rad = XMConvertToRadians(yaw);
 
-		Vec3 rotatedForward = Vec3(sin(rad), 0, cos(rad));
-
-
-		//Vec3 eye = playerPos - (m_currentCameraForward * distance) + (up * height);
-		//Vec3 at = Vec3(playerPos.x + 5.0f, playerPos.y, playerPos.z);
+		//Vec3 rotatedForward = Vec3(sin(rad), 0, cos(rad));
 
 		if (m_changeAngle)
 		{
-			SetEye(m_nextEye - rotatedForward);
-			SetAt(m_nextAt + rotatedForward);
+			SetEye(m_nextEye);
+			SetAt(m_nextAt);
 			m_changeAngle = false;
 		}
 		else

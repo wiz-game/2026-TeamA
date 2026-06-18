@@ -5,7 +5,8 @@ namespace basecross
 {
 	TurningPoint::TurningPoint(const shared_ptr<Stage>& stage) :
 		StageObject(stage),
-		m_trigger(false)
+		m_trigger(false),
+		m_isInRange(false)
 	{
 	}
 	TurningPoint::~TurningPoint(){}
@@ -33,10 +34,21 @@ namespace basecross
 		Vec3 playerPos = player->GetPosition();
 		Vec3 dir = m_position - playerPos;
 		float diff = dir.length();
-		if (diff <= 10.0f)
+
+		if (diff >= 10.0f) // scale‚ğl—¶‚µ‚±‚Ì’l‚É‚·‚é
+			m_isInRange = false; //	10.0f‚æ‚è—£‚ê‚Ä‚¢‚éê‡‚É”ÍˆÍŠO”»’è‚É‚·‚é
+
+		if (diff <= 10.0f && !m_isInRange && !m_trigger) 
+		{
 			m_trigger = true;
-		else if (diff <= 9.0f)
+			m_isInRange = true; // 10.0fˆÈ“à‚É—ˆ‚½ê‡‚É”ÍˆÍ“à”»’è‚É‚·‚é
+		}
+		else if (diff <= 10.0f && !m_isInRange && m_trigger)
+		{
 			m_trigger = false;
+			m_isInRange = true;
+		}
+
 
 
 		StageObject::OnUpdate();
