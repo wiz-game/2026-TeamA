@@ -364,6 +364,15 @@ namespace basecross
 			}
 			else if (name == L"CameraSpot")
 			{
+				auto spot = stage->AddGameObject<TurningPoint>();
+				spot->SetPosition(pos);
+				spot->SetRotation(rot);
+				spot->SetScale(scale);
+				std::wstring name = L"TurningPoint_" + std::to_wstring(stage->count++);
+
+				//stage->SetSharedGameObject(L"TurningPoint", spot);
+				stage->SetSharedGameObject(name, spot);
+				//spot->SetModel(L"MODEL_BLOCK");
 
 			}
 			else if (name == L"GameObject")

@@ -28,11 +28,14 @@ namespace basecross {
 		bool m_isActive;
 		shared_ptr<Option> option;
 		vector<shared_ptr<GameObject>> m_stageObj;
+
 	public:
 		//\’z‚Æ”jŠü
 		GameStage() :Stage(){}
 		virtual ~GameStage() {}
-		
+
+		int count = 0; //TurningPoint—p•Ï”
+
 		void SetStageObj(shared_ptr<GameObject> newStageObj)
 		{
 			m_stageObj.push_back(newStageObj);
@@ -52,7 +55,6 @@ namespace basecross {
 		{
 			return m_isActive;
 		}
-
 
 
 		virtual void OnCreate()override; //‰Šú‰»
