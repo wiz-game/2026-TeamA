@@ -63,7 +63,7 @@ namespace basecross {
 		virtual void EffectRangeDraw(const Vec3& position, const Vec3& rotation){}
 		bool GetActive() { return m_isActive; }
 		void SetPlayer(const shared_ptr<GameObject>& player) { m_player = player; }
-		int GetCharacterNum() { return m_characterNum; }
+		virtual int GetCharacterNum() { return m_characterNum; }
 	};
 
 	// 隊列オブジェクトの管理クラス
@@ -178,7 +178,9 @@ namespace basecross {
 		void AllCharacterMove();
 		void SetPlayerPos(const Vec3& pos);
 		bool StartForamtionMove(int num, const Vec3& pos);
+		void ResetFormationMenber();
 		int GetActiveNum() { return m_activeNum; }
+		int GetFollowNum();
 		bool CheckFormationReady();
 		Vec3 GetTargetPos() { return m_targetPos; }
 	};
@@ -194,9 +196,11 @@ namespace basecross {
 		Vec3 m_rotation; // プレイヤーの回転
 		Vec3 m_scale;    // プレイヤーのスケーリング
 		Vec3 m_velocity; // プレイヤーの移動ベクトル
+		float m_velocityY;
 		float m_roadWidth = 10;
 		Vec3 m_formationRot;
 		bool m_isStartedFormation;
+		float m_frmWaitTime;
 		wstring m_debugStr;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
@@ -241,7 +245,7 @@ namespace basecross {
 		Vec3 GetMoveVelocity() { return m_desiredVelocity; }
 
 		shared_ptr<PlayerTrackManager> GetTrackManager() const { return m_trackMng; }
-		shared_ptr<SubPlayerManager> GetSunbPlayerManager() const { return m_subPlayerMng; }
+		shared_ptr<SubPlayerManager> GetSubPlayerManager() const { return m_subPlayerMng; }
 
 
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& other) override;
@@ -308,11 +312,13 @@ namespace basecross {
 
 	class BridgeFormation : public CharacterFormation
 	{
+		Vec3 m_baseScale;
 		Vec3 m_position;
 		bool m_onPlayer;
 	public:
 		BridgeFormation(const std::shared_ptr<Stage>& stage) :
 			CharacterFormation(stage),
+			m_baseScale(Vec3(10.0f, 1.0f, 40.0f)),
 			m_position(Vec3(0)),
 			m_onPlayer(false)
 		{
@@ -324,7 +330,7 @@ namespace basecross {
 		void SetOnPlayer(bool b) { m_onPlayer = b; }
 		void Start(const Vec3& position, const Vec3& rotation) override;
 		void EffectRangeDraw(const Vec3& position, const Vec3& rotation) override;
-
+		int GetCharacterNum() override;
 	};
 
 
