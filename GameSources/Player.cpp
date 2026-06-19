@@ -484,10 +484,21 @@ namespace basecross {
 		// 左スティックの入力を取得する
 		Vec2 LStick(pad.fThumbLX, pad.fThumbLY);
 
+		// カメラを取得
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		auto at = camera->GetAt();
+		auto eye = camera->GetEye();
+		auto dir = eye - at;
+		dir.normalize();
+		auto rad = atan2f(dir.z, dir.x) + XM_PIDIV2;
 
 		// 左スティックの入力に応じてプレイヤーを移動させる
 		float moveSpeed = 9.0f; // 移動速度
 		Vec3 moveVec(LStick.x, 0.0f, LStick.y); // 移動ベクトル
+		auto x = moveVec.x * cosf(rad) - moveVec.z * sinf(rad);
+		auto z = moveVec.x * sinf(rad) + moveVec.z * cosf(rad);
+		moveVec.x = x;
+		moveVec.z = z;
 		m_velocityY -= delta * 9.8f;
 		m_velocity *= 0.95f;
 		m_velocity += moveVec * delta * 80;
