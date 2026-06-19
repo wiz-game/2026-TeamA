@@ -63,7 +63,7 @@ namespace basecross {
 		virtual void EffectRangeDraw(const Vec3& position, const Vec3& rotation){}
 		bool GetActive() { return m_isActive; }
 		void SetPlayer(const shared_ptr<GameObject>& player) { m_player = player; }
-		int GetCharacterNum() { return m_characterNum; }
+		virtual int GetCharacterNum() { return m_characterNum; }
 	};
 
 	// 隊列オブジェクトの管理クラス
@@ -178,6 +178,7 @@ namespace basecross {
 		void AllCharacterMove();
 		void SetPlayerPos(const Vec3& pos);
 		bool StartForamtionMove(int num, const Vec3& pos);
+		void ResetFormationMenber();
 		int GetActiveNum() { return m_activeNum; }
 		int GetFollowNum();
 		bool CheckFormationReady();
@@ -199,6 +200,7 @@ namespace basecross {
 		float m_roadWidth = 10;
 		Vec3 m_formationRot;
 		bool m_isStartedFormation;
+		float m_frmWaitTime;
 		wstring m_debugStr;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
@@ -310,11 +312,13 @@ namespace basecross {
 
 	class BridgeFormation : public CharacterFormation
 	{
+		Vec3 m_baseScale;
 		Vec3 m_position;
 		bool m_onPlayer;
 	public:
 		BridgeFormation(const std::shared_ptr<Stage>& stage) :
 			CharacterFormation(stage),
+			m_baseScale(Vec3(10.0f, 1.0f, 40.0f)),
 			m_position(Vec3(0)),
 			m_onPlayer(false)
 		{
@@ -326,7 +330,7 @@ namespace basecross {
 		void SetOnPlayer(bool b) { m_onPlayer = b; }
 		void Start(const Vec3& position, const Vec3& rotation) override;
 		void EffectRangeDraw(const Vec3& position, const Vec3& rotation) override;
-
+		int GetCharacterNum() override;
 	};
 
 
