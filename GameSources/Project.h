@@ -18,7 +18,13 @@
 
 #include "Character.h"
 #include "StageObject.h"
+#include "TrackManager.h"
+#include"CharacterFormation.h"
+#include "FormationManager.h"
+#include "SubPlayer.h"
+#include "SubPlayerManager.h"
 #include "Player.h"
+#include "SubPlayerState.h"
 #include "Ground.h"
 #include "PlayerCamera.h"
 #include "BrokenObjs.h"
