@@ -673,27 +673,53 @@ namespace basecross {
 
 
 		// 隊列の範囲を表示
-		if (pad.wButtons & XINPUT_GAMEPAD_X)
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_X)
 		{
 			if (!m_formationMng->GetFormationActive() && !m_isStartedFormation)
 			{
-				int num = m_formationMng->GetFormationCharacterNum();
-				int followNum = m_subPlayerMng->GetFollowNum();
-				if (followNum >= num)
-				{
-					Vec3 pos = m_position;
-					Vec3 rot = m_rotation;
-					rot.y += XM_PI;
-					pos.x += cosf(-rot.y) * 5.5f;
-					pos.z += sinf(-rot.y) * 5.5f;
+				//int num = m_formationMng->GetFormationCharacterNum();
+				//int followNum = m_subPlayerMng->GetFollowNum();
+				//if (followNum >= num)
+				//{
+				//	Vec3 pos = m_position;
+				//	Vec3 rot = m_rotation;
+				//	rot.y += XM_PI;
+				//	pos.x += cosf(-rot.y) * 5.5f;
+				//	pos.z += sinf(-rot.y) * 5.5f;
 
-					m_formationMng->DrawFormationRange(pos, rot);
-				}
+				//	m_formationMng->DrawFormationRange(pos, rot);
+				//}
+				m_drawFormationRange = !m_drawFormationRange;
+			}
+
+			if (!m_drawFormationRange)
+			{
+				m_formationMng->ResetDraw();
 			}
 		}
-		if (pad.wReleasedButtons & XINPUT_GAMEPAD_X && !m_formationMng->GetFormationActive() && !m_isStartedFormation)
+		//if (pad.wReleasedButtons & XINPUT_GAMEPAD_X && !m_formationMng->GetFormationActive() && !m_isStartedFormation)
+		//{
+		//	m_formationMng->ResetDraw();
+		//}
+
+		if (m_drawFormationRange && !m_formationMng->GetFormationActive() && !m_isStartedFormation)
 		{
-			m_formationMng->ResetDraw();
+			int num = m_formationMng->GetFormationCharacterNum();
+			int followNum = m_subPlayerMng->GetFollowNum();
+			if (followNum >= num)
+			{
+				Vec3 pos = m_position;
+				Vec3 rot = m_rotation;
+				rot.y += XM_PI;
+				pos.x += cosf(-rot.y) * 5.5f;
+				pos.z += sinf(-rot.y) * 5.5f;
+
+				m_formationMng->DrawFormationRange(pos, rot);
+			}
+			else
+			{
+				m_formationMng->ResetDraw();
+			}
 		}
 
 
@@ -797,6 +823,7 @@ namespace basecross {
 				cube->SetOnPlayer(true);
 			}
 		}
+		m_debugStr = L"Check";
 
 	}
 

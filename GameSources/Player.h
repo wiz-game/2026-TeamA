@@ -202,6 +202,7 @@ namespace basecross {
 		bool m_isStartedFormation;
 		float m_frmWaitTime;
 		wstring m_debugStr;
+		bool m_drawFormationRange;
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;
