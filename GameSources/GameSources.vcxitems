@@ -18,9 +18,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BrokenObjs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CharacterController.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)CharacterFormation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DXModel.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DXModelResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FormationManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FormationUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameClearStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameOverStage.h" />
@@ -43,7 +45,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BreakWall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayerManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TrackManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TurningPoint.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Vine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Wall.h" />
@@ -53,8 +58,14 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BrokenObjs.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CharacterController.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)CharacterFormation.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FormationManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TrackManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Vine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DXModel.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
