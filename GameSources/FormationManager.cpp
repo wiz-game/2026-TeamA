@@ -1,6 +1,6 @@
 /*!
-@file Foo.cpp
-@brief キャラクターなど実体
+@file FormationManager.cpp
+@brief 隊列の管理クラスの実体
 */
 
 #include "stdafx.h"

@@ -1,6 +1,6 @@
 /*!
-@file Foo.h
-@brief キャラクターなど
+@file SubPlayer.h
+@brief 群れ
 */
 
 #pragma once
@@ -44,6 +44,8 @@ namespace basecross {
 			m_follow(false),
 			m_velocity(Vec3(0)),
 			m_maxSpeed(9.0f),
+			m_randam(0),
+			m_dis(15.0f),
 			m_isReadyFormation(false),
 			m_velocityY(0)
 		{

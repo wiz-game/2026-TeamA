@@ -1,6 +1,6 @@
 /*!
-@file Foo.cpp
-@brief キャラクターなど実体
+@file SubPlayer.cpp
+@brief 群れの実体
 */
 
 #include "stdafx.h"
@@ -116,6 +116,11 @@ namespace basecross {
 		{
 			//m_follow = false;
 		}
+
+		if (dis.length() > 15.0f)
+		{
+			m_follow = true;
+		}
 		if (m_follow && !m_isReadyFormation)
 		{
 			m_stay += delta;
@@ -211,7 +216,7 @@ namespace basecross {
 						{
 							auto otherPos = sub->GetComponent<Transform>()->GetPosition();
 							auto otherDis = otherPos - pos;
-							if (otherDis.length() < 1.5f)
+							if (otherDis.length() < 1.5f && dis.length() < 15.0f)
 							{
 								m_dis = dis.length();
 								return true;
@@ -246,9 +251,9 @@ namespace basecross {
 			auto steeringForce = CalculateSteering(node, others, 4.0f, 1.0f);
 			m_velocity += steeringForce * delta;
 			m_velocity.y = 0;
-			if (m_velocity.length() > m_maxSpeed)
+			if (m_velocity.length() > m_maxSpeed * 1.5f)
 			{
-				m_velocity = m_velocity.normalize() * m_maxSpeed;
+				m_velocity = m_velocity.normalize() * m_maxSpeed * 1.5f;
 			}
 		}
 		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;

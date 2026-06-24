@@ -1,6 +1,6 @@
 /*!
-@file Foo.cpp
-@brief キャラクターなど実体
+@file TrackManager.cpp
+@brief 軌跡の管理クラスの実体
 */
 
 #include "stdafx.h"

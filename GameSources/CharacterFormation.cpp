@@ -1,6 +1,6 @@
 /*!
-@file Foo.cpp
-@brief キャラクターなど実体
+@file CharacterFormation.cpp
+@brief 群れの隊列の実体
 */
 
 #include "stdafx.h"

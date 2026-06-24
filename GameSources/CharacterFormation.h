@@ -1,6 +1,6 @@
 /*!
-@file Foo.h
-@brief キャラクターなど
+@file CharacterFormation.h
+@brief 群れの隊列
 */
 
 #pragma once

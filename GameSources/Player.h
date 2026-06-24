@@ -1,6 +1,6 @@
 /*!
 @file Player.h
-@brief キャラクターなど
+@brief プレイヤー
 */
 
 #pragma once
@@ -30,13 +30,13 @@ namespace basecross {
 		Vec3 m_rotation; // プレイヤーの回転
 		Vec3 m_scale;    // プレイヤーのスケーリング
 		Vec3 m_velocity; // プレイヤーの移動ベクトル
-		float m_velocityY;
-		float m_roadWidth = 10;
-		Vec3 m_formationRot;
-		bool m_isStartedFormation;
-		float m_frmWaitTime;
-		wstring m_debugStr;
-		bool m_drawFormationRange;
+		float m_velocityY; // Y方向の移動量
+		float m_roadWidth = 10; // トラックに送る道幅
+		Vec3 m_formationRot; // 隊列に送る回転
+		bool m_isStartedFormation; // 隊列が始まっているかどうか
+		float m_frmWaitTime; // フォーメーションが出来上がるまでの時間を数える
+		wstring m_debugStr; // デバッグ用文字列
+		bool m_drawFormationRange; // 隊列の範囲を表示するかどうか
 
 		std::unique_ptr<JPH::CharacterVirtual> m_character;
 		JPH::PhysicsSystem* m_pPhysicsSystem = nullptr;

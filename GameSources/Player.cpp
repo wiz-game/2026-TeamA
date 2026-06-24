@@ -1,6 +1,6 @@
 /*!
 @file Player.cpp
-@brief プレイヤーなど実体
+@brief プレイヤーの実体
 */
 
 #include "stdafx.h"
@@ -102,8 +102,12 @@ namespace basecross {
 		moveVec.x = x;
 		moveVec.z = z;
 		m_velocityY -= delta * 9.8f;
-		m_velocity *= 0.95f;
-		m_velocity += moveVec * delta * 80;
+		//m_velocity *= 0.95f;
+		m_velocity = moveVec * moveSpeed;
+		if (m_isStartedFormation)
+		{
+			m_velocity = { 0 };
+		}
 		if (m_velocity.length() > moveSpeed)
 		{
 			m_velocity = m_velocity.normalize() * moveSpeed;
@@ -183,46 +187,12 @@ namespace basecross {
 			m_isStartedFormation = false;
 
 		}
-		//if (pad.wReleasedButtons & XINPUT_GAMEPAD_B)
-		//{
-		//	//auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
-		//	//if (formation)
-		//	//{
-		//	//	auto rotate = m_rotation;
-		//	//	rotate.y += XM_PIDIV2;
-		//	//	formation->Start(m_position, rotate);
-		//	//}
-		//	if (!m_formationMng->GetFormationActive())
-		//	{
-		//		auto rotate = m_rotation;
-		//		rotate.y += XM_PIDIV2;
-		//		//m_formationMng->StartFormation(m_position, rotate);
-		//		int num = m_formationMng->GetFormationCharacterNum();
-		//		Vec3 pos = m_position;
-		//		Vec3 rot = m_rotation;
-		//		rot.y += XM_PI;
-		//		pos.x += cosf(-rot.y) * 5.5f;
-		//		pos.z += sinf(-rot.y) * 5.5f;
-		//		m_formationRot = m_rotation;
-		//		bool b = m_subPlayerMng->StartForamtionMove(num, pos);
-		//		if (b)
-		//		{
-		//			m_formationMng->DrawFormationRange(pos, rot);
-		//			m_isStartedFormation = true;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		m_formationMng->FinishFormation();
-
-		//	}
-		//}
 
 		// 一定時間経過しても隊列が組まれなかった時の処理
 		if (m_isStartedFormation)
 		{
 			m_frmWaitTime += delta;
-			if (m_frmWaitTime >= 10.0f)
+			if (m_frmWaitTime >= 5.0f)
 			{
 				m_formationMng->ResetDraw();
 				m_subPlayerMng->ResetFormationMenber();
@@ -294,7 +264,7 @@ namespace basecross {
 				m_drawFormationRange = !m_drawFormationRange;
 			}
 
-			if (!m_drawFormationRange)
+			if (!m_drawFormationRange && !m_formationMng->GetFormationActive() && !m_isStartedFormation)
 			{
 				m_formationMng->ResetDraw();
 			}
@@ -332,11 +302,6 @@ namespace basecross {
 				m_formationMng->ResetDraw();
 			}
 			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() - 1);
-			//m_formationNumber -= 1;
-			//if (m_formationNumber < 0)
-			//{
-			//	m_formationNumber = 0;
-			//}
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 		{
@@ -345,11 +310,6 @@ namespace basecross {
 				m_formationMng->ResetDraw();
 			}
 			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() + 1);
-			//m_formationNumber += 1;
-			//if (m_formationNumber >= 4)
-			//{
-			//	m_formationNumber = 3;
-			//}
 
 		}
 
@@ -367,7 +327,7 @@ namespace basecross {
 
 		// アニメーションの更新
 		m_drawComp->UpdateAnimation(delta * 2.0f);
-		if (abs(m_desiredVelocity.x + m_desiredVelocity.z) < 0.1f)
+		if (abs(m_velocity.x + m_velocity.z) < 0.1f)
 		{
 			if (m_drawComp->GetCurrentAnimation() != L"ANIM_IDLE")
 			{

@@ -1,6 +1,6 @@
 /*!
-@file Foo.cpp
-@brief キャラクターなど実体
+@file SubPlayerState.cpp
+@brief 群れのステートマシンの実体
 */
 
 #include "stdafx.h"
