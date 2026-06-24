@@ -58,7 +58,6 @@ namespace basecross {
 			AddGameObject<FormationUI>();
 			option = AddGameObject<Option>(); //オプションを追加しておくが、表示はしない
 			SetSharedGameObject(L"Option", option);
-			AddGameObject<MushroomPlatform>();
 
 			//StageBGM
 			auto XAPtr = App::GetApp()->GetXAudio2Manager();
