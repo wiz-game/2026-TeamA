@@ -119,6 +119,7 @@ namespace basecross {
 
 		if (dis.length() > 15.0f)
 		{
+			m_isFar = true;
 			m_follow = true;
 		}
 		if (m_follow && !m_isReadyFormation)
@@ -212,11 +213,11 @@ namespace basecross {
 					auto sub = dynamic_pointer_cast<SubPlayer>(other);
 					if (sub)
 					{
-						if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()))
+						if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()) && !sub->GetIsFar())
 						{
 							auto otherPos = sub->GetComponent<Transform>()->GetPosition();
 							auto otherDis = otherPos - pos;
-							if (otherDis.length() < 1.5f && dis.length() < 15.0f)
+							if (otherDis.length() < 1.5f)
 							{
 								m_dis = dis.length();
 								return true;
@@ -248,7 +249,7 @@ namespace basecross {
 		{
 			TrackNode node{ m_targetPos, 15 };
 			auto others = player->GetSubPlayerManager()->GetActiveSubPlayer();
-			auto steeringForce = CalculateSteering(node, others, 4.0f, 1.0f);
+			auto steeringForce = CalculateSteering(node, others, 4.0f, 1.0f, 100.0f);
 			m_velocity += steeringForce * delta;
 			m_velocity.y = 0;
 			if (m_velocity.length() > m_maxSpeed * 1.5f)
@@ -386,7 +387,7 @@ namespace basecross {
 		m_transComp->SetPosition(pos);
 	}
 
-	Vec3 SubPlayer::CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers, float seekBase, float sepBase)
+	Vec3 SubPlayer::CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers, float seekBase, float sepBase, float playerSep)
 	{
 		Vec3 force = Vec3(0);
 
@@ -507,10 +508,10 @@ namespace basecross {
 			auto dis = disVec.length();
 			if (dis > 0.001f && dis < 2.5f)
 			{
-				auto pForce = disVec.normalize() * (200.0f / dis);
-				if (pForce.length() > 200.0f)
+				auto pForce = disVec.normalize() * (playerSep / dis);
+				if (pForce.length() > playerSep)
 				{
-					pForce = pForce.normalize() * 100.0f;
+					pForce = pForce.normalize() * playerSep;
 				}
 				force += pForce;
 			}

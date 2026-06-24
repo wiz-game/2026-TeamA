@@ -264,7 +264,7 @@ namespace basecross {
 	void SpearFormation::OnUpdate()
 	{
 		auto delta = App::GetApp()->GetElapsedTime();
-		m_position.x += delta * 10;
+		m_position += m_velocity * delta * 10;
 		m_time += delta;
 		if (m_time > 0.2f)
 		{
@@ -294,6 +294,7 @@ namespace basecross {
 		m_rotation = rotation;
 		m_rotation.y += XM_PIDIV2;
 		m_position = position;
+		m_velocity = Vec3{ cosf(rotation.y), 0, -sinf(rotation.y) };
 		m_transComp->SetPosition(position);
 		m_transComp->SetRotation(m_rotation);
 		m_isActive = true;

@@ -87,6 +87,7 @@ namespace basecross {
 	class SpearFormation : public CharacterFormation
 	{
 		Vec3 m_position;
+		Vec3 m_velocity;
 	public:
 		SpearFormation(const std::shared_ptr<Stage>& stage) :
 			CharacterFormation(stage)

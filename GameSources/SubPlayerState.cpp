@@ -17,6 +17,7 @@ namespace basecross {
 	void SubPlayerStayState::Enter(const shared_ptr<SubPlayer>& obj)
 	{
 		obj->GetComponent<PNTBoneModelDraw>()->ChangeCurrentAnimation(L"ANIM_IDLE");
+		obj->SetIsFar(false);
 	}
 	void SubPlayerStayState::Execute(const shared_ptr<SubPlayer>& obj)
 	{
