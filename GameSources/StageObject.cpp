@@ -122,7 +122,7 @@ namespace basecross
 
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		//collision->SetDrawActive(true);
+		collision->SetDrawActive(true);
 
 	}
 
@@ -292,9 +292,13 @@ namespace basecross
 	{
 		StageObject::OnCreate();
 		m_stage = GetStage();
+
+		auto trans = GetComponent<Transform>();
+		trans->SetScale(Vec3(30.0f, 10.0f, 10.0f));
+
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(0.3f, 1.0f, 0.3f), // scale
+			Vec3(0.3f, 1.0f, 1.0f), // scale
 			Vec3(0.0f, 0.0f, 0.0f), // rotation
 			Vec3(0.0f, XM_PI, 0.0f), // rotation
 			Vec3(0.0f, 0.3f, 0.0f)  // position

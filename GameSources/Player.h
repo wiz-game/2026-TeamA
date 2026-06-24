@@ -30,6 +30,7 @@ namespace basecross {
 		Vec3 m_rotation; // プレイヤーの回転
 		Vec3 m_scale;    // プレイヤーのスケーリング
 		Vec3 m_velocity; // プレイヤーの移動ベクトル
+		float m_accelerationForTrampolineBound;
 		float m_velocityY; // Y方向の移動量
 		float m_roadWidth = 10; // トラックに送る道幅
 		Vec3 m_formationRot; // 隊列に送る回転
@@ -52,18 +53,13 @@ namespace basecross {
 
 	public:
 		// ステージを引数にしたコンストラクタ【必須】
-		Player(const std::shared_ptr<Stage>& stage) :
-			GameObject(stage), // ステージをGameObjectに渡す【必須】
-			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
-			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
-			m_scale(1.0f)     // プレイヤーの初期スケーリングを設定
-		{
-		}
+		Player(const std::shared_ptr<Stage>& stage) : Player(stage, Vec3(1.0f)) {}
 		Player(const std::shared_ptr<Stage>& stage, Vec3 scale) :
 			GameObject(stage), // ステージをGameObjectに渡す【必須】
 			m_position(0.0f, 0.0f, 0.0f), // プレイヤーの初期位置を設定
 			m_rotation(0.0f, 0.0f, 0.0f), // プレイヤーの初期回転を設定
-			m_scale(scale)    // プレイヤーの初期スケーリングを設定
+			m_scale(scale),    // プレイヤーの初期スケーリングを設定
+			m_accelerationForTrampolineBound(0.0f)
 		{
 		}
 

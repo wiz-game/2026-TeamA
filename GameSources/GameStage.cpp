@@ -60,6 +60,8 @@ namespace basecross {
 			option = AddGameObject<Option>(); //オプションを追加しておくが、表示はしない
 			SetSharedGameObject(L"Option", option);
 
+			AddGameObject<Trampoline>();
+
 			//StageBGM
 			auto XAPtr = App::GetApp()->GetXAudio2Manager();
 			m_BGM = XAPtr->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, App::GetApp()->GetScene<Scene>()->m_BGMVolume);
