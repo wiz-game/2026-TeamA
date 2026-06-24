@@ -1,6 +1,6 @@
 /*!
-@file Foo.h
-@brief キャラクターなど
+@file SubPlayerManager.h
+@brief 群れの管理クラス
 */
 
 #pragma once

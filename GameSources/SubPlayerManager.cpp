@@ -1,6 +1,6 @@
 /*!
-@file Foo.cpp
-@brief キャラクターなど実体
+@file SubPlayerManager.cpp
+@brief 群れの管理クラスの実体
 */
 
 #include "stdafx.h"

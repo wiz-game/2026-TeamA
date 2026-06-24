@@ -1,6 +1,6 @@
 /*!
-@file Foo.h
-@brief キャラクターなど
+@file FormationManager.h
+@brief 隊列の管理クラス
 */
 
 #pragma once

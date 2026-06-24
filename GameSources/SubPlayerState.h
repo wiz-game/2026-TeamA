@@ -1,6 +1,6 @@
 /*!
-@file Foo.h
-@brief キャラクターなど
+@file SubPlayerState.h
+@brief 群れのステートマシン
 */
 
 #pragma once
