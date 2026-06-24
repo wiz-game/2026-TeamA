@@ -49,6 +49,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayerManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TrackManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TurningPoint.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Vine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Wall.h" />
@@ -66,6 +67,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TrackManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Trampoline.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Vine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DXModel.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

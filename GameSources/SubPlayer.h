@@ -32,6 +32,9 @@ namespace basecross {
 		Vec3 CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers, float seekBase = 2.0f, float sepBase = 1.5f);
 		bool m_isReadyFormation;
 		float m_velocityY;
+
+		float m_accelerationForTrampolineBound;
+
 	public:
 		// コンストラクタ
 		SubPlayer(const std::shared_ptr<Stage>& stage) :
@@ -45,7 +48,8 @@ namespace basecross {
 			m_velocity(Vec3(0)),
 			m_maxSpeed(9.0f),
 			m_isReadyFormation(false),
-			m_velocityY(0)
+			m_velocityY(0),
+			m_accelerationForTrampolineBound(0.0f)
 		{
 		}
 
@@ -69,6 +73,7 @@ namespace basecross {
 		const unique_ptr<StateMachine<SubPlayer>>& GetStateMachine() {
 			return m_state;
 		}
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 		void SetReadyFormation(bool b) { m_isReadyFormation = b; }
 		bool GetReadyFormation() { return m_isReadyFormation; }

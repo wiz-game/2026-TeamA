@@ -119,6 +119,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayerManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TrackManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -223,5 +226,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TrackManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Trampoline.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
