@@ -108,6 +108,18 @@ namespace basecross {
 		{
 			m_velocity = m_velocity.normalize() * moveSpeed;
 		}
+
+		// トランポリンによるバウンド移動処理
+		if (m_accelerationForTrampolineBound > 0.0f)
+		{
+			m_velocityY += m_accelerationForTrampolineBound * delta;
+
+			// バウンド加速度を重力分減退させる
+			m_accelerationForTrampolineBound -= 9.8f * delta;
+			if (m_accelerationForTrampolineBound < 0.0f) m_accelerationForTrampolineBound = 0.0f;
+		}
+
+		// 移動量確定
 		m_position = m_transform->GetPosition();
 		//m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_position += m_velocity * delta;
@@ -427,6 +439,23 @@ namespace basecross {
 		}
 		m_debugStr = L"Check";
 
+		// Trampolineに乗ったとき跳ねるため、上向きの加速度が設定される
+		// ゲームの違和感を軽減するため、上向きの初速も加える
+		auto& ptrTrampoline = dynamic_pointer_cast<Trampoline>(other);
+		if (ptrTrampoline)
+		{
+			auto trampolineTrans = ptrTrampoline->GetComponent<Transform>();
+			auto trampolinePos = trampolineTrans->GetPosition();
+			auto trampolineScale = trampolineTrans->GetScale();
+
+			// 衝突時トランポリンより高い位置にいるときだけ跳ねる
+			if (m_position.y - m_scale.y * 0.5f > trampolinePos.y + trampolineScale.y * 0.5f)
+			{
+				m_accelerationForTrampolineBound = ptrTrampoline->GetBoundPower();
+				m_velocityY = m_velocityY < 0.0f ? 0.0f : m_velocityY;
+				m_velocityY = m_accelerationForTrampolineBound * 0.5f;
+			}
+		}
 	}
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
