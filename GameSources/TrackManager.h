@@ -1,6 +1,6 @@
 /*!
-@file Foo.h
-@brief キャラクターなど
+@file TrackManager.h
+@brief 軌跡の管理クラス
 */
 
 #pragma once

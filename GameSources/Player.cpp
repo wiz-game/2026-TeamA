@@ -1,6 +1,6 @@
 /*!
 @file Player.cpp
-@brief プレイヤーなど実体
+@brief プレイヤーの実体
 */
 
 #include "stdafx.h"
@@ -102,12 +102,28 @@ namespace basecross {
 		moveVec.x = x;
 		moveVec.z = z;
 		m_velocityY -= delta * 9.8f;
-		m_velocity *= 0.95f;
-		m_velocity += moveVec * delta * 80;
+		//m_velocity *= 0.95f;
+		m_velocity = moveVec * moveSpeed;
+		if (m_isStartedFormation)
+		{
+			m_velocity = { 0 };
+		}
 		if (m_velocity.length() > moveSpeed)
 		{
 			m_velocity = m_velocity.normalize() * moveSpeed;
 		}
+
+		// トランポリンによるバウンド移動処理
+		if (m_accelerationForTrampolineBound > 0.0f)
+		{
+			m_velocityY += m_accelerationForTrampolineBound * delta;
+
+			// バウンド加速度を重力分減退させる
+			m_accelerationForTrampolineBound -= 9.8f * delta;
+			if (m_accelerationForTrampolineBound < 0.0f) m_accelerationForTrampolineBound = 0.0f;
+		}
+
+		// 移動量確定
 		m_position = m_transform->GetPosition();
 		//m_position += moveVec * moveSpeed * delta; // 移動ベクトルに速度とデルタタイムを掛ける
 		m_position += m_velocity * delta;
@@ -183,46 +199,12 @@ namespace basecross {
 			m_isStartedFormation = false;
 
 		}
-		//if (pad.wReleasedButtons & XINPUT_GAMEPAD_B)
-		//{
-		//	//auto formation = dynamic_pointer_cast<CharacterFormation>(m_formation[m_formationNumber]);
-		//	//if (formation)
-		//	//{
-		//	//	auto rotate = m_rotation;
-		//	//	rotate.y += XM_PIDIV2;
-		//	//	formation->Start(m_position, rotate);
-		//	//}
-		//	if (!m_formationMng->GetFormationActive())
-		//	{
-		//		auto rotate = m_rotation;
-		//		rotate.y += XM_PIDIV2;
-		//		//m_formationMng->StartFormation(m_position, rotate);
-		//		int num = m_formationMng->GetFormationCharacterNum();
-		//		Vec3 pos = m_position;
-		//		Vec3 rot = m_rotation;
-		//		rot.y += XM_PI;
-		//		pos.x += cosf(-rot.y) * 5.5f;
-		//		pos.z += sinf(-rot.y) * 5.5f;
-		//		m_formationRot = m_rotation;
-		//		bool b = m_subPlayerMng->StartForamtionMove(num, pos);
-		//		if (b)
-		//		{
-		//			m_formationMng->DrawFormationRange(pos, rot);
-		//			m_isStartedFormation = true;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		m_formationMng->FinishFormation();
-
-		//	}
-		//}
 
 		// 一定時間経過しても隊列が組まれなかった時の処理
 		if (m_isStartedFormation)
 		{
 			m_frmWaitTime += delta;
-			if (m_frmWaitTime >= 10.0f)
+			if (m_frmWaitTime >= 5.0f)
 			{
 				m_formationMng->ResetDraw();
 				m_subPlayerMng->ResetFormationMenber();
@@ -294,7 +276,7 @@ namespace basecross {
 				m_drawFormationRange = !m_drawFormationRange;
 			}
 
-			if (!m_drawFormationRange)
+			if (!m_drawFormationRange && !m_formationMng->GetFormationActive() && !m_isStartedFormation)
 			{
 				m_formationMng->ResetDraw();
 			}
@@ -332,11 +314,6 @@ namespace basecross {
 				m_formationMng->ResetDraw();
 			}
 			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() - 1);
-			//m_formationNumber -= 1;
-			//if (m_formationNumber < 0)
-			//{
-			//	m_formationNumber = 0;
-			//}
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 		{
@@ -345,11 +322,6 @@ namespace basecross {
 				m_formationMng->ResetDraw();
 			}
 			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() + 1);
-			//m_formationNumber += 1;
-			//if (m_formationNumber >= 4)
-			//{
-			//	m_formationNumber = 3;
-			//}
 
 		}
 
@@ -367,7 +339,7 @@ namespace basecross {
 
 		// アニメーションの更新
 		m_drawComp->UpdateAnimation(delta * 2.0f);
-		if (abs(m_desiredVelocity.x + m_desiredVelocity.z) < 0.1f)
+		if (abs(m_velocity.x + m_velocity.z) < 0.1f)
 		{
 			if (m_drawComp->GetCurrentAnimation() != L"ANIM_IDLE")
 			{
@@ -427,6 +399,23 @@ namespace basecross {
 		}
 		m_debugStr = L"Check";
 
+		// Trampolineに乗ったとき跳ねるため、上向きの加速度が設定される
+		// ゲームの違和感を軽減するため、上向きの初速も加える
+		auto& ptrTrampoline = dynamic_pointer_cast<Trampoline>(other);
+		if (ptrTrampoline)
+		{
+			auto trampolineTrans = ptrTrampoline->GetComponent<Transform>();
+			auto trampolinePos = trampolineTrans->GetPosition();
+			auto trampolineScale = trampolineTrans->GetScale();
+
+			// 衝突時トランポリンより高い位置にいるときだけ跳ねる
+			if (m_position.y - m_scale.y * 0.5f > trampolinePos.y + trampolineScale.y * 0.5f)
+			{
+				m_accelerationForTrampolineBound = ptrTrampoline->GetBoundPower();
+				m_velocityY = m_velocityY < 0.0f ? 0.0f : m_velocityY;
+				m_velocityY = m_accelerationForTrampolineBound * 0.5f;
+			}
+		}
 	}
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)

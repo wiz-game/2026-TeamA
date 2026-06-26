@@ -50,6 +50,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayerManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TrackManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TurningPoint.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Vine.h" />

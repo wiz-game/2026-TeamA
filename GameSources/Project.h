@@ -19,6 +19,7 @@
 
 #include "Character.h"
 #include "StageObject.h"
+#include "Trampoline.h"
 #include "TrackManager.h"
 #include"CharacterFormation.h"
 #include "FormationManager.h"
@@ -37,6 +38,7 @@
 #include "Wall.h"
 #include "Vine.h"
 #include "Baite.h"
+
 
 #include "FormationUI.h"
 #include "previewButtonUI.h"

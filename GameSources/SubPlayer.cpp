@@ -1,6 +1,6 @@
 /*!
-@file Foo.cpp
-@brief キャラクターなど実体
+@file SubPlayer.cpp
+@brief 群れの実体
 */
 
 #include "stdafx.h"
@@ -44,7 +44,19 @@ namespace basecross {
 	{
 		m_state->Update();
 
+		auto& app = App::GetApp();
+		auto delta = app->GetElapsedTime();
 		auto pos = m_transComp->GetPosition();
+
+		// トランポリンによるバウンド移動処理
+		if (m_accelerationForTrampolineBound > 0.0f)
+		{
+			m_velocityY += m_accelerationForTrampolineBound * delta;
+
+			// バウンド加速度を重力分減退させる
+			m_accelerationForTrampolineBound -= 9.8f * delta;
+			if (m_accelerationForTrampolineBound < 0.0f) m_accelerationForTrampolineBound = 0.0f;
+		}
 
 		auto dis = m_playerPos - pos;
 		if (dis.length() > 30.0f && !m_state->IsInState(SubPlayerMoveToTargetPositionState::Instance()))
@@ -115,6 +127,12 @@ namespace basecross {
 		else
 		{
 			//m_follow = false;
+		}
+
+		if (dis.length() > 15.0f)
+		{
+			m_isFar = true;
+			m_follow = true;
 		}
 		if (m_follow && !m_isReadyFormation)
 		{
@@ -207,7 +225,7 @@ namespace basecross {
 					auto sub = dynamic_pointer_cast<SubPlayer>(other);
 					if (sub)
 					{
-						if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()))
+						if (sub->GetStateMachine()->IsInState(SubPlayerStayState::Instance()) && !sub->GetIsFar())
 						{
 							auto otherPos = sub->GetComponent<Transform>()->GetPosition();
 							auto otherDis = otherPos - pos;
@@ -243,12 +261,12 @@ namespace basecross {
 		{
 			TrackNode node{ m_targetPos, 15 };
 			auto others = player->GetSubPlayerManager()->GetActiveSubPlayer();
-			auto steeringForce = CalculateSteering(node, others, 4.0f, 1.0f);
+			auto steeringForce = CalculateSteering(node, others, 4.0f, 1.0f, 100.0f);
 			m_velocity += steeringForce * delta;
 			m_velocity.y = 0;
-			if (m_velocity.length() > m_maxSpeed)
+			if (m_velocity.length() > m_maxSpeed * 1.5f)
 			{
-				m_velocity = m_velocity.normalize() * m_maxSpeed;
+				m_velocity = m_velocity.normalize() * m_maxSpeed * 1.5f;
 			}
 		}
 		pos += (m_velocity + Vec3(0.0f, m_velocityY, 0.0f)) * delta;
@@ -324,6 +342,27 @@ namespace basecross {
 		return false;
 	}
 
+	void SubPlayer::OnCollisionEnter(shared_ptr<GameObject>& Other)
+	{
+		// Trampolineに乗ったとき跳ねるため、上向きの加速度が設定される
+		// ゲームの違和感を軽減するため、上向きの初速も加える
+		auto& ptrTrampoline = dynamic_pointer_cast<Trampoline>(Other);
+		if (ptrTrampoline)
+		{
+			auto trampolineTrans = ptrTrampoline->GetComponent<Transform>();
+			auto trampolinePos = trampolineTrans->GetPosition();
+			auto trampolineScale = trampolineTrans->GetScale();
+
+			// 衝突時トランポリンより高い位置にいるときだけ跳ねる
+			if (m_transComp->GetPosition().y - m_transComp->GetScale().y * 0.5f > trampolinePos.y + trampolineScale.y * 0.5f)
+			{
+				m_accelerationForTrampolineBound = ptrTrampoline->GetBoundPower();
+				m_velocityY = m_velocityY < 0.0f ? 0.0f : m_velocityY;
+				m_velocityY = m_accelerationForTrampolineBound * 0.5f;
+			}
+		}
+	}
+
 	void SubPlayer::OnCollisionExcute(shared_ptr<GameObject>& Other)
 	{
 		auto same = dynamic_pointer_cast<SubPlayer>(Other);
@@ -381,7 +420,7 @@ namespace basecross {
 		m_transComp->SetPosition(pos);
 	}
 
-	Vec3 SubPlayer::CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers, float seekBase, float sepBase)
+	Vec3 SubPlayer::CalculateSteering(const TrackNode& targetNode, const vector<shared_ptr<GameObject>> subPlayers, float seekBase, float sepBase, float playerSep)
 	{
 		Vec3 force = Vec3(0);
 
@@ -502,10 +541,10 @@ namespace basecross {
 			auto dis = disVec.length();
 			if (dis > 0.001f && dis < 2.5f)
 			{
-				auto pForce = disVec.normalize() * (200.0f / dis);
-				if (pForce.length() > 200.0f)
+				auto pForce = disVec.normalize() * (playerSep / dis);
+				if (pForce.length() > playerSep)
 				{
-					pForce = pForce.normalize() * 100.0f;
+					pForce = pForce.normalize() * playerSep;
 				}
 				force += pForce;
 			}
