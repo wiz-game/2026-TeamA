@@ -11,7 +11,7 @@ namespace basecross
 	{}
 
 	const map<wstring, Vec3> SkyBox::pairs = {
-		{L"000_000_000", Vec3(0   ,  -0,   +0.5f)},
+		{L"000_000_000", Vec3(0   , -0,   +0.5f)},
 		{L"000_090_000", Vec3(+0.5f, 0,    0)},
 		{L"000_180_000", Vec3(0   ,  0,   -0.5f)},
 		{L"000_270_000", Vec3(-0.5f, 0,    0)},
@@ -46,7 +46,7 @@ namespace basecross
 			//const float scale = 707.0f; //707.0f
 			//Vec3 pos = pair.second * scale;
 			//pos.y -= 340.0f;
-			//Vec3 newScale = Vec3(707.0f);
+			//Vec3 newScale = Vec3(720.0f,707.0f,707.0f);
 			//planeTransComp->SetPosition(pos);
 			//planeTransComp->SetRotation(rotX, rotY, rotZ);
 			//planeTransComp->SetScale(Vec3(newScale.x,newScale.y * 2, newScale.z));
@@ -77,7 +77,7 @@ namespace basecross
 
 			auto planeTrans = plane->GetComponent<Transform>();
 
-			// ?e?N?X?`???L?[?????????p?x????????
+			
 			float rotX = XMConvertToRadians(stof(pair.first.substr(0, 3)));
 			float rotY = XMConvertToRadians(stof(pair.first.substr(4, 3)));
 			float rotZ = XMConvertToRadians(stof(pair.first.substr(8, 3)));
@@ -97,7 +97,8 @@ namespace basecross
 	{
 		// カメラの位置にスカイボックスを移動させる
 		auto transComp = GetComponent<Transform>();
-		transComp->SetPosition(GetStage()->GetView()->GetTargetCamera()->GetEye());
+		Vec3 cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+		transComp->SetPosition(cameraPos.x,cameraPos.y + 20.0f,cameraPos.z + 0.0f);
 	}
 
 	void SkyBox::OnDraw()
@@ -121,10 +122,10 @@ namespace basecross
 	{
 		// 板ポリを形成するための頂点データ
 		vector<VertexPositionTexture> vertices = {
-			{Vec3(-0.5f, +0.5f, 0.0f), Vec2(0.0f, 0.0f)},
-			{Vec3(+0.5f, +0.5f, 0.0f), Vec2(1.0f, 0.0f)},
-			{Vec3(-0.5f, -0.5f, 0.0f), Vec2(0.0f, 1.0f)},
-			{Vec3(+0.5f, -0.5f, 0.0f), Vec2(1.0f, 1.0f)}
+			{Vec3(-0.5f, +0.5f, 0.0f), Vec2(0.0f, 0.0f)}, //左上
+			{Vec3(+0.5f, +0.5f, 0.0f), Vec2(1.0f, 0.0f)}, //右上
+			{Vec3(-0.5f, -0.5f, 0.0f), Vec2(0.0f, 1.0f)}, //左下
+			{Vec3(+0.5f, -0.5f, 0.0f), Vec2(1.0f, 1.0f)}  //右下
 		};
 
 		// 頂点インデックス

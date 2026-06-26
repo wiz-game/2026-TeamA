@@ -56,7 +56,7 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			m_isActive = true;
-			AddGameObject<FormationUI>();
+			AddGameObject<UIManager>();
 			option = AddGameObject<Option>(); //オプションを追加しておくが、表示はしない
 			SetSharedGameObject(L"Option", option);
 
@@ -118,14 +118,14 @@ namespace basecross {
 		auto texPath = mediaPath + L"Textures\\";
 
 		app->RegisterTexture(L"SkyBoxBelow", texPath + L"SkyBoxBelow.png");
-		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.png");
+		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.jpg");
 		app->RegisterTexture(L"SkyBoxTop", texPath + L"SkyBoxTop.png");
-		app->RegisterTexture(L"000_000_000", texPath + L"000_000_000.bmp");
-		app->RegisterTexture(L"000_090_000", texPath + L"000_090_000.bmp");
-		app->RegisterTexture(L"000_180_000", texPath + L"000_180_000.bmp");
-		app->RegisterTexture(L"000_270_000", texPath + L"000_270_000.bmp");
-		app->RegisterTexture(L"090_000_000", texPath + L"090_000_000.bmp");
-		app->RegisterTexture(L"270_000_000", texPath + L"270_000_000.bmp");
+	//	app->RegisterTexture(L"000_000_000", texPath + L"000_000_000.jpg");
+	//	app->RegisterTexture(L"000_090_000", texPath + L"000_090_000.bmp");
+	//	app->RegisterTexture(L"000_180_000", texPath + L"000_180_000.bmp");
+	//	app->RegisterTexture(L"000_270_000", texPath + L"000_270_000.jpg");
+	//	app->RegisterTexture(L"090_000_000", texPath + L"090_000_000.bmp");
+	//	app->RegisterTexture(L"270_000_000", texPath + L"270_000_000.bmp");
 
 	}
 

@@ -42,11 +42,15 @@ namespace basecross{
 		app->RegisterTexture(L"TEX_BSQUARE", texPath + L"BSquare.png");
 		app->RegisterTexture(L"TEX_ALPHA", texPath + L"alphablended.png");
 		app->RegisterTexture(L"TEX_YZUI", texPath + L"yz.png");
+		app->RegisterTexture(L"TEX_YZUI_R", texPath + L"yz_r.png");
+		app->RegisterTexture(L"TEX_YZUI_L", texPath + L"yz_l.png");
 		app->RegisterTexture(L"TEX_HAMMERUI", texPath + L"hammer.png");
 		app->RegisterTexture(L"TEX_SPEARUI", texPath + L"spear.png");
 		app->RegisterTexture(L"TEX_STAIRSUI", texPath + L"stairs.png");
 		app->RegisterTexture(L"TEX_BRIDGEUI", texPath + L"bridge.png");
 		app->RegisterTexture(L"TEX_TITLEUI", texPath + L"title.png");
+		app->RegisterTexture(L"TEX_PREVIEW", texPath + L"preview.png");
+		app->RegisterTexture(L"TEX_PAUSEBUTTON", texPath + L"pausebutton.png");
 
 
 		// playerƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
