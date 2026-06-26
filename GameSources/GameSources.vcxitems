@@ -70,6 +70,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TrackManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Trampoline.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Vine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DXModel.cpp">

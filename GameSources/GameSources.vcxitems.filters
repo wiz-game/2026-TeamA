@@ -123,6 +123,7 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)previewButtonUI.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -231,5 +232,8 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)previewButtonUI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Trampoline.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
