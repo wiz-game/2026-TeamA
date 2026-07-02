@@ -20,6 +20,14 @@ namespace basecross
 		auto stage = GetStage();
 		stage->AddGameObject<PreviewButtonUI>();
 		stage->AddGameObject<FormationUI>();
+		stage->AddGameObject<PauseButtonUI>();
+		stage->AddGameObject<FormationCountUI>();
+		for (int i = 0; i < 100; i++)
+		{
+			m_formationCount.push_back(stage->AddGameObject<NumberSprite>());
+			m_formationCount[i]->GetThis<NumberSprite>()->m_transComp->SetPosition(Vec3((i * 300) - 400, 400, 0));
+		}
+
 	}
 
 

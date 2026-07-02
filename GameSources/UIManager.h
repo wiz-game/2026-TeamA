@@ -6,6 +6,7 @@ namespace basecross
 {
 	class UIManager : public GameObject
 	{
+		vector<shared_ptr<GameObject>> m_formationCount;
 		void CreateUI();
 	public:
 		UIManager(const shared_ptr<Stage>& stage);

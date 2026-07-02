@@ -18,7 +18,7 @@ namespace basecross
 	void PreviewButtonUI::CreateUI()
 	{
 		auto stage = GetStage();
-		m_buttonUI = stage->AddGameObject<Sprite>(L"TEX_PREVIEW", true, Vec3(1550, 700, 0) * 0.002f, Vec3(-450, -300, 0));
+		m_buttonUI = stage->AddGameObject<Sprite>(L"TEX_PREVIEWUI", true, Vec3(1024, 256, 0) * 0.004f, Vec3(-450, -290, 0));
 	}
 
 }

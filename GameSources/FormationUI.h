@@ -18,8 +18,8 @@ namespace basecross
 		
 		vector<shared_ptr<GameObject>> m_formationUIs;
 		shared_ptr<GameObject> m_formationUI;
-		//shared_ptr<PCSpriteDraw> m_yz_RDrawComp;
-		//shared_ptr<PCSpriteDraw> m_yz_LDrawComp;
+		shared_ptr<PCTSpriteDraw> m_yz_RDrawComp;
+		shared_ptr<PCTSpriteDraw> m_yz_LDrawComp;
 
 
 		void CreateUI();
