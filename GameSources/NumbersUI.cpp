@@ -100,10 +100,6 @@ namespace basecross {
 			}
 			sprite->OnDraw();
 		}
-		for (const auto& sprite : m_coron)
-		{
-			sprite->OnDraw();
-		}
 	}
 }
 //end basecross

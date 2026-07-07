@@ -18,6 +18,6 @@ namespace basecross
 	void FormationCountUI::CreateUI()
 	{
 		auto stage = GetStage();
-		m_countUI = stage->AddGameObject<Sprite>(L"TEX_FORMATIONCOUNTUI", true, Vec3(2048, 2048, 0) * 0.0004f, Vec3(380, -170, 0));
+		m_countUI = stage->AddGameObject<Sprite>(L"TEX_FORMATIONCOUNTUI", true, Vec3(2048, 2048, 0) * 0.0003f, Vec3(380, -150, 0));
 	}
 }

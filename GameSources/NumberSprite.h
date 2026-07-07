@@ -41,7 +41,7 @@ namespace basecross
 		//現在管理している数値を返す
 		int GetNumber() const
 		{
-
+			return m_number;
 		}
 	};
 

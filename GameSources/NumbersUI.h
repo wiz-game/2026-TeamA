@@ -23,7 +23,6 @@ namespace basecross
 		Vec3 m_position;
 		Vec3 m_scale;
 
-		std::vector<std::shared_ptr<GameObject>> m_coron;
 		std::vector<std::shared_ptr<NumberSprite>> m_spritesInt;
 		std::vector<std::shared_ptr<NumberSprite>> m_spritesFloat;
 	public:
@@ -37,11 +36,11 @@ namespace basecross
 		virtual ~NumbersUI()
 		{}
 
-		void SetTimer(float time, int minute)
-		{
-			m_second = time;
-			m_minute = minute;
-		}
+		//void SetTimer(float time, int minute)
+		//{
+		//	m_second = time;
+		//	m_minute = minute;
+		//}
 
 		virtual void OnCreate() override; // 初期化
 		virtual void OnUpdate() override; // 更新
