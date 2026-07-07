@@ -43,8 +43,6 @@ namespace basecross
 		m_formationUIs[4]->SetDrawActive(false);
 		m_formationUIs[5]->SetDrawActive(false);
 
-		m_yz_RDrawComp = m_formationUIs[0]->GetComponent<PCTSpriteDraw>();
-		m_yz_LDrawComp = m_formationUIs[1]->GetComponent<PCTSpriteDraw>();
 	}
 
 	void FormationUI::OnUpdate()
@@ -118,6 +116,27 @@ namespace basecross
 				m_formation = Formation::Spear;
 			}
 			break;
+		}
+
+		// 右矢印(index 0)の色の設定
+		auto drawR = m_formationUIs[0]->GetComponent<PCTSpriteDraw>();
+		if (pad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+			// RBが押されている間はグレーにする（暗くする）
+			drawR->SetDiffuse(Col4(0.5f, 0.5f, 0.5f, 1.0f));
+		}
+		else {
+			// 離している間は白（通常）
+			drawR->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+
+		// 左矢印(index 1)の色の設定
+		auto drawL = m_formationUIs[1]->GetComponent<PCTSpriteDraw>();
+		if (pad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
+			// LBが押されている間はグレーにする
+			drawL->SetDiffuse(Col4(0.5f, 0.5f, 0.5f, 1.0f));
+		}
+		else {
+			drawL->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, 1.0f));
 		}
 	}
 }
