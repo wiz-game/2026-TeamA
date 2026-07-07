@@ -122,8 +122,20 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)previewButtonUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)previewButtonUI.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PauseButtonUI.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FormationCountUI.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NumberSprite.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)NumbersUI.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -231,8 +243,20 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)previewButtonUI.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Trampoline.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)previewButtonUI.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PauseButtonUI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FormationCountUI.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)NumberSprite.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)NumbersUI.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

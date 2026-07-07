@@ -49,8 +49,10 @@ namespace basecross{
 		app->RegisterTexture(L"TEX_STAIRSUI", texPath + L"stairs.png");
 		app->RegisterTexture(L"TEX_BRIDGEUI", texPath + L"bridge.png");
 		app->RegisterTexture(L"TEX_TITLEUI", texPath + L"title.png");
-		app->RegisterTexture(L"TEX_PREVIEW", texPath + L"preview.png");
-		app->RegisterTexture(L"TEX_PAUSEBUTTON", texPath + L"pausebutton.png");
+		app->RegisterTexture(L"TEX_PREVIEWUI", texPath + L"preview.png");
+		app->RegisterTexture(L"TEX_PAUSEBUTTONUI", texPath + L"pausebutton.png");
+		app->RegisterTexture(L"TEX_FORMATIONCOUNTUI", texPath + L"fc.png");
+		app->RegisterTexture(L"TEX_NUMBER", texPath + L"number.png");
 
 
 		// playerƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
