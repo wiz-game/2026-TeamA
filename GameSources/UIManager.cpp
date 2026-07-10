@@ -33,7 +33,9 @@ namespace basecross
 		{
 			auto spCount = stage->AddGameObject<NumberSprite>();
 			m_formationCount.push_back(spCount);
-			m_formationCount[i]->GetThis<NumberSprite>()->m_transComp->SetPosition(Vec3((i * 50) + 410, -90, 0));
+			m_formationCount[i]->GetThis<NumberSprite>()->m_transComp->SetPosition(Vec3((i * 50) + 420, -100, 0));
+			m_formationCount[i]->GetComponent<PCTSpriteDraw>()->SetTextureResource(L"TEX_NUMBER");
+			m_formationCount[i]->GetComponent<Transform>()->SetScale(Vec3(0.4f));
 		}
 
 	}
@@ -57,9 +59,10 @@ namespace basecross
 
 		for (int i = 0; i < m_formationCount.size(); i++)
 		{
-			// ここがポイント：使う瞬間に NumberSprite に変換する
+			
 			auto sp = dynamic_pointer_cast<NumberSprite>(m_formationCount[i]);
-			if (sp) {
+			if (sp) 
+			{
 				sp->SetNumber(digits[i]);
 			}
 		}

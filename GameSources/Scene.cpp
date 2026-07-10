@@ -53,6 +53,7 @@ namespace basecross{
 		app->RegisterTexture(L"TEX_PAUSEBUTTONUI", texPath + L"pausebutton.png");
 		app->RegisterTexture(L"TEX_FORMATIONCOUNTUI", texPath + L"fc.png");
 		app->RegisterTexture(L"TEX_NUMBER", texPath + L"number.png");
+		app->RegisterTexture(L"TEX_NUMBER2", texPath + L"number2.png");
 
 
 		// playerƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
