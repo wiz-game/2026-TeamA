@@ -18,8 +18,8 @@ namespace basecross
 		
 		vector<shared_ptr<GameObject>> m_formationUIs;
 		shared_ptr<GameObject> m_formationUI;
-		
-
+		vector<shared_ptr<GameObject>> m_counts;
+		int m_count;
 
 		void CreateUI();
 	public:

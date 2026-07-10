@@ -36,7 +36,7 @@ namespace basecross
 		};
 
 		m_drawComp = AddComponent<PCTSpriteDraw>(m_vertices, indices);
-		m_drawComp->SetTextureResource(L"TEX_NUMBER");
+		//m_drawComp->SetTextureResource(L"TEX_NUMBER");
 		m_drawComp->SetSamplerState(SamplerState::LinearWrap);//テクスチャを繰り返すように張り付ける設定
 		//SetDrawLayer();
 		SetAlphaActive(true);	//透過処理を有効にする
@@ -45,7 +45,7 @@ namespace basecross
 		m_transComp = GetComponent<Transform>();
 		m_transComp->SetPosition(0, 0, 0);//画面の中心を原点として表示
 		m_transComp->SetRotation(0, 0, 0);
-		m_transComp->SetScale(Vec3(0.4f));
+		//m_transComp->SetScale(Vec3(0.4f));
 	}
 
 	void NumberSprite::OnUpdate()
@@ -65,7 +65,7 @@ namespace basecross
 		float left = texW * m_number;//引数で指定した数字の左側を表す座標
 		float right = left + texW;
 
-		float gap = 0.005f; //隣の数字が映らないための隙間
+		float gap = 0.00f; //隣の数字が映らないための隙間
 		float fixLeft = left + gap;
 		float fixRight = right - gap;
 

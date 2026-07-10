@@ -5,6 +5,7 @@ namespace basecross
 {
 	FormationUI::FormationUI(const shared_ptr<Stage>& stage) :
 		UIManager(stage),
+		m_count(0),
 		m_formation(Formation::Hammer)
 	{
 	}
@@ -43,6 +44,16 @@ namespace basecross
 		m_formationUIs[4]->SetDrawActive(false);
 		m_formationUIs[5]->SetDrawActive(false);
 
+		for (int i = 0; i < 2; i++)
+		{
+			auto count = stage->AddGameObject<NumberSprite>();
+			m_counts.push_back(count); //隊列を組む際に必要な数の表示用UI
+			m_counts[i]->GetThis<NumberSprite>()->GetComponent<PCTSpriteDraw>()->SetTextureResource(L"TEX_NUMBER2");
+			m_counts[i]->GetComponent<Transform>()->SetPosition(Vec3((i * 15) + 497, -195, 0));
+			m_counts[i]->GetComponent<Transform>()->SetScale(Vec3(0.15f));
+			
+			
+		}
 	}
 
 	void FormationUI::OnUpdate()
@@ -51,10 +62,33 @@ namespace basecross
 		// 入力デバイスを取得する
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
+		auto stage = GetStage()->GetThis<GameStage>();
+		auto player = stage->GetSharedGameObject<Player>(L"Player");
+		//int formationNumber = player->GetFormationManager()->GetFormationNumber();
+
+		//switch (formationNumber)
+		//{
+		//case 0:
+		//	m_formation = Formation::Hammer;
+		//	break;
+		//case 1:
+		//	m_formation = Formation::Slope;
+		//	break;
+		//case 2:
+		//	m_formation = Formation::Spear;
+		//	break;
+		//case 3:
+		//	m_formation = Formation::Bridge;
+		//	break;
+		//default:
+		//	return;
+		//	break;
+		//}
 
 		switch (m_formation)
 		{
 		case Formation::Hammer:
+			m_count = 20;
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
 				//m_yz_RDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
@@ -70,6 +104,7 @@ namespace basecross
 			}
 			break;
 		case Formation::Slope:
+			m_count = 15;
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
 				//m_yz_RDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
@@ -86,6 +121,7 @@ namespace basecross
 			}
 			break;
 		case Formation::Spear:
+			m_count = 20;
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
 				//m_yz_RDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
@@ -102,6 +138,7 @@ namespace basecross
 			}
 			break;
 		case Formation::Bridge:
+			m_count = 15;
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
 				//m_yz_LDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
@@ -118,25 +155,52 @@ namespace basecross
 			break;
 		}
 
-		// 右矢印(index 0)の色の設定
+		// 右矢印の色の設定
 		auto drawR = m_formationUIs[0]->GetComponent<PCTSpriteDraw>();
-		if (pad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+		if (pad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) 
+		{
 			// RBが押されている間はグレーにする（暗くする）
 			drawR->SetDiffuse(Col4(0.5f, 0.5f, 0.5f, 1.0f));
 		}
-		else {
+		else 
+		{
 			// 離している間は白（通常）
 			drawR->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, 1.0f));
 		}
 
-		// 左矢印(index 1)の色の設定
+		// 左矢印の色の設定
 		auto drawL = m_formationUIs[1]->GetComponent<PCTSpriteDraw>();
-		if (pad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
+		if (pad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) 
+		{
 			// LBが押されている間はグレーにする
 			drawL->SetDiffuse(Col4(0.5f, 0.5f, 0.5f, 1.0f));
 		}
-		else {
+		else 
+		{
 			drawL->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, 1.0f));
 		}
+
+		//int count = player->GetFormationManager()->GetFormationCharacterNum();
+
+		//int digit[2] = { (count / 10) % 10, count % 10 };
+		for (int i = 0; i < m_counts.size(); i++)
+		{
+			auto sp = dynamic_pointer_cast<NumberSprite>(m_counts[i]);
+			if (sp)
+			{
+				if (i == 0)
+				{
+					sp->SetNumber(m_count / 10);
+				}
+				else
+				{
+					sp->SetNumber(m_count % 10);
+				}
+			}
+
+		}
+		wstringstream wss;
+		wss << L"Count" << m_count << endl;
+		app->GetScene<Scene>()->SetDebugString(wss.str());
 	}
 }
