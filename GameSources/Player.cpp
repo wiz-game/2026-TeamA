@@ -356,22 +356,22 @@ namespace basecross {
 
 		// Debug用文字列
 		//app->GetScene<Scene>()->GetDebugString();
-		wstringstream ss;
-		ss << L"FPS : " << app->GetStepTimer().GetFramesPerSecond() << endl;
-		ss << L"Formation : " << m_formationMng->GetFormationNumber() << endl;
-		ss << L"ActiveNum : " << m_subPlayerMng->GetActiveNum() << endl;
-		ss << L"RoadWidth : " << m_roadWidth << endl;
-		ss << L"CollisionObject : " << m_debugStr << endl;
-		//for (auto& obj : m_subPlayerMng->GetActiveSubPlayer())
-		//{
-		//	auto sub = dynamic_pointer_cast<SubPlayer>(obj);
-		//	if (sub)
-		//	{
-		//		ss << sub->GetComponent<PNTBoneModelDraw>()->GetCurrentAnimation() << " ";
-		//	}
-		//}
-		//ss << endl;
-		app->GetScene<Scene>()->SetDebugString(ss.str());
+		//wstringstream ss;
+		//ss << L"FPS : " << app->GetStepTimer().GetFramesPerSecond() << endl;
+		//ss << L"Formation : " << m_formationMng->GetFormationNumber() << endl;
+		//ss << L"ActiveNum : " << m_subPlayerMng->GetActiveNum() << endl;
+		//ss << L"RoadWidth : " << m_roadWidth << endl;
+		//ss << L"CollisionObject : " << m_debugStr << endl;
+		////for (auto& obj : m_subPlayerMng->GetActiveSubPlayer())
+		////{
+		////	auto sub = dynamic_pointer_cast<SubPlayer>(obj);
+		////	if (sub)
+		////	{
+		////		ss << sub->GetComponent<PNTBoneModelDraw>()->GetCurrentAnimation() << " ";
+		////	}
+		////}
+		////ss << endl;
+		//app->GetScene<Scene>()->SetDebugString(ss.str());
 	}
 
 

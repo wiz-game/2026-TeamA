@@ -53,5 +53,5 @@
 #include "GameClearStage.h"
 #include "GameOverStage.h"
 #include "SelectStage.h"
-
+#include "Load.h"
 

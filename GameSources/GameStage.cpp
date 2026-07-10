@@ -62,6 +62,8 @@ namespace basecross {
 
 			AddGameObject<Trampoline>();
 
+			AddGameObject<Load>();
+
 			//StageBGM
 			auto XAPtr = App::GetApp()->GetXAudio2Manager();
 			m_BGM = XAPtr->Start(L"StageBGM", XAUDIO2_LOOP_INFINITE, App::GetApp()->GetScene<Scene>()->m_BGMVolume);
@@ -136,5 +138,10 @@ namespace basecross {
 		XAPtr->Stop(m_BGM);
 	}
 
+	void GameStage::SetIsLoad(bool isLoad)
+	{
+		SetIsActive(!isLoad);       // 関数を使って停止させる
+		option->SetVisible(false);
+	}
 }
 //end basecross

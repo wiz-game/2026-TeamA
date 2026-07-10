@@ -28,7 +28,7 @@ namespace basecross {
 		bool m_isActive;
 		shared_ptr<Option> option;
 		vector<shared_ptr<GameObject>> m_stageObj;
-
+		bool m_load;
 	public:
 		//ç\ízÇ∆îjä¸
 		GameStage() :Stage(){}
@@ -62,7 +62,7 @@ namespace basecross {
 		virtual void OnUpdate2() override;
 		virtual void OnDraw()override; //ï`âÊ
 		void OnDestroy()override;
-
+		void SetIsLoad(bool isLoad);
 	};
 }
 //end basecross
