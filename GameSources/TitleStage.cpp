@@ -27,9 +27,17 @@ namespace basecross
 
 	void TitleStage::OnCreate()
 	{
+		auto& app = App::GetApp();
+		auto mediaPath = app->GetDataDirWString();
+		auto texPath = mediaPath + L"Textures\\";
+		app->RegisterTexture(L"SkyBoxBelow", texPath + L"SkyBoxBelow.png");
+		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.jpg");
+		app->RegisterTexture(L"SkyBoxTop", texPath + L"SkyBoxTop.png");
+		auto skyBox = AddGameObject<SkyBox>();
+		skyBox->SetColor(Col4(0.5f, 0.5f, 0.5f, 1.0f));
+
 		CreateViewLight();
 		CreateUI();
-		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto XAPtr = app->GetXAudio2Manager();
 		m_BGM = XAPtr->Start(L"TitleBGM", XAUDIO2_LOOP_INFINITE, scene->m_BGMVolume);
@@ -45,7 +53,7 @@ namespace basecross
 	void TitleStage::CreateUI()
 	{
 		AddGameObject<Sprite>(L"TEX_TITLEUI", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 200, 0));
-		//AddGameObject<Sprite>(L"TEX_TITLEUI", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 200, 0));
+		AddGameObject<Sprite>(L"TEX_APUSHUI", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, -200, 0));
 		//AddGameObject<Sprite>(L"TEX_TITLEUI", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 200, 0));
 	}
 

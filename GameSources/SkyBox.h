@@ -25,6 +25,8 @@ namespace basecross
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		virtual void OnDraw() override;
+
+		void SetColor(const Col4& col);
 	};
 
 	class Plane : public GameObject

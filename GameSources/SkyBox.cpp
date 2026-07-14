@@ -110,6 +110,15 @@ namespace basecross
 		}
 	}
 
+	void SkyBox::SetColor(const Col4& col)
+	{
+		for (auto& plane : m_planes)
+		{
+			auto draw = plane->GetComponent<PTStaticDraw>();
+			draw->SetDiffuse(col);
+		}
+	}
+
 
 	Plane::Plane(const shared_ptr<Stage>& stage)
 		: GameObject(stage)
