@@ -21,16 +21,17 @@ namespace basecross {
 
 		m_playerCameraView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
 		auto playerCamera = ObjectFactory::Create<PlayerCamera>();
-		auto camera = ObjectFactory::Create<Camera>();
-		camera->SetEye(Vec3(0.0f, 8.0f, -15.0f));
-		camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
-
+		//auto camera = ObjectFactory::Create<Camera>();
+		//camera->SetEye(Vec3(0.0f, 8.0f, -15.0f));
+		//camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
+		
 		m_playerCameraView->SetCamera(playerCamera);
 		SetView(m_playerCameraView);
+		
 
 		//// ビューにカメラを設定
-		//auto view = CreateView<SingleView>();
-		//view->SetCamera(camera);
+		auto view = CreateView<SingleView>();
+		view->SetCamera(playerCamera);
 
 		//マルチライトの作成
 		auto light = CreateLight<MultiLight>();
@@ -55,9 +56,13 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			m_isActive = true;
-			AddGameObject<FormationUI>();
+			AddGameObject<UIManager>();
 			option = AddGameObject<Option>(); //オプションを追加しておくが、表示はしない
 			SetSharedGameObject(L"Option", option);
+
+			AddGameObject<Trampoline>();
+
+			AddGameObject<Load>();
 
 			//StageBGM
 			auto XAPtr = App::GetApp()->GetXAudio2Manager();
@@ -72,11 +77,12 @@ namespace basecross {
 	{
 		// アプリケーションオブジェクトを取得
 		auto& app = App::GetApp();
-		auto scene = App::GetApp()->GetScene<Scene>();
+		auto scene = app->GetScene<Scene>();
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
 		//デバック用
-		wstringstream wss(L"");
+		wstringstream wss;
+
 
 		if (m_isActive)
 		{
@@ -97,6 +103,9 @@ namespace basecross {
 			}
 		}
 		m_BGM->m_SourceVoice->SetVolume(scene->m_BGMVolume); //���ʕύX�̍X�V
+
+		wss << L"" << endl;
+		scene->SetDebugString(wss.str());
 	}
 
 	void GameStage::OnUpdate2()
@@ -115,14 +124,14 @@ namespace basecross {
 		auto texPath = mediaPath + L"Textures\\";
 
 		app->RegisterTexture(L"SkyBoxBelow", texPath + L"SkyBoxBelow.png");
-		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.png");
+		app->RegisterTexture(L"SkyBoxHorizontal", texPath + L"SkyBoxHorizontal.jpg");
 		app->RegisterTexture(L"SkyBoxTop", texPath + L"SkyBoxTop.png");
-		app->RegisterTexture(L"000_000_000", texPath + L"000_000_000.bmp");
-		app->RegisterTexture(L"000_090_000", texPath + L"000_090_000.bmp");
-		app->RegisterTexture(L"000_180_000", texPath + L"000_180_000.bmp");
-		app->RegisterTexture(L"000_270_000", texPath + L"000_270_000.bmp");
-		app->RegisterTexture(L"090_000_000", texPath + L"090_000_000.bmp");
-		app->RegisterTexture(L"270_000_000", texPath + L"270_000_000.bmp");
+	//	app->RegisterTexture(L"000_000_000", texPath + L"000_000_000.jpg");
+	//	app->RegisterTexture(L"000_090_000", texPath + L"000_090_000.bmp");
+	//	app->RegisterTexture(L"000_180_000", texPath + L"000_180_000.bmp");
+	//	app->RegisterTexture(L"000_270_000", texPath + L"000_270_000.jpg");
+	//	app->RegisterTexture(L"090_000_000", texPath + L"090_000_000.bmp");
+	//	app->RegisterTexture(L"270_000_000", texPath + L"270_000_000.bmp");
 
 	}
 
@@ -133,5 +142,10 @@ namespace basecross {
 		XAPtr->Stop(m_BGM);
 	}
 
+	void GameStage::SetIsLoad(bool isLoad)
+	{
+		SetIsActive(!isLoad);       // 関数を使って停止させる
+		option->SetVisible(false);
+	}
 }
 //end basecross

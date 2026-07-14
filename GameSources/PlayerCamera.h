@@ -4,7 +4,8 @@
 
 namespace basecross
 {
-	//class GameStage;
+	class GameStage;
+	class TurningPoint;
 
 	enum CameraAngleState
 	{
@@ -36,7 +37,12 @@ namespace basecross
 
 		Vec3 m_nextEye; //カメラアングル切り替え用
 		Vec3 m_nextAt;  //カメラアングル切り替え用
+		int tpCount;
 
+		vector<shared_ptr<TurningPoint>> m_tp;
+		//shared_ptr<TurningPoint> m_tp;
+
+		bool On;
 	public:
 
 		PlayerCamera();
@@ -50,11 +56,11 @@ namespace basecross
 			m_cameraAngleState = newAngle;
 		}
 
-		void SetNextCameraAngle(Vec3 nextEye, Vec3 nextAt)
-		{
-			m_nextEye = nextEye;
-			m_nextAt = nextAt;
-		}
+		//void SetNextCameraAngle(Vec3 nextEye, Vec3 nextAt)
+		//{
+		//	m_nextEye = nextEye;
+		//	m_nextAt = nextAt;
+		//}
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;

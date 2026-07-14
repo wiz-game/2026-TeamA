@@ -18,9 +18,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BrokenObjs.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)CharacterController.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)CharacterFormation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DXModel.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DXModelResource.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FormationCountUI.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FormationManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FormationUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameClearStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameOverStage.h" />
@@ -29,7 +32,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)JoltLayers.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JoltManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JoltRigidBody.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Load.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NumberSprite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)NumbersUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Option.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)PauseButtonUI.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)previewButtonUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SkyBox.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h" />
@@ -43,8 +51,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BreakWall.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayerManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TrackManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TurningPoint.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Vine.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Wall.h" />
   </ItemGroup>
@@ -53,8 +66,22 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BrokenObjs.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)CharacterController.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)CharacterFormation.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FormationCountUI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FormationManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Load.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)NumberSprite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)NumbersUI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)PauseButtonUI.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)previewButtonUI.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TrackManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Trampoline.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Vine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DXModel.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

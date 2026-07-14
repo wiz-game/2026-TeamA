@@ -5,36 +5,64 @@ namespace basecross
 {
 	TurningPoint::TurningPoint(const shared_ptr<Stage>& stage) :
 		StageObject(stage),
-		m_scale(1.0f, 1.0f, 0.0f),
-		m_rotation(0.0f),
-		m_position(0.0f)
+		m_trigger(false),
+		m_isInRange(false)
 	{
 	}
 	TurningPoint::~TurningPoint(){}
 
 	void TurningPoint::OnCreate()
 	{
-		AddTag(L"CameraTrigger");
-		m_transComp = AddComponent<Transform>();
-		m_transComp->SetScale(m_scale);
-		m_transComp->SetRotation(m_rotation);
-		m_transComp->SetPosition(m_position);
+		m_transComp = GetComponent<Transform>();
+
+		m_position = m_transComp->GetPosition();
+
+		auto col = AddComponent<CollisionObb>();
+		col->SetDrawActive(true);
+		m_drawComp = AddComponent<PNTStaticDraw>();
+		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		StageObject::OnCreate();
 
 	}
 
 	void TurningPoint::OnUpdate()
 	{
+		auto& app = App::GetApp();
+		auto scene = app->GetScene<Scene>();
+		auto stage = scene->GetActiveTypeStage<GameStage>();
+		auto player = stage->GetSharedGameObject<Player>(L"Player");
+		Vec3 playerPos = player->GetPosition();
+		Vec3 dir = m_position - playerPos;
+		float diff = dir.length();
 
+		if (diff >= 10.0f) // scaleを考慮しこの値にする
+			m_isInRange = false; //	10.0fより離れている場合に範囲外判定にする
+
+		if (diff <= 10.0f && !m_isInRange && !m_trigger) 
+		{
+			m_trigger = true;
+			m_isInRange = true; // 10.0f以内に来た場合に範囲内判定にする
+		}
+		else if (diff <= 10.0f && !m_isInRange && m_trigger)
+		{
+			m_trigger = false;
+			m_isInRange = true;
+		}
+
+
+
+		StageObject::OnUpdate();
 	}
 	
 	void TurningPoint::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
-		auto stage = GetStage();
-		auto player = stage->GetSharedGameObject<Player>(L"Player");
-		if (other && player)
-		{
-			playerCamera->SetNextCameraAngle(nextEye = Vec3(0, 0, 0), nextAt = Vec3(0, 0, 0));
-			playerCamera->ChangeAngle();
-		}
+		//auto& app = App::GetApp();
+		//auto scene = app->GetScene<Scene>();
+		//auto stage = scene->GetActiveTypeStage<GameStage>();
+		//auto player = stage->GetSharedGameObject<Player>(L"Player");
+		//if (other->FindTag(L"Player"))
+		//{
+		//	m_trigger = true;
+		//}
 	}
 }

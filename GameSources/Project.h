@@ -13,12 +13,20 @@
 
 // Manager
 #include "StageManager.h"
+#include "UIManager.h"
 
 #include "Option.h"
 
 #include "Character.h"
 #include "StageObject.h"
+#include "Trampoline.h"
+#include "TrackManager.h"
+#include"CharacterFormation.h"
+#include "FormationManager.h"
+#include "SubPlayer.h"
+#include "SubPlayerManager.h"
 #include "Player.h"
+#include "SubPlayerState.h"
 #include "Ground.h"
 #include "PlayerCamera.h"
 #include "BrokenObjs.h"
@@ -31,12 +39,19 @@
 #include "Vine.h"
 #include "Baite.h"
 
+
 #include "FormationUI.h"
+#include "previewButtonUI.h"
+#include "PauseButtonUI.h"
+#include "FormationCountUI.h"
+#include "NumberSprite.h"
+#include "NumbersUI.h"
+
 
 #include "GameStage.h"
 #include "TitleStage.h"
 #include "GameClearStage.h"
 #include "GameOverStage.h"
 #include "SelectStage.h"
-
+#include "Load.h"
 

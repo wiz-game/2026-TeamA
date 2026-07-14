@@ -12,18 +12,23 @@ namespace basecross
 		Bridge
 	};
 
-	class FormationUI : public GameObject
+	class FormationUI : public UIManager
 	{
 		Formation m_formation;
+		
+		vector<shared_ptr<GameObject>> m_formationUIs;
+		shared_ptr<GameObject> m_formationUI;
+		vector<shared_ptr<GameObject>> m_counts;
+		int m_count;
+
 		void CreateUI();
-		vector<shared_ptr<GameObject>> m_formationUI;
 	public:
 		FormationUI(const shared_ptr<Stage>& stage);
 		~FormationUI();
 
-		void OnCreate() override;
-		void OnUpdate() override;
-
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		
 	};
 	
 }

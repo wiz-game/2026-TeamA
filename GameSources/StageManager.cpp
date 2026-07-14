@@ -222,9 +222,9 @@ namespace basecross
 				slope->SetScale(scale);
 
 				auto collision = stage->AddGameObject<SlopeCollisionObject>();
-				collision->SetPosition(pos+Vec3(-1.0f, -4.5f, 0.0f));
+				collision->SetPosition(pos+Vec3(-1.0f, -4.9f, 0.0f));
 				collision->SetRotation(rot+Vec3(XMConvertToRadians(14.03f), 0.0f, 0.0f));
-				collision->SetScale(scale + Vec3(0.0f, 0.0f, 1.0f));
+				collision->SetScale(scale + Vec3(0.0f, 0.0f, 1.5f));
 
 			}
 			else if(name==L"Fence")
@@ -252,7 +252,7 @@ namespace basecross
 				auto fallenTree = stage->AddGameObject<FallenTree>();
 				fallenTree->SetPosition(pos);
 				fallenTree->SetRotation(rot);
-				fallenTree->SetScale(scale);
+				//fallenTree->SetScale(scale);
 				fallenTree->SetCollar(Col4(0.35f, 0.35f, 0.35f, 1.0f));
 			}
 			else if (name==L"FirTree")
@@ -364,6 +364,15 @@ namespace basecross
 			}
 			else if (name == L"CameraSpot")
 			{
+				auto spot = stage->AddGameObject<TurningPoint>();
+				spot->SetPosition(pos);
+				spot->SetRotation(rot);
+				spot->SetScale(scale);
+				std::wstring name = L"TurningPoint_" + std::to_wstring(stage->count++);
+
+				//stage->SetSharedGameObject(L"TurningPoint", spot);
+				stage->SetSharedGameObject(name, spot);
+				//spot->SetModel(L"MODEL_BLOCK");
 
 			}
 			else if (name == L"GameObject")
