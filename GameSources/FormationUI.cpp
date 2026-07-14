@@ -91,7 +91,6 @@ namespace basecross
 			m_count = 20;
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
-				//m_yz_RDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
 				m_formationUIs[2]->SetDrawActive(false);
 				m_formationUIs[3]->SetDrawActive(true);
 				m_formation = Formation::Slope;
@@ -107,14 +106,12 @@ namespace basecross
 			m_count = 15;
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
-				//m_yz_RDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
 				m_formationUIs[3]->SetDrawActive(false);
 				m_formationUIs[4]->SetDrawActive(true);
 				m_formation = Formation::Spear;
 			}
 			else if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 			{
-				//m_yz_LDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
 				m_formationUIs[3]->SetDrawActive(false);
 				m_formationUIs[2]->SetDrawActive(true);
 				m_formation = Formation::Hammer;
@@ -124,14 +121,12 @@ namespace basecross
 			m_count = 20;
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
-				//m_yz_RDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
 				m_formationUIs[4]->SetDrawActive(false);
 				m_formationUIs[5]->SetDrawActive(true);
 				m_formation = Formation::Bridge;
 			}
 			else if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 			{
-				//m_yz_LDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
 				m_formationUIs[4]->SetDrawActive(false);
 				m_formationUIs[3]->SetDrawActive(true);
 				m_formation = Formation::Slope;
@@ -141,7 +136,6 @@ namespace basecross
 			m_count = 15;
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
-				//m_yz_LDrawComp->SetDiffuse(Col4(1, 1, 1, 0.5f));
 				m_formationUIs[5]->SetDrawActive(false);
 				m_formationUIs[2]->SetDrawActive(true);
 				m_formation = Formation::Hammer;
