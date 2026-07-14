@@ -1,6 +1,6 @@
 /*!
 @file Foo.cpp
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚ÇÀ‘Ì
+@brief ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãªã©å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -9,14 +9,14 @@
 namespace basecross
 {
 
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	Wall::Wall(const std::shared_ptr<Stage>& stage) :
 		StageObject(stage)
 	{
 	}
 
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void Wall::OnCreate()
 	{
 		StageObject::OnCreate();

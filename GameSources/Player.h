@@ -77,6 +77,7 @@ namespace basecross {
 
 		shared_ptr<PlayerTrackManager> GetTrackManager() const { return m_trackMng; }
 		shared_ptr<SubPlayerManager> GetSubPlayerManager() const { return m_subPlayerMng; }
+		shared_ptr<FormationManager> GetFormationManager() const { return m_formationMng; }
 
 
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& other) override;

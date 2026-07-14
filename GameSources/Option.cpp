@@ -106,7 +106,7 @@ namespace basecross
 				}
 				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
 				{
-					PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToGameOverStage");//ゲームシーンを移動する
+					PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToStageSelect");//ゲームシーンを移動する
 				}
 				break;
 			case OptionItem::SoundTest:

@@ -1,26 +1,26 @@
-
+ï»¿
 #include "stdafx.h"
 #include "Project.h"
 
 using namespace basecross;
 
 
-// ‚±‚ÌƒR[ƒh ƒ‚ƒWƒ…[ƒ‹‚ÉŠÜ‚Ü‚ê‚éŠÖ”‚ÌéŒ¾‚ð“]‘—‚µ‚Ü‚·:
+// ã“ã®ã‚³ãƒ¼ãƒ‰ ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã«å«ã¾ã‚Œã‚‹é–¢æ•°ã®å®£è¨€ã‚’è»¢é€ã—ã¾ã™:
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 
-//’è”
+//å®šæ•°
 const wchar_t* pClassName = L"BaseCrossFullClass";
 const wchar_t* pWndTitle = L"BaseCrossFullSample";
-//ƒEƒBƒ“ƒhƒEƒ‚[ƒh‚ÌŽž‚Ì•‚Æ‚‚³
+//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¢ãƒ¼ãƒ‰ã®æ™‚ã®å¹…ã¨é«˜ã•
 int g_ClientWidth = 1280;
 int g_ClientHeight = 800;
 
 
 //--------------------------------------------------------------------------------------
 //
-//  ŠÖ”: MyRegisterClass()
+//  é–¢æ•°: MyRegisterClass()
 //
-//  –Ú“I: ƒEƒBƒ“ƒhƒE ƒNƒ‰ƒX‚ð“o˜^‚µ‚Ü‚·B
+//  ç›®çš„: ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ ã‚¯ãƒ©ã‚¹ã‚’ç™»éŒ²ã—ã¾ã™ã€‚
 //
 //--------------------------------------------------------------------------------------
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -46,72 +46,72 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
 //--------------------------------------------------------------------------------------
 //
-//   ŠÖ”: InitInstance(HINSTANCE, int)
+//   é–¢æ•°: InitInstance(HINSTANCE, int)
 //
-//   –Ú“I: ƒCƒ“ƒXƒ^ƒ“ƒX ƒnƒ“ƒhƒ‹‚ð•Û‘¶‚µ‚ÄAƒƒCƒ“ ƒEƒBƒ“ƒhƒE‚ðì¬‚µ‚Ü‚·B
+//   ç›®çš„: ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ ãƒãƒ³ãƒ‰ãƒ«ã‚’ä¿å­˜ã—ã¦ã€ãƒ¡ã‚¤ãƒ³ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆã—ã¾ã™ã€‚
 //
-//   ƒRƒƒ“ƒg:
+//   ã‚³ãƒ¡ãƒ³ãƒˆ:
 //
-//        ‚±‚ÌŠÖ”‚ÅAƒOƒ[ƒoƒ‹•Ï”‚ÅƒCƒ“ƒXƒ^ƒ“ƒX ƒnƒ“ƒhƒ‹‚ð•Û‘¶‚µA
-//        ƒƒCƒ“ ƒvƒƒOƒ‰ƒ€ ƒEƒBƒ“ƒhƒE‚ðì¬‚¨‚æ‚Ñ•\Ž¦‚µ‚Ü‚·B
+//        ã“ã®é–¢æ•°ã§ã€ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã§ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ ãƒãƒ³ãƒ‰ãƒ«ã‚’ä¿å­˜ã—ã€
+//        ãƒ¡ã‚¤ãƒ³ ãƒ—ãƒ­ã‚°ãƒ©ãƒ  ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆãŠã‚ˆã³è¡¨ç¤ºã—ã¾ã™ã€‚
 //--------------------------------------------------------------------------------------
 HWND InitInstance(HINSTANCE hInstance, int nCmdShow, bool isFullScreen, int iClientWidth, int iClientHeight)
 {
 
 	HWND hWnd = 0;
-	// ƒEƒBƒ“ƒhƒE‚Ìì¬
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½œæˆ
 	if (isFullScreen) { 
-		// ƒtƒ‹ƒXƒNƒŠ[ƒ“
-		//ƒ{[ƒ_[ƒŒƒXƒEƒCƒ“ƒhƒE‚ðŽg—p
+		// ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³
+		//ãƒœãƒ¼ãƒ€ãƒ¼ãƒ¬ã‚¹ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’ä½¿ç”¨
 		iClientWidth = GetSystemMetrics(SM_CXSCREEN);
 		iClientHeight = GetSystemMetrics(SM_CYSCREEN);
 		hWnd = CreateWindow(
-			pClassName,			// “o˜^‚³‚ê‚Ä‚¢‚éƒNƒ‰ƒX–¼
-			pWndTitle,			// ƒEƒCƒ“ƒhƒE–¼
-			WS_POPUP,			// ƒEƒCƒ“ƒhƒEƒXƒ^ƒCƒ‹iƒ|ƒbƒvƒAƒbƒvƒEƒCƒ“ƒhƒE‚ðì¬j
-			0,					// ƒEƒCƒ“ƒhƒE‚Ì‰¡•ûŒü‚ÌˆÊ’u
-			0,					// ƒEƒCƒ“ƒhƒE‚Ìc•ûŒü‚ÌˆÊ’u
-			iClientWidth,		// ƒtƒ‹ƒXƒNƒŠ[ƒ“ƒEƒCƒ“ƒhƒE‚Ì•
-			iClientHeight,		// ƒtƒ‹ƒXƒNƒŠ[ƒ“ƒEƒCƒ“ƒhƒE‚Ì‚‚³
-			nullptr,				// eƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹i‚È‚µj
-			nullptr,				// ƒƒjƒ…[‚âŽqƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
-			hInstance,			// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìƒnƒ“ƒhƒ‹
-			nullptr				// ƒEƒCƒ“ƒhƒE‚Ìì¬ƒf[ƒ^
+			pClassName,			// ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‚¯ãƒ©ã‚¹å
+			pWndTitle,			// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦å
+			WS_POPUP,			// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«ï¼ˆãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆï¼‰
+			0,					// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®æ¨ªæ–¹å‘ã®ä½ç½®
+			0,					// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ç¸¦æ–¹å‘ã®ä½ç½®
+			iClientWidth,		// ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®å¹…
+			iClientHeight,		// ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®é«˜ã•
+			nullptr,				// è¦ªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒãƒ³ãƒ‰ãƒ«ï¼ˆãªã—ï¼‰
+			nullptr,				// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚„å­ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒãƒ³ãƒ‰ãƒ«
+			hInstance,			// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒãƒ³ãƒ‰ãƒ«
+			nullptr				// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ä½œæˆãƒ‡ãƒ¼ã‚¿
 		);
 		if (!hWnd) {
-			//Ž¸”s‚µ‚½
-			MessageBox(nullptr, L"ƒEƒCƒ“ƒhƒEì¬‚ÉŽ¸”s‚µ‚Ü‚µ‚½", L"ƒGƒ‰[", MB_OK);
-			return 0;   //ƒGƒ‰[I—¹
+			//å¤±æ•—ã—ãŸ
+			MessageBox(nullptr, L"ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸ", L"ã‚¨ãƒ©ãƒ¼", MB_OK);
+			return 0;   //ã‚¨ãƒ©ãƒ¼çµ‚äº†
 		}
 	}
 	else {
-		//ƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY’²®
+		//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ã‚µã‚¤ã‚ºèª¿æ•´
 		RECT rc = { 0, 0, iClientWidth, iClientHeight };
 		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-		//ƒEƒCƒ“ƒhƒE‚Ìì¬
+		//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ä½œæˆ
 		hWnd = CreateWindow(
-			pClassName,				// “o˜^‚³‚ê‚Ä‚¢‚éƒNƒ‰ƒX–¼
-			pWndTitle,				// ƒEƒCƒ“ƒhƒE–¼
-			WS_OVERLAPPEDWINDOW,	// ƒEƒCƒ“ƒhƒEƒXƒ^ƒCƒ‹iƒI[ƒo[ƒ‰ƒbƒvƒEƒCƒ“ƒhƒE‚ðì¬j
-			CW_USEDEFAULT,			//ˆÊ’u‚ÍWindows‚É”C‚¹‚é
-			CW_USEDEFAULT,			//ˆÊ’u‚ÍWindows‚É”C‚¹‚é
-			rc.right - rc.left,		//•Žw’è
-			rc.bottom - rc.top,		//‚‚³Žw’è
-			nullptr,					// eƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹i‚È‚µj
-			nullptr,					// ƒƒjƒ…[‚âŽqƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
-			hInstance,				// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìƒnƒ“ƒhƒ‹
-			nullptr					// ƒEƒCƒ“ƒhƒE‚Ìì¬ƒf[ƒ^
+			pClassName,				// ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‚¯ãƒ©ã‚¹å
+			pWndTitle,				// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦å
+			WS_OVERLAPPEDWINDOW,	// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«ï¼ˆã‚ªãƒ¼ãƒãƒ¼ãƒ©ãƒƒãƒ—ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆï¼‰
+			CW_USEDEFAULT,			//ä½ç½®ã¯Windowsã«ä»»ã›ã‚‹
+			CW_USEDEFAULT,			//ä½ç½®ã¯Windowsã«ä»»ã›ã‚‹
+			rc.right - rc.left,		//å¹…æŒ‡å®š
+			rc.bottom - rc.top,		//é«˜ã•æŒ‡å®š
+			nullptr,					// è¦ªã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒãƒ³ãƒ‰ãƒ«ï¼ˆãªã—ï¼‰
+			nullptr,					// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚„å­ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒãƒ³ãƒ‰ãƒ«
+			hInstance,				// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒãƒ³ãƒ‰ãƒ«
+			nullptr					// ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ä½œæˆãƒ‡ãƒ¼ã‚¿
 		);
 		if (!hWnd) {
-			//Ž¸”s‚µ‚½
-			MessageBox(nullptr, L"ƒEƒCƒ“ƒhƒEì¬‚ÉŽ¸”s‚µ‚Ü‚µ‚½", L"ƒGƒ‰[", MB_OK);
-			return 0;   //ƒGƒ‰[I—¹
+			//å¤±æ•—ã—ãŸ
+			MessageBox(nullptr, L"ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸ", L"ã‚¨ãƒ©ãƒ¼", MB_OK);
+			return 0;   //ã‚¨ãƒ©ãƒ¼çµ‚äº†
 		}
 	}
-	//ƒEƒCƒ“ƒhƒE‚Ì•\Ž¦
+	//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®è¡¨ç¤º
 	ShowWindow(
-		hWnd,       //Žæ“¾‚µ‚½ƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
-		nCmdShow    //WinMain‚É“n‚³‚ê‚½ƒpƒ‰ƒ[ƒ^
+		hWnd,       //å–å¾—ã—ãŸã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã®ãƒãƒ³ãƒ‰ãƒ«
+		nCmdShow    //WinMainã«æ¸¡ã•ã‚ŒãŸãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 	);
 	UpdateWindow(hWnd);
 	return hWnd;
@@ -119,31 +119,31 @@ HWND InitInstance(HINSTANCE hInstance, int nCmdShow, bool isFullScreen, int iCli
 
 //--------------------------------------------------------------------------------------
 //	int MainLoop(HINSTANCE hInstance, HWND hWnd, bool isFullScreen, int iClientWidth, int iClientHeight);
-//	—p“r: ƒƒCƒ“ƒ‹[ƒv
+//	ç”¨é€”: ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—
 //--------------------------------------------------------------------------------------
 int MainLoop(HINSTANCE hInstance, HWND hWnd, bool isFullScreen, int iClientWidth, int iClientHeight) {
-	//I—¹ƒR[ƒh
+	//çµ‚äº†ã‚³ãƒ¼ãƒ‰
 	int RetCode = 0;
-	//ƒEƒCƒ“ƒhƒEî•ñBƒƒbƒZ[ƒWƒ{ƒbƒNƒX•\Ž¦ƒ`ƒFƒbƒN‚ÉŽg—p
+	//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦æƒ…å ±ã€‚ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒœãƒƒã‚¯ã‚¹è¡¨ç¤ºãƒã‚§ãƒƒã‚¯ã«ä½¿ç”¨
 	WINDOWINFO WinInfo;
 	ZeroMemory(&WinInfo, sizeof(WinInfo));
-	//—áŠOˆ—ŠJŽn
+	//ä¾‹å¤–å‡¦ç†é–‹å§‹
 	try {
-		//COM‚Ì‰Šú‰»
-		//ƒTƒEƒ“ƒh‚È‚Ç‚ÅŽg—p‚·‚é
+		//COMã®åˆæœŸåŒ–
+		//ã‚µã‚¦ãƒ³ãƒ‰ãªã©ã§ä½¿ç”¨ã™ã‚‹
 		if (FAILED(::CoInitialize(nullptr))) {
-			// ‰Šú‰»Ž¸”s
-			throw exception("Com‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B");
+			// åˆæœŸåŒ–å¤±æ•—
+			throw exception("ComåˆæœŸåŒ–ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
 		}
-		////ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒNƒ‰ƒX‚Ì\’z
+		////ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚¯ãƒ©ã‚¹ã®æ§‹ç¯‰
 		App::CreateApp(hInstance, hWnd, isFullScreen, iClientWidth, iClientHeight);
-		//ƒV[ƒ“‚Ìì¬
-		//–ß‚è’l‚ÌScenePtr‚Í”Ä—p“I‚ÉŽg‚¦‚é
+		//ã‚·ãƒ¼ãƒ³ã®ä½œæˆ
+		//æˆ»ã‚Šå€¤ã®ScenePtrã¯æ±Žç”¨çš„ã«ä½¿ãˆã‚‹
 		auto ScenePtr = App::GetApp()->CreateScene<Scene>();
-		//ƒƒbƒZ[ƒWƒ‹[ƒv
+		//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ«ãƒ¼ãƒ—
 		MSG msg = { 0 };
-		//ƒL[ƒ{[ƒh“ü—Í—p
-		//‚±‚±‚ÉÝ’è‚µ‚½ƒL[ƒ{[ƒh“ü—Í‚ð“¾‚é
+		//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å…¥åŠ›ç”¨
+		//ã“ã“ã«è¨­å®šã—ãŸã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å…¥åŠ›ã‚’å¾—ã‚‹
 		vector<DWORD> UseKeyVec = {
 			VK_PRIOR,VK_NEXT,VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT,VK_SPACE,
 			VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
@@ -151,67 +151,67 @@ int MainLoop(HINSTANCE hInstance, HWND hWnd, bool isFullScreen, int iClientWidth
 		};
 		while (WM_QUIT != msg.message) {
 			if (!App::GetApp()->ResetInputState(hWnd, UseKeyVec)) {
-				//ƒL[ó‘Ô‚ª‰½‚à‚È‚¯‚ê‚ÎƒEƒCƒ“ƒhƒEƒƒbƒZ[ƒW‚ð“¾‚é
+				//ã‚­ãƒ¼çŠ¶æ…‹ãŒä½•ã‚‚ãªã‘ã‚Œã°ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å¾—ã‚‹
 				if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-					//ƒL[ƒ{[ƒh‚Æƒ}ƒEƒXó‘Ô‚ðƒŠƒZƒbƒg
+					//ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã¨ãƒžã‚¦ã‚¹çŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆ
 					TranslateMessage(&msg);
 					DispatchMessage(&msg);
 				}
 			}
-			//XV•`‰æˆ—
+			//æ›´æ–°æç”»å‡¦ç†
 			App::GetApp()->UpdateDraw(1);
 		}
-		//msg.wParam‚É‚ÍI—¹ƒR[ƒh‚ª“ü‚Á‚Ä‚¢‚é
+		//msg.wParamã«ã¯çµ‚äº†ã‚³ãƒ¼ãƒ‰ãŒå…¥ã£ã¦ã„ã‚‹
 		RetCode = (int)msg.wParam;
 	}
 	catch (BaseException& e) {
 		if (GetWindowInfo(hWnd, &WinInfo)) {
-			//ŽÀsŽ¸”s‚µ‚½
-			MessageBox(hWnd, e.what_w().c_str(), L"ƒGƒ‰[", MB_OK);
+			//å®Ÿè¡Œå¤±æ•—ã—ãŸ
+			MessageBox(hWnd, e.what_w().c_str(), L"ã‚¨ãƒ©ãƒ¼", MB_OK);
 		}
 		else {
-			//ŽÀsŽ¸”s‚µ‚½
-			MessageBox(nullptr, e.what_w().c_str(), L"ƒGƒ‰[", MB_OK);
+			//å®Ÿè¡Œå¤±æ•—ã—ãŸ
+			MessageBox(nullptr, e.what_w().c_str(), L"ã‚¨ãƒ©ãƒ¼", MB_OK);
 		}
 		RetCode = 1;
 	}
 	catch (BaseMBException& e) {
-		//ƒ}ƒ‹ƒ`ƒoƒCƒgƒo[ƒWƒ‡ƒ“‚ÌƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚ðŒÄ‚Ô
+		//ãƒžãƒ«ãƒãƒã‚¤ãƒˆãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒœãƒƒã‚¯ã‚¹ã‚’å‘¼ã¶
 		if (GetWindowInfo(hWnd, &WinInfo)) {
-			//ŽÀsŽ¸”s‚µ‚½
-			MessageBoxA(hWnd, e.what_m().c_str(), "ƒGƒ‰[", MB_OK);
+			//å®Ÿè¡Œå¤±æ•—ã—ãŸ
+			MessageBoxA(hWnd, e.what_m().c_str(), "ã‚¨ãƒ©ãƒ¼", MB_OK);
 		}
 		else {
-			//ŽÀsŽ¸”s‚µ‚½
-			MessageBoxA(nullptr, e.what_m().c_str(), "ƒGƒ‰[", MB_OK);
+			//å®Ÿè¡Œå¤±æ•—ã—ãŸ
+			MessageBoxA(nullptr, e.what_m().c_str(), "ã‚¨ãƒ©ãƒ¼", MB_OK);
 		}
 		RetCode = 1;
 	}
 	catch (exception& e) {
-		//STLƒGƒ‰[
-		//ƒ}ƒ‹ƒ`ƒoƒCƒgƒo[ƒWƒ‡ƒ“‚ÌƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚ðŒÄ‚Ô
+		//STLã‚¨ãƒ©ãƒ¼
+		//ãƒžãƒ«ãƒãƒã‚¤ãƒˆãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒœãƒƒã‚¯ã‚¹ã‚’å‘¼ã¶
 		if (GetWindowInfo(hWnd, &WinInfo)) {
-			MessageBoxA(hWnd, e.what(), "ƒGƒ‰[", MB_OK);
+			MessageBoxA(hWnd, e.what(), "ã‚¨ãƒ©ãƒ¼", MB_OK);
 		}
 		else {
-			MessageBoxA(nullptr, e.what(), "ƒGƒ‰[", MB_OK);
+			MessageBoxA(nullptr, e.what(), "ã‚¨ãƒ©ãƒ¼", MB_OK);
 		}
 		RetCode = 1;
 	}
 	catch (...) {
-		//Œ´ˆö•s–¾Ž¸”s‚µ‚½
+		//åŽŸå› ä¸æ˜Žå¤±æ•—ã—ãŸ
 		if (GetWindowInfo(hWnd, &WinInfo)) {
-			MessageBox(hWnd, L"Œ´ˆö•s–¾‚ÌƒGƒ‰[‚Å‚·", L"ƒGƒ‰[", MB_OK);
+			MessageBox(hWnd, L"åŽŸå› ä¸æ˜Žã®ã‚¨ãƒ©ãƒ¼ã§ã™", L"ã‚¨ãƒ©ãƒ¼", MB_OK);
 		}
 		else {
-			MessageBox(nullptr, L"Œ´ˆö•s–¾‚ÌƒGƒ‰[‚Å‚·", L"ƒGƒ‰[", MB_OK);
+			MessageBox(nullptr, L"åŽŸå› ä¸æ˜Žã®ã‚¨ãƒ©ãƒ¼ã§ã™", L"ã‚¨ãƒ©ãƒ¼", MB_OK);
 		}
 		RetCode = 1;
 	}
-	//ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ìíœ
+	//ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®å‰Šé™¤
 	App::DeleteApp();
-	//—áŠOˆ—I—¹
-	//COM‚ÌƒŠƒŠ[ƒX
+	//ä¾‹å¤–å‡¦ç†çµ‚äº†
+	//COMã®ãƒªãƒªãƒ¼ã‚¹
 	::CoUninitialize();
 	return RetCode;
 }
@@ -219,7 +219,7 @@ int MainLoop(HINSTANCE hInstance, HWND hWnd, bool isFullScreen, int iClientWidth
 
 //--------------------------------------------------------------------------------------
 //	int APIENTRY _tWinMain();
-//	—p“r: ƒGƒ“ƒgƒŠƒ|ƒCƒ“ƒg
+//	ç”¨é€”: ã‚¨ãƒ³ãƒˆãƒªãƒã‚¤ãƒ³ãƒˆ
 //--------------------------------------------------------------------------------------
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -229,21 +229,21 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	// ƒfƒoƒbƒOŽžAdelete‚à‚ê‚Ìƒ`ƒFƒbƒN—p
+	// ãƒ‡ãƒãƒƒã‚°æ™‚ã€deleteã‚‚ã‚Œã®ãƒã‚§ãƒƒã‚¯ç”¨
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//ƒƒP[ƒ‹‚ÌÝ’è
+	//ãƒ­ã‚±ãƒ¼ãƒ«ã®è¨­å®š
 	setlocale(LC_ALL, "JPN");
 
-	// ƒtƒ‹ƒXƒNƒŠ[ƒ“‚É‚·‚é‚©‚Ç‚¤‚©‚Ì”»’è
-	// ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“‚É/f‚ªÝ’è‚³‚ê‚Ä‚¢‚½‚çƒtƒ‹ƒXƒNƒŠ[ƒ“‚É‚·‚é
+	// ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã«ã™ã‚‹ã‹ã©ã†ã‹ã®åˆ¤å®š
+	// ã‚³ãƒžãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³ã«/fãŒè¨­å®šã•ã‚Œã¦ã„ãŸã‚‰ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã«ã™ã‚‹
 	bool isFullScreen = false;
 	wstring wstrcmd = lpCmdLine;
 	if (wstrcmd == L"/f" || wstrcmd == L"/F") {
-		isFullScreen = true;     // ƒtƒ‰ƒO‚ðtrue‚ÉÝ’è
+		isFullScreen = true;     // ãƒ•ãƒ©ã‚°ã‚’trueã«è¨­å®š
 	}
 
 	MyRegisterClass(hInstance);
-	// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ì‰Šú‰»‚ðŽÀs‚µ‚Ü‚·:
+	// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®åˆæœŸåŒ–ã‚’å®Ÿè¡Œã—ã¾ã™:
 	HWND hWnd = InitInstance(hInstance, nCmdShow, isFullScreen, g_ClientWidth, g_ClientHeight);
 
 	if (!hWnd)
@@ -256,9 +256,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 //--------------------------------------------------------------------------------------
 //
-//  ŠÖ”: MakeWindowModeRectFunc()
+//  é–¢æ•°: MakeWindowModeRectFunc()
 //
-//  –Ú“I: ƒEƒCƒ“ƒhƒEƒ‚[ƒh‚ÉˆÚs‚·‚é‹éŒ`‚ðì¬‚·‚é
+//  ç›®çš„: ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒ¢ãƒ¼ãƒ‰ã«ç§»è¡Œã™ã‚‹çŸ©å½¢ã‚’ä½œæˆã™ã‚‹
 //
 //--------------------------------------------------------------------------------------
 void MakeWindowModeRectFunc(RECT& rc) {
@@ -275,13 +275,13 @@ void MakeWindowModeRectFunc(RECT& rc) {
 
 //--------------------------------------------------------------------------------------
 //
-//  ŠÖ”: WndProc(HWND, UINT, WPARAM, LPARAM)
+//  é–¢æ•°: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
-//  –Ú“I:    ƒƒCƒ“ ƒEƒBƒ“ƒhƒE‚ÌƒƒbƒZ[ƒW‚ðˆ—‚µ‚Ü‚·B
+//  ç›®çš„:    ãƒ¡ã‚¤ãƒ³ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†ã—ã¾ã™ã€‚
 //
-//  WM_COMMAND	- ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ ƒƒjƒ…[‚Ìˆ—
-//  WM_PAINT	- ƒƒCƒ“ ƒEƒBƒ“ƒhƒE‚Ì•`‰æ
-//  WM_DESTROY	- ’†Ž~ƒƒbƒZ[ƒW‚ð•\Ž¦‚µ‚Ä–ß‚é
+//  WM_COMMAND	- ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®å‡¦ç†
+//  WM_PAINT	- ãƒ¡ã‚¤ãƒ³ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æç”»
+//  WM_DESTROY	- ä¸­æ­¢ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã—ã¦æˆ»ã‚‹
 //
 //--------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -298,18 +298,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_KEYDOWN:
-		// ƒL[‚ª‰Ÿ‚³‚ê‚½
+		// ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸ
 		switch (wParam) {
 		case VK_ESCAPE:
-			//ƒEƒCƒ“ƒhƒE‚ð”jŠü‚·‚é
+			//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ã‚’ç ´æ£„ã™ã‚‹
 			DestroyWindow(hWnd);	
 			break;
 		case VK_RETURN:
 			if (GetAsyncKeyState(VK_CONTROL)) {
-				//Ctrl+Enter‚Åƒ‚[ƒhØ‘Ö
+				//Ctrl+Enterã§ãƒ¢ãƒ¼ãƒ‰åˆ‡æ›¿
 				if (App::AppCheck()) {
 					if (App::GetApp()->IsFullScreen()) {
-						//ƒEƒCƒ“ƒhƒEƒ‚[ƒh‚ÉˆÚs
+						//ã‚¦ã‚¤ãƒ³ãƒ‰ã‚¦ãƒ¢ãƒ¼ãƒ‰ã«ç§»è¡Œ
 						RECT rc;
 						MakeWindowModeRectFunc(rc);
 						App::GetApp()->SetWindowMode(rc);
