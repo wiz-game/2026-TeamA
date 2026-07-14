@@ -47,6 +47,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)StageObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayerManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TitlePlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TrackManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h" />
@@ -65,6 +66,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerState.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TitlePlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TrackManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Trampoline.cpp" />
