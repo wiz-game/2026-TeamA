@@ -35,13 +35,13 @@ namespace basecross
 		Vec3 dir = m_position - playerPos;
 		float diff = dir.length();
 
-		if (diff >= 10.0f) // scale���l�������̒l�ɂ���
-			m_isInRange = false; //	10.0f��藣��Ă���ꍇ�ɔ͈͊O����ɂ���
+		if (diff >= 10.0f) // scaleを考慮しこの値にする
+			m_isInRange = false; //	10.0fより離れている場合に範囲外判定にする
 
 		if (diff <= 10.0f && !m_isInRange && !m_trigger) 
 		{
 			m_trigger = true;
-			m_isInRange = true; // 10.0f�ȓ��ɗ����ꍇ�ɔ͈͓�����ɂ���
+			m_isInRange = true; // 10.0f以内に来た場合に範囲内判定にする
 		}
 		else if (diff <= 10.0f && !m_isInRange && m_trigger)
 		{
