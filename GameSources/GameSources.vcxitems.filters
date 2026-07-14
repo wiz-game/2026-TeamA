@@ -234,7 +234,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)CharacterFormation.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FormationManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerManager.cpp" />
@@ -257,6 +256,9 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)NumbersUI.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)CharacterFormation.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

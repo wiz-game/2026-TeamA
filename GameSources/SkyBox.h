@@ -1,6 +1,6 @@
 /*!
 @file SkyBox.h
-@brief ƒXƒJƒCƒ{ƒbƒNƒX
+@brief ã‚¹ã‚«ã‚¤ãƒœãƒƒã‚¯ã‚¹
 */
 
 #pragma once
@@ -11,11 +11,11 @@ namespace basecross
 	class SkyBox : public GameObject
 	{
 	public:
-		// ƒeƒNƒXƒ`ƒƒƒL[(ƒAƒZƒbƒg–¼)‚Æ”z’uÀ•W‚ğŠÖ˜A‚Ã‚¯‚é˜A‘z”z—ñ
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚­ãƒ¼(ã‚¢ã‚»ãƒƒãƒˆå)ã¨é…ç½®åº§æ¨™ã‚’é–¢é€£ã¥ã‘ã‚‹é€£æƒ³é…åˆ—
 		static const map<wstring, Vec3> pairs;
 
 	private:
-		// ƒXƒJƒCƒLƒ…[ƒu‚Ì‚U–Ê‚ğŠÇ—‚·‚é
+		// ã‚¹ã‚«ã‚¤ã‚­ãƒ¥ãƒ¼ãƒ–ã®ï¼–é¢ã‚’ç®¡ç†ã™ã‚‹
 		vector<shared_ptr<GameObject>> m_planes;
 
 	public:

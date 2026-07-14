@@ -75,11 +75,12 @@ namespace basecross {
 	{
 		// アプリケーションオブジェクトを取得
 		auto& app = App::GetApp();
-		auto scene = App::GetApp()->GetScene<Scene>();
+		auto scene = app->GetScene<Scene>();
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
 		//デバック用
-		wstringstream wss(L"");
+		wstringstream wss;
+
 
 		if (m_isActive)
 		{
@@ -100,6 +101,9 @@ namespace basecross {
 			}
 		}
 		m_BGM->m_SourceVoice->SetVolume(scene->m_BGMVolume); //���ʕύX�̍X�V
+
+		wss << L"" << endl;
+		scene->SetDebugString(wss.str());
 	}
 
 	void GameStage::OnUpdate2()

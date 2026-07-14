@@ -1,6 +1,6 @@
 /*!
 @file Foo.h
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚Ç
+@brief ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãªã©
 */
 
 #pragma once
@@ -23,69 +23,69 @@ namespace basecross
 		shared_ptr<Stage> m_stage;
 	public:
 		/*!
-		@brief ƒXƒe[ƒWƒ}ƒl[ƒWƒƒ[‚ğæ“¾
-		@return ƒXƒe[ƒWƒ}ƒl[ƒWƒƒ[
+		@brief ã‚¹ãƒ†ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’å–å¾—
+		@return ã‚¹ãƒ†ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 		*/
 		static unique_ptr<StageManager, StageManagerDeleter>& CreateStageManager();
 
 		/*!
-		@brief ƒXƒe[ƒWƒ}ƒl[ƒWƒƒ[‚ğæ“¾
-		@return ƒXƒe[ƒWƒ}ƒl[ƒWƒƒ[
+		@brief ã‚¹ãƒ†ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’å–å¾—
+		@return ã‚¹ãƒ†ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 		*/
 		static unique_ptr<StageManager, StageManagerDeleter>& GetStageManager();
 
 		/*!
-		@brief ƒXƒe[ƒWƒ}ƒl[ƒWƒƒ[‚ğíœ
-		@return ‚È‚µ
+		@brief ã‚¹ãƒ†ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’å‰Šé™¤
+		@return ãªã—
 		*/
 		static void DeleteStageManager();
 
 		/*!
-		@brief ƒXƒe[ƒWƒ}ƒl[ƒWƒƒ[‚ğ‰Šú‰»
-		@return ‚È‚µ
+		@brief ã‚¹ãƒ†ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’åˆæœŸåŒ–
+		@return ãªã—
 		*/
 		void Initialize();
 
 		/*!
-		@brief ƒXƒe[ƒWƒ}ƒl[ƒWƒƒ[‚ğXV
-		@return ‚È‚µ
+		@brief ã‚¹ãƒ†ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’æ›´æ–°
+		@return ãªã—
 		*/
 		void Update();
 
 		/*!
-		@brief ƒXƒe[ƒWƒ}ƒl[ƒWƒƒ[‚ğ”jŠü
-		@return ‚È‚µ
+		@brief ã‚¹ãƒ†ãƒ¼ã‚¸ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’ç ´æ£„
+		@return ãªã—
 		*/
 		void Discard();
 
 		/*!
-		@brief CSVƒtƒ@ƒCƒ‹‚©‚çƒXƒe[ƒWƒf[ƒ^‚ğ“Ç‚İ‚Ş
-		@param[in] filePath“Ç‚İ‚ŞCSVƒtƒ@ƒCƒ‹‚ÌƒpƒX
-		@return ‚È‚µ
+		@brief CSVãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€
+		@param[in] filePathèª­ã¿è¾¼ã‚€CSVãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹
+		@return ãªã—
 		*/
 		void LoadStageFromCSV(const std::wstring& filePath);
 
 
 	private:
 		/*!
-		@brief CSV‚Ì1s‚ğ‰ğÍ‚·‚é
-		@param[in] lineCSV‚Ì1s•ª‚Ì•¶š—ñ
-		@return ‚È‚µ
+		@brief CSVã®1è¡Œã‚’è§£æã™ã‚‹
+		@param[in] lineCSVã®1è¡Œåˆ†ã®æ–‡å­—åˆ—
+		@return ãªã—
 		*/
 		void ParseCSVLine(const std::string& line);
 
 		/*!
-		@brief CSV‚Ìî•ñ‚©‚çƒXƒe[ƒWƒIƒuƒWƒFƒNƒg‚ğ¶¬‚·‚é
-		@param[in] name ƒIƒuƒWƒFƒNƒg–¼
-		@param[in] pos ¶¬ˆÊ’uiVec3j
-		@return ‚È‚µ
+		@brief CSVã®æƒ…å ±ã‹ã‚‰ã‚¹ãƒ†ãƒ¼ã‚¸ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆã™ã‚‹
+		@param[in] name ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå
+		@param[in] pos ç”Ÿæˆä½ç½®ï¼ˆVec3ï¼‰
+		@return ãªã—
 		*/
 		void CreateObjectFromCSV(const std::wstring& name, const Vec3& pos, const Vec3& rot, const Vec3& scale);
 
-		//ƒRƒs[‹Ö~
+		//ã‚³ãƒ”ãƒ¼ç¦æ­¢
 		StageManager(const StageManager&) = delete;
 		StageManager& operator=(const StageManager&) = delete;
-		//ƒ€[ƒu‹Ö~
+		//ãƒ ãƒ¼ãƒ–ç¦æ­¢
 		StageManager(const StageManager&&) = delete;
 		StageManager& operator=(const StageManager&&) = delete;
 	};

@@ -1,6 +1,6 @@
 /*!
 @file GameStage.h
-@brief ƒQ[ƒ€ƒXƒe[ƒW
+@brief ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸
 */
 
 #pragma once
@@ -10,31 +10,31 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
-	//	ƒQ[ƒ€ƒXƒe[ƒWƒNƒ‰ƒX
+	//	ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒ©ã‚¹
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage
 	{
-		JoltManager m_jphManger; // Jolt Physics ƒ}ƒl[ƒWƒƒ[
+		JoltManager m_jphManger; // Jolt Physics ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼
 
-		void CreateViewLight(); //ƒrƒ…[‚Ìì¬
+		void CreateViewLight(); //ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 		void LoadTextures();
 
 
-		shared_ptr<Player> m_mainPlayer; // ƒƒCƒ“ƒvƒŒƒCƒ„[
-		Vec3 m_mainPlayerScale; // ƒƒCƒ“ƒvƒŒƒCƒ„[‚ÌƒXƒP[ƒŠƒ“ƒO
+		shared_ptr<Player> m_mainPlayer; // ãƒ¡ã‚¤ãƒ³ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
+		Vec3 m_mainPlayerScale; // ãƒ¡ã‚¤ãƒ³ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°
 		std::shared_ptr<SingleView> m_playerCameraView;	
 
-		shared_ptr<SoundItem> m_BGM; // ƒTƒEƒ“ƒh—pƒ|ƒCƒ“ƒ^
+		shared_ptr<SoundItem> m_BGM; // ã‚µã‚¦ãƒ³ãƒ‰ç”¨ãƒã‚¤ãƒ³ã‚¿
 		bool m_isActive;
 		shared_ptr<Option> option;
 		vector<shared_ptr<GameObject>> m_stageObj;
 
 	public:
-		//\’z‚Æ”jŠü
+		//æ§‹ç¯‰ã¨ç ´æ£„
 		GameStage() :Stage(){}
 		virtual ~GameStage() {}
 
-		int count = 0; //TurningPoint—p•Ï”
+		int count = 0; //TurningPointç”¨å¤‰æ•°
 
 		void SetStageObj(shared_ptr<GameObject> newStageObj)
 		{
@@ -57,10 +57,10 @@ namespace basecross {
 		}
 
 
-		virtual void OnCreate()override; //‰Šú‰»
-		virtual void OnUpdate()override; //XV
+		virtual void OnCreate()override; //åˆæœŸåŒ–
+		virtual void OnUpdate()override; //æ›´æ–°
 		virtual void OnUpdate2() override;
-		virtual void OnDraw()override; //•`‰æ
+		virtual void OnDraw()override; //æç”»
 		void OnDestroy()override;
 
 	};

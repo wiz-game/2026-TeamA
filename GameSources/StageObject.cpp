@@ -1,6 +1,6 @@
 /*!
 @file Foo.cpp
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚ÇÀ‘Ì
+@brief ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãªã©å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -9,8 +9,8 @@
 namespace basecross
 {
 
-	//@Šî’êƒNƒ‰ƒX
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	//ã€€åŸºåº•ã‚¯ãƒ©ã‚¹
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	StageObject::StageObject(const std::shared_ptr<Stage>& stage) :
 		GameObject(stage),
 		m_position(0.0f, 0.0f, 0.0f),
@@ -20,7 +20,7 @@ namespace basecross
 	}
 
 
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	void StageObject::OnCreate()
 	{
 		m_transComp = GetComponent<Transform>();
@@ -61,7 +61,7 @@ namespace basecross
 		}
 	}
 
-	// ƒS[ƒ‹ƒNƒ‰ƒX
+	// ã‚´ãƒ¼ãƒ«ã‚¯ãƒ©ã‚¹
 	void Goal::OnCreate()
 	{
 		StageObject::OnCreate();
@@ -96,13 +96,13 @@ namespace basecross
 			wss << L"GameClear" << endl;
 			scene->SetDebugString(wss.str());
 
-			PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToGameClearStage");//ƒQ[ƒ€ƒV[ƒ“‚ğˆÚ“®‚·‚é
+			PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToGameClearStage");//ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ã‚’ç§»å‹•ã™ã‚‹
 
 		}
 	}
 
 
-	// ƒuƒƒbƒNƒNƒ‰ƒX
+	// ãƒ–ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
 	void Block::OnCreate()
 	{
 		StageObject::OnCreate();
@@ -142,7 +142,7 @@ namespace basecross
 
 	}
 
-	// ƒXƒ[ƒvƒNƒ‰ƒX
+	// ã‚¹ãƒ­ãƒ¼ãƒ—ã‚¯ãƒ©ã‚¹
 	void Slope::OnCreate()
 	{
 		StageObject::OnCreate();
@@ -189,7 +189,7 @@ namespace basecross
 	}
 
 
-	// ”ÂƒNƒ‰ƒX
+	// æ¿ã‚¯ãƒ©ã‚¹
 	void Board::OnCreate()
 	{
 		StageObject::OnCreate();
@@ -221,7 +221,7 @@ namespace basecross
 
 	}
 
-	// ‘«êƒNƒ‰ƒX
+	// è¶³å ´ã‚¯ãƒ©ã‚¹
 	void Foothold::OnCreate()
 	{
 		StageObject::OnCreate();
@@ -256,7 +256,7 @@ namespace basecross
 		m_drawComp->SetDiffuse(collar);
 	}
 
-	// –ØƒNƒ‰ƒX
+	// æœ¨ã‚¯ãƒ©ã‚¹
 	void FirTree::OnCreate()
 	{
 		StageObject::OnCreate();
@@ -287,7 +287,7 @@ namespace basecross
 		m_drawComp->SetDiffuse(collar);
 	}
 
-	// “|–ØƒNƒ‰ƒX
+	// å€’æœ¨ã‚¯ãƒ©ã‚¹
 	void FallenTree::OnCreate()
 	{
 		StageObject::OnCreate();
@@ -322,7 +322,7 @@ namespace basecross
 		m_drawComp->SetDiffuse(collar);
 	}
 
-	// ÎƒNƒ‰ƒX
+	// çŸ³ã‚¯ãƒ©ã‚¹
 	void Stone::OnCreate()
 	{
 		StageObject::OnCreate();
@@ -353,7 +353,7 @@ namespace basecross
 		m_drawComp->SetDiffuse(collar);
 	}
 
-	// ƒLƒmƒRƒNƒ‰ƒX
+	// ã‚­ãƒã‚³ã‚¯ãƒ©ã‚¹
 	void Mushroom::OnCreate()
 	{
 		StageObject::OnCreate();

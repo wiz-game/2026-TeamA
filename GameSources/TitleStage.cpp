@@ -49,10 +49,11 @@ namespace basecross
 		// 入力デバイスを取得する
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
+		auto key = input.GetKeyState();
 
-		if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+		if (pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");//ゲームシーンを移動する
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToStageSelect");//ゲームシーンを移動する
 		}
 
 	}
