@@ -193,8 +193,5 @@ namespace basecross
 			}
 
 		}
-		wstringstream wss;
-		wss << L"Count" << m_count << endl;
-		app->GetScene<Scene>()->SetDebugString(wss.str());
 	}
 }
