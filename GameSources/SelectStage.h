@@ -25,10 +25,10 @@ namespace basecross
 		void LoadTextures();
 		shared_ptr<SoundItem> m_BGM; // サウンド用ポインタ
 		StageCount m_stageCount;
-		shared_ptr<GameObject> m_back;
-		shared_ptr<GameObject> m_back2;
+		vector<shared_ptr<GameObject>> m_back;
 		float phaseTimer;
 		float phaseDuration;
+		vector<shared_ptr<GameObject>> m_other;
 
 	public:
 		//構築と破棄
