@@ -11,7 +11,7 @@ namespace basecross
 	{}
 
 	const map<wstring, Vec3> SkyBox::pairs = {
-		{L"000_000_000", Vec3(0   ,  -0,   +0.5f)},
+		{L"000_000_000", Vec3(0   , -0,   +0.5f)},
 		{L"000_090_000", Vec3(+0.5f, 0,    0)},
 		{L"000_180_000", Vec3(0   ,  0,   -0.5f)},
 		{L"000_270_000", Vec3(-0.5f, 0,    0)},
@@ -25,32 +25,32 @@ namespace basecross
 		{
 			//auto plane = ObjectFactory::Create<Plane>(GetStage());
 
-			//// ƒ‰ƒCƒeƒBƒ“ƒO‚ğó‚¯‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ßAPTStaticDrawƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ’Ç‰Á
+			//// ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ã‚’å—ã‘ãªã„ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã€PTStaticDrawã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’è¿½åŠ 
 			//auto planeDrawComp = plane->AddComponent<PTStaticDraw>();
-			//// ƒeƒNƒXƒ`ƒƒ‚ğİ’è
+			//// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®š
 			//planeDrawComp->SetTextureResource(pair.first);
-			//// Zƒoƒbƒtƒ@‚ğó‚¯‚È‚¢‚æ‚¤‚É
+			//// Zãƒãƒƒãƒ•ã‚¡ã‚’å—ã‘ãªã„ã‚ˆã†ã«
 			//planeDrawComp->SetDepthStencilState(DepthStencilState::None);
-			//// ƒeƒNƒXƒ`ƒƒ‚ÌØ‚ê–Ú‚ğ–Ú—§‚½‚È‚­‚·‚é‚½‚ßAƒŠƒjƒAƒtƒBƒ‹ƒ^ƒŠƒ“ƒO‚ÅƒNƒ‰ƒ“ƒv‚·‚é
+			//// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆ‡ã‚Œç›®ã‚’ç›®ç«‹ãŸãªãã™ã‚‹ãŸã‚ã€ãƒªãƒ‹ã‚¢ãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°ã§ã‚¯ãƒ©ãƒ³ãƒ—ã™ã‚‹
 			//planeDrawComp->SetSamplerState(SamplerState::LinearClamp);
 
 			//auto planeTransComp = plane->GetComponent<Transform>();
-			//// ƒeƒNƒXƒ`ƒƒ‚Ì•¶š—ñ‚ğŠp“x‚É•ÏŠ·
-			//// 0•¶š–Ú‚©‚ç3•¶šæ‚èo‚·
+			//// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æ–‡å­—åˆ—ã‚’è§’åº¦ã«å¤‰æ›
+			//// 0æ–‡å­—ç›®ã‹ã‚‰3æ–‡å­—å–ã‚Šå‡ºã™
 			//float rotX = XMConvertToRadians(stof(pair.first.substr(0, 3)));
-			//// 4•¶š–Ú‚©‚ç3•¶šæ‚èo‚·
+			//// 4æ–‡å­—ç›®ã‹ã‚‰3æ–‡å­—å–ã‚Šå‡ºã™
 			//float rotY = XMConvertToRadians(stof(pair.first.substr(4, 3)));
-			//// 8•¶š–Ú‚©‚ç3•¶šæ‚èo‚·
+			//// 8æ–‡å­—ç›®ã‹ã‚‰3æ–‡å­—å–ã‚Šå‡ºã™
 			//float rotZ = XMConvertToRadians(stof(pair.first.substr(8, 3)));
-			//// ‹–ì”ÍˆÍ‚ÌŒÀŠE‚Ü‚ÅŠg‘å‚·‚é
+			//// è¦–é‡ç¯„å›²ã®é™ç•Œã¾ã§æ‹¡å¤§ã™ã‚‹
 			//const float scale = 707.0f; //707.0f
 			//Vec3 pos = pair.second * scale;
 			//pos.y -= 340.0f;
-			//Vec3 newScale = Vec3(707.0f);
+			//Vec3 newScale = Vec3(720.0f,707.0f,707.0f);
 			//planeTransComp->SetPosition(pos);
 			//planeTransComp->SetRotation(rotX, rotY, rotZ);
 			//planeTransComp->SetScale(Vec3(newScale.x,newScale.y * 2, newScale.z));
-			//// ƒXƒJƒCƒLƒ…[ƒu‚ğ\¬‚·‚éƒvƒŒ[ƒ“‚ğSkyBoxƒIƒuƒWƒFƒNƒg‚Ìq‚É‚·‚é‚±‚Æ‚ÅÀ•W‚ÌŠÇ—‚ÌŠÈˆÕ‰»
+			//// ã‚¹ã‚«ã‚¤ã‚­ãƒ¥ãƒ¼ãƒ–ã‚’æ§‹æˆã™ã‚‹ãƒ—ãƒ¬ãƒ¼ãƒ³ã‚’SkyBoxã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å­ã«ã™ã‚‹ã“ã¨ã§åº§æ¨™ã®ç®¡ç†ã®ç°¡æ˜“åŒ–
 			//planeTransComp->SetParent(GetThis<GameObject>());
 
 			//m_planes.push_back(plane);
@@ -77,7 +77,7 @@ namespace basecross
 
 			auto planeTrans = plane->GetComponent<Transform>();
 
-			// ?e?N?X?`???L?[?????????p?x????????
+			
 			float rotX = XMConvertToRadians(stof(pair.first.substr(0, 3)));
 			float rotY = XMConvertToRadians(stof(pair.first.substr(4, 3)));
 			float rotZ = XMConvertToRadians(stof(pair.first.substr(8, 3)));
@@ -95,14 +95,15 @@ namespace basecross
 
 	void SkyBox::OnUpdate()
 	{
-		// ƒJƒƒ‰‚ÌˆÊ’u‚ÉƒXƒJƒCƒ{ƒbƒNƒX‚ğˆÚ“®‚³‚¹‚é
+		// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã«ã‚¹ã‚«ã‚¤ãƒœãƒƒã‚¯ã‚¹ã‚’ç§»å‹•ã•ã›ã‚‹
 		auto transComp = GetComponent<Transform>();
-		transComp->SetPosition(GetStage()->GetView()->GetTargetCamera()->GetEye());
+		Vec3 cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+		transComp->SetPosition(cameraPos.x,cameraPos.y + 20.0f,cameraPos.z + 0.0f);
 	}
 
 	void SkyBox::OnDraw()
 	{
-		// ŠÇ—‚µ‚Ä‚¢‚é‚·‚×‚Ä‚Ì–Ê‚ğ•`‰æ‚·‚é
+		// ç®¡ç†ã—ã¦ã„ã‚‹ã™ã¹ã¦ã®é¢ã‚’æç”»ã™ã‚‹
 		for (auto& plane : m_planes)
 		{
 			plane->OnDraw();
@@ -119,21 +120,21 @@ namespace basecross
 
 	void Plane::OnCreate()
 	{
-		// ”Âƒ|ƒŠ‚ğŒ`¬‚·‚é‚½‚ß‚Ì’¸“_ƒf[ƒ^
+		// æ¿ãƒãƒªã‚’å½¢æˆã™ã‚‹ãŸã‚ã®é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
 		vector<VertexPositionTexture> vertices = {
-			{Vec3(-0.5f, +0.5f, 0.0f), Vec2(0.0f, 0.0f)},
-			{Vec3(+0.5f, +0.5f, 0.0f), Vec2(1.0f, 0.0f)},
-			{Vec3(-0.5f, -0.5f, 0.0f), Vec2(0.0f, 1.0f)},
-			{Vec3(+0.5f, -0.5f, 0.0f), Vec2(1.0f, 1.0f)}
+			{Vec3(-0.5f, +0.5f, 0.0f), Vec2(0.0f, 0.0f)}, //å·¦ä¸Š
+			{Vec3(+0.5f, +0.5f, 0.0f), Vec2(1.0f, 0.0f)}, //å³ä¸Š
+			{Vec3(-0.5f, -0.5f, 0.0f), Vec2(0.0f, 1.0f)}, //å·¦ä¸‹
+			{Vec3(+0.5f, -0.5f, 0.0f), Vec2(1.0f, 1.0f)}  //å³ä¸‹
 		};
 
-		// ’¸“_ƒCƒ“ƒfƒbƒNƒX
+		// é ‚ç‚¹ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
 		vector<uint16_t> indices = {
 			0, 1, 2, 2, 1, 3
 		};
 
-		// ã‹Lƒf[ƒ^‚ğ“K—p
-		auto drawComp = AddComponent<PTStaticDraw>(); // PNT‚¾‚Æƒ‰ƒCƒeƒBƒ“ƒO‚ª‚©‚©‚é‚Ì‚ÅŒü‚©‚È‚¢
+		// ä¸Šè¨˜ãƒ‡ãƒ¼ã‚¿ã‚’é©ç”¨
+		auto drawComp = AddComponent<PTStaticDraw>(); // PNTã ã¨ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ãŒã‹ã‹ã‚‹ã®ã§å‘ã‹ãªã„
 		drawComp->SetOriginalMeshUse(true);
 		drawComp->CreateOriginalMesh(vertices, indices);
 	}

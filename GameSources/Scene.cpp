@@ -1,6 +1,6 @@
 /*!
 @file Scene.cpp
-@brief ƒV[ƒ“À‘•
+@brief ã‚·ãƒ¼ãƒ³å®Ÿè£…
 */
 
 #include "stdafx.h"
@@ -12,29 +12,29 @@
 namespace basecross{
 
 	//--------------------------------------------------------------------------------------
-	///	ƒQ[ƒ€ƒV[ƒ“
+	///	ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³
 	//--------------------------------------------------------------------------------------
 	void Scene::CreateResourses() 
 	{
-		// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
+		// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
 		auto& app = App::GetApp();
 
-		// ƒƒfƒBƒAƒtƒHƒ‹ƒ_[‚ÌƒpƒX‚ğæ“¾‚·‚é
+		// ãƒ¡ãƒ‡ã‚£ã‚¢ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ã®ãƒ‘ã‚¹ã‚’å–å¾—ã™ã‚‹
 		auto mediaPath = app->GetDataDirWString();
-		// ƒeƒNƒXƒ`ƒƒƒtƒHƒ‹ƒ_[‚ÌƒpƒX‚ğæ“¾‚·‚é
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ã®ãƒ‘ã‚¹ã‚’å–å¾—ã™ã‚‹
 		auto texPath = mediaPath + L"Textures\\";
-		// ƒI[ƒfƒBƒIƒtƒHƒ‹ƒ_[‚ÌƒpƒX‚ğæ“¾‚·‚é
+		// ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ã®ãƒ‘ã‚¹ã‚’å–å¾—ã™ã‚‹
 		auto audioPath = mediaPath + L"Sounds\\";
-		// ƒ‚ƒfƒ‹ƒtƒHƒ‹ƒ_[‚ÌƒpƒX‚ğæ“¾‚·‚é
+		// ãƒ¢ãƒ‡ãƒ«ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ã®ãƒ‘ã‚¹ã‚’å–å¾—ã™ã‚‹
 		auto modelPath = mediaPath + L"Models\\";
 
-		//ƒI[ƒfƒBƒI‚Ì“o˜^
+		//ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªã®ç™»éŒ²
 		app->RegisterWav(L"StageBGM", audioPath + L"stagebgm.wav");
 		app->RegisterWav(L"TitleBGM", audioPath + L"titlebgm.wav");
 		app->RegisterWav(L"GameOverBGM", audioPath + L"gameoverbgm.wav");
 		app->RegisterWav(L"GameClearBGM", audioPath + L"gameclearbgm.wav");
 
-		// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­è¾¼
 		app->RegisterTexture(L"TEX_PAUSEUI", texPath + L"Pause.png");
 		app->RegisterTexture(L"TEX_POINTERUI", texPath + L"pointer.png");
 		app->RegisterTexture(L"TEX_BGMICON", texPath + L"BGMIcon.png");
@@ -42,90 +42,100 @@ namespace basecross{
 		app->RegisterTexture(L"TEX_BSQUARE", texPath + L"BSquare.png");
 		app->RegisterTexture(L"TEX_ALPHA", texPath + L"alphablended.png");
 		app->RegisterTexture(L"TEX_YZUI", texPath + L"yz.png");
+		app->RegisterTexture(L"TEX_YZUI_R", texPath + L"yz_r.png");
+		app->RegisterTexture(L"TEX_YZUI_L", texPath + L"yz_l.png");
 		app->RegisterTexture(L"TEX_HAMMERUI", texPath + L"hammer.png");
 		app->RegisterTexture(L"TEX_SPEARUI", texPath + L"spear.png");
 		app->RegisterTexture(L"TEX_STAIRSUI", texPath + L"stairs.png");
 		app->RegisterTexture(L"TEX_BRIDGEUI", texPath + L"bridge.png");
 		app->RegisterTexture(L"TEX_TITLEUI", texPath + L"title.png");
+		app->RegisterTexture(L"TEX_PREVIEWUI", texPath + L"preview.png");
+		app->RegisterTexture(L"TEX_PAUSEBUTTONUI", texPath + L"pausebutton.png");
+		app->RegisterTexture(L"TEX_FORMATIONCOUNTUI", texPath + L"fc.png");
+		app->RegisterTexture(L"TEX_NUMBER", texPath + L"number.png");
+		app->RegisterTexture(L"TEX_NUMBER2", texPath + L"number2.png");
+		app->RegisterTexture(L"TEX_NUMBER2", texPath + L"number2.png");
+		app->RegisterTexture(L"TEX_APUSHUI", texPath + L"pushA.png");
 
+		app->RegisterTexture(L"TEX_LOADANIMETION", texPath + L"rdrp.png");
 
-		// playerƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// playerãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_PLAYER", mediaPath + L"Models\\Player\\Sample_Player.png");
 		auto playerModel = MeshResource::CreateStaticModelMesh(mediaPath + L"Models\\Player\\",L"Sample_Player.bmf");
 		playerModel->SetTextureResource(L"TEX_PLAYER");
 		app->RegisterResource(L"MODEL_PLAYER", playerModel);
 
-		// Blockƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// Blockãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_GRAND", mediaPath + L"Models\\Block\\T_Grand.png");
 		auto blockModel = MeshResource::CreateStaticModelMesh(mediaPath + L"Models\\Block\\", L"M_Grand.bmf");
 		blockModel->SetTextureResource(L"TEX_GRAND");
 		app->RegisterResource(L"MODEL_BLOCK", blockModel);
 
-		// Boardƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İi‰¼j
+		// Boardãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿ï¼ˆä»®ï¼‰
 		app->RegisterTexture(L"TEX_BOARD", modelPath + L"Board\\T_Board.png");
 		auto boardModel = MeshResource::CreateStaticModelMesh(modelPath + L"Board\\", L"M_Board.bmf");
 		boardModel->SetTextureResource(L"TEX_BOARD");
 		app->RegisterResource(L"MODEL_BOARD", boardModel);
 
-		// “yƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// åœŸãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_SOIL", modelPath + L"Block\\T_Soil.png");
 		auto soilModel = MeshResource::CreateStaticModelMesh(modelPath + L"Block\\", L"M_Soil.bmf");
 		soilModel->SetTextureResource(L"TEX_SOIL");
 		app->RegisterResource(L"MODEL_SOIL", soilModel);
 
-		// “|–Øƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// å€’æœ¨ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_FALLENTREE", modelPath + L"FallenTree\\T_FallenTree.png");
 		auto fallenTreeModel = MeshResource::CreateStaticModelMesh(modelPath + L"FallenTree\\", L"M_FallenTree.bmf");
 		fallenTreeModel->SetTextureResource(L"TEX_FALLENTREE");
 		app->RegisterResource(L"MODEL_FALLENTREE", fallenTreeModel);
 
-		// òƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// æŸµãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_FENCE", modelPath + L"Fence\\T_Fence.png");
 		auto fenceModel = MeshResource::CreateStaticModelMesh(modelPath + L"Fence\\", L"M_Fence.bmf");
 		fenceModel->SetTextureResource(L"TEX_FENCE");
 		app->RegisterResource(L"MODEL_FENCE", fenceModel);
 
-		// –Øƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// æœ¨ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_FIRTREE", modelPath + L"FirTree\\T_FirTree.png");
 		auto firTreeModel = MeshResource::CreateStaticModelMesh(modelPath + L"FirTree\\", L"M_FirTree.bmf");
 		firTreeModel->SetTextureResource(L"TEX_FIRTREE");
 		app->RegisterResource(L"MODEL_FIRTREE", firTreeModel);
 
-		// ‘«êƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// è¶³å ´ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_FOOTHOLD", modelPath + L"Foothold\\T_Foothold.png");
 		auto footholdModel = MeshResource::CreateStaticModelMesh(modelPath + L"Foothold\\", L"M_Foothold.bmf");
 		footholdModel->SetTextureResource(L"TEX_FOOTHOLD");
 		app->RegisterResource(L"MODEL_FOOTHOLD", footholdModel);
 
-		//@ƒLƒmƒRƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		//ã€€ã‚­ãƒã‚³ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_MUSHROOM", modelPath + L"Mushroom\\T_Mushroom.png");
 		auto mushroomModel = MeshResource::CreateStaticModelMesh(modelPath + L"Mushroom\\", L"M_Mushroom.bmf");
 		app->RegisterResource(L"MODEL_MUSHROOM", mushroomModel);
 
-		// ƒƒ“ƒOƒLƒmƒRƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// ãƒ­ãƒ³ã‚°ã‚­ãƒã‚³ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_LONG_MUSHROOM", modelPath + L"Mushroom\\T_LongMushroom.png");
 		auto longMushroomModel = MeshResource::CreateStaticModelMesh(modelPath + L"Mushroom\\", L"M_LongMushroom.bmf");
 		app->RegisterResource(L"MODEL_LONG_MUSHROOM", longMushroomModel);
 
-		// ’á–Ø‚Ì“Ç‚İ‚İ
+		// ä½æœ¨ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_SHRUB", modelPath + L"Shrub\\T_Shrub.png");
 		auto bushModel = MeshResource::CreateStaticModelMesh(modelPath + L"Shrub\\", L"M_Shrub.bmf");
 		bushModel->SetTextureResource(L"TEX_SHRUB");
 		app->RegisterResource(L"MODEL_SHRUB", bushModel);
 
-		// ƒXƒ[ƒvƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// ã‚¹ãƒ­ãƒ¼ãƒ—ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_SLOPE", modelPath + L"Slope\\T_Slope.png");
 		auto slopeModel = MeshResource::CreateStaticModelMesh(modelPath + L"Slope\\", L"M_Slope.bmf");
 		slopeModel->SetTextureResource(L"TEX_SLOPE");
 		app->RegisterResource(L"MODEL_SLOPE", slopeModel);
 
-		// Îƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+		// çŸ³ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_STONE", modelPath + L"Stone\\T_Stone.png");
 		auto stoneModel = MeshResource::CreateStaticModelMesh(modelPath + L"Stone\\", L"M_Stone.bmf");
 		stoneModel->SetTextureResource(L"TEX_STONE");
 		app->RegisterResource(L"MODEL_STONE", stoneModel);
 
-		// ƒ|ƒ“‚Ì“Ç‚İ‚İ
+		// ãƒãƒ³ã®èª­ã¿è¾¼ã¿
 		app->RegisterTexture(L"TEX_PON", modelPath + L"Pon\\T_Pon.png");
 		auto ponModel = MultiMeshResource::CreateBoneModelMultiMesh(modelPath + L"Pon\\", L"M_Pon.bmf");
 		ponModel->SetTextureResource(L"TEX_PON", 1);
@@ -139,14 +149,14 @@ namespace basecross{
 		try {
 			JoltManager::StaticInitialize();
 
-			// ”wŒiF‚ğİ’è
-			SetClearColor(Col4(0.0f, 0.11328125f, 0.2578125, 1.0f)); // ƒ~ƒbƒhƒiƒCƒgƒuƒ‹[
+			// èƒŒæ™¯è‰²ã‚’è¨­å®š
+			SetClearColor(Col4(0.0f, 0.11328125f, 0.2578125, 1.0f)); // ãƒŸãƒƒãƒ‰ãƒŠã‚¤ãƒˆãƒ–ãƒ«ãƒ¼
 			
-			//ƒŠƒ\[ƒXì¬
+			//ãƒªã‚½ãƒ¼ã‚¹ä½œæˆ
 			CreateResourses();
 
-			//©•ª©g‚ÉƒCƒxƒ“ƒg‚ğ‘—‚é
-			//‚±‚ê‚É‚æ‚èƒQ[ƒ€ƒXƒe[ƒW‚ÌƒIƒuƒWƒFƒNƒg‚ªCreate‚ÉƒV[ƒ“‚ÉƒAƒNƒZƒX‚Å‚«‚é
+			//è‡ªåˆ†è‡ªèº«ã«ã‚¤ãƒ™ãƒ³ãƒˆã‚’é€ã‚‹
+			//ã“ã‚Œã«ã‚ˆã‚Šã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒCreateæ™‚ã«ã‚·ãƒ¼ãƒ³ã«ã‚¢ã‚¯ã‚»ã‚¹ã§ãã‚‹
 			//PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 
@@ -162,7 +172,7 @@ namespace basecross{
 	void Scene::OnEvent(const shared_ptr<Event>& event) 
 	{
 		if (event->m_MsgStr == L"ToGameStage") {
-			//ƒQ[ƒ€ƒXƒe[ƒW‚Ìİ’è
+			//ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸ã®è¨­å®š
 			ResetActiveStage<GameStage>();
 
 			StageManager::CreateStageManager();
@@ -172,6 +182,10 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToTitleStage")
 		{
 			ResetActiveStage<TitleStage>();
+		}
+		if (event->m_MsgStr == L"ToStageSelect")
+		{
+			ResetActiveStage<SelectStage>();
 		}
 		if (event->m_MsgStr == L"ToGameClearStage")
 		{

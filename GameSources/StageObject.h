@@ -1,6 +1,6 @@
 /*!
 @file Foo.h
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚Ç
+@brief ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ãªã©
 */
 
 #pragma once
@@ -8,16 +8,16 @@
 
 namespace basecross
 {
-	//@ƒXƒe[ƒWƒIƒuƒWƒFƒNƒg‚ÌŠî’êƒNƒ‰ƒX
+	//ã€€ã‚¹ãƒ†ãƒ¼ã‚¸ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åŸºåº•ã‚¯ãƒ©ã‚¹
 	class StageObject : public GameObject
 	{
 	protected:
 		shared_ptr<Transform> m_transComp;
 		shared_ptr<Stage> m_stage;
 
-		Vec3 m_position; // ˆÊ’u
-		Vec3 m_rotation; // ‰ñ“]
-		Vec3 m_scale;    // ƒXƒP[ƒŠƒ“ƒO
+		Vec3 m_position; // ä½ç½®
+		Vec3 m_rotation; // å›žè»¢
+		Vec3 m_scale;    // ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°
 
 	public:
 		StageObject(const std::shared_ptr<Stage>& stage);
@@ -32,7 +32,7 @@ namespace basecross
 
 	};
 
-	// ƒS[ƒ‹ƒNƒ‰ƒX
+	// ã‚´ãƒ¼ãƒ«ã‚¯ãƒ©ã‚¹
 	class Goal : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
@@ -49,7 +49,7 @@ namespace basecross
 	};
 
 
-	// ƒuƒƒbƒNƒNƒ‰ƒX
+	// ãƒ–ãƒ­ãƒƒã‚¯ã‚¯ãƒ©ã‚¹
 	class Block : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
@@ -72,7 +72,7 @@ namespace basecross
 
 	};
 
-	// ƒXƒ[ƒvƒNƒ‰ƒX
+	// ã‚¹ãƒ­ãƒ¼ãƒ—ã‚¯ãƒ©ã‚¹
 	class Slope : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
@@ -104,7 +104,7 @@ namespace basecross
 	};
 
 
-	// ‘«êƒNƒ‰ƒX
+	// è¶³å ´ã‚¯ãƒ©ã‚¹
 	class Foothold : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
@@ -122,7 +122,7 @@ namespace basecross
 
 	};
 
-	// ”ÂƒNƒ‰ƒX
+	// æ¿ã‚¯ãƒ©ã‚¹
 	class Board : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
@@ -138,7 +138,7 @@ namespace basecross
 	};
 
 
-	// –ØƒNƒ‰ƒX
+	// æœ¨ã‚¯ãƒ©ã‚¹
 	class FirTree : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
@@ -155,7 +155,7 @@ namespace basecross
 		void SetCollar(Col4 collar);
 	};
 
-	// “|–ØƒNƒ‰ƒX
+	// å€’æœ¨ã‚¯ãƒ©ã‚¹
 	class FallenTree : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
@@ -173,7 +173,7 @@ namespace basecross
 		void SetCollar(Col4 collar);
 	};
 
-	// ÎƒNƒ‰ƒX
+	// çŸ³ã‚¯ãƒ©ã‚¹
 	class Stone : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;
@@ -187,7 +187,7 @@ namespace basecross
 		void SetCollar(Col4 collar);
 	};
 
-	// ƒLƒmƒRƒNƒ‰ƒX
+	// ã‚­ãƒŽã‚³ã‚¯ãƒ©ã‚¹
 	class Mushroom : public StageObject
 	{
 		shared_ptr<PNTStaticDraw> m_drawComp;

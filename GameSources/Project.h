@@ -13,6 +13,7 @@
 
 // Manager
 #include "StageManager.h"
+#include "UIManager.h"
 
 #include "Option.h"
 
@@ -41,11 +42,17 @@
 
 
 #include "FormationUI.h"
+#include "previewButtonUI.h"
+#include "PauseButtonUI.h"
+#include "FormationCountUI.h"
+#include "NumberSprite.h"
+#include "NumbersUI.h"
+
 
 #include "GameStage.h"
 #include "TitleStage.h"
 #include "GameClearStage.h"
 #include "GameOverStage.h"
 #include "SelectStage.h"
-
+#include "Load.h"
 
