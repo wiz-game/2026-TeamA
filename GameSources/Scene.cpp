@@ -56,6 +56,7 @@ namespace basecross{
 		app->RegisterTexture(L"TEX_NUMBER2", texPath + L"number2.png");
 		app->RegisterTexture(L"TEX_NUMBER2", texPath + L"number2.png");
 
+		app->RegisterTexture(L"TEX_LOADANIMETION", texPath + L"rdrp.png");
 
 		// playerモデルの読み込み
 		app->RegisterTexture(L"TEX_PLAYER", mediaPath + L"Models\\Player\\Sample_Player.png");

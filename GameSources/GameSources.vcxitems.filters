@@ -114,19 +114,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)CharacterFormation.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)FormationManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayer.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayerManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)TrackManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)UIManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)previewButtonUI.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)PauseButtonUI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FormationCountUI.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -134,6 +127,30 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)NumbersUI.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Load.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)CharacterFormation.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)FormationManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)PauseButtonUI.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SubPlayerManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TrackManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -234,11 +251,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)FormationManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayer.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerManager.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerState.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)TrackManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)UIManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -248,7 +260,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)previewButtonUI.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)PauseButtonUI.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FormationCountUI.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -259,6 +270,27 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)CharacterFormation.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Load.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)FormationManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)PauseButtonUI.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SubPlayerState.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TrackManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

@@ -27,8 +27,8 @@ namespace basecross {
 		void SetFormationNumber(int num)
 		{
 			m_formationNum = num;
-			if (m_formationNum < 0)m_formationNum = 0;
-			if (m_formationNum >= 4)m_formationNum = 3;
+			if (m_formationNum < 0)m_formationNum = 3;
+			if (m_formationNum >= 4)m_formationNum = 0;
 		}
 		int GetFormationNumber() { return m_formationNum; }
 		int GetFormationCharacterNum();
