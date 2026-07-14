@@ -122,7 +122,7 @@ namespace basecross
 
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		collision->SetDrawActive(true);
+		//collision->SetDrawActive(true);
 
 	}
 

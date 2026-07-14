@@ -15,8 +15,8 @@ namespace basecross
 	void TitleStage::CreateViewLight()
 	{
 		auto camera = ObjectFactory::Create<Camera>();
-		camera->SetEye(Vec3(0.0, 2.0f, -5.0f));
-		camera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
+		camera->SetEye(Vec3(0.0, 5.0f, -20.0f));
+		camera->SetAt(Vec3(0.0f, 3.0f, 0.0f));
 
 		auto view = CreateView<SingleView>();
 		view->SetCamera(camera);
@@ -34,11 +34,19 @@ namespace basecross
 		auto XAPtr = app->GetXAudio2Manager();
 		m_BGM = XAPtr->Start(L"TitleBGM", XAUDIO2_LOOP_INFINITE, scene->m_BGMVolume);
 
+
+		AddGameObject<TitlePlayer>(true);
+		auto block = AddGameObject<Block>();
+		block->SetPosition(Vec3(0.0f, -3.5f, 5.0f));
+		block->SetScale(Vec3(40.0f, 5.0f, 20.0f));
+		block->SetModel(L"MODEL_BLOCK");
 	}
 
 	void TitleStage::CreateUI()
 	{
-		AddGameObject<Sprite>(L"TEX_TITLEUI", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 0, 0));
+		AddGameObject<Sprite>(L"TEX_TITLEUI", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 200, 0));
+		//AddGameObject<Sprite>(L"TEX_TITLEUI", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 200, 0));
+		//AddGameObject<Sprite>(L"TEX_TITLEUI", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 200, 0));
 	}
 
 	void TitleStage::OnUpdate()

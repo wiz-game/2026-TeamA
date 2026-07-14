@@ -38,6 +38,7 @@
 #include "Wall.h"
 #include "Vine.h"
 #include "Baite.h"
+#include "TitlePlayer.h"
 
 
 #include "FormationUI.h"
