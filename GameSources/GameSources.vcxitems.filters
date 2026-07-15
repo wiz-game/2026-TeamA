@@ -153,7 +153,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Trampoline.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)TitlePlayer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TitlePlayer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -297,7 +299,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Trampoline.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TitlePlayer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TitlePlayer.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
