@@ -26,8 +26,11 @@ namespace basecross {
 		m_drawComp = AddComponent<PCTSpriteDraw>(m_vertices, indices);
 		m_drawComp->SetTextureResource(L"TEX_BSQUARE");
 		SetAlphaActive(true);
-
+		
 		m_anime = ObjectFactory::Create<LoadAnime>(GetStage(), GetThis<GameObject>());
+
+		m_loading = GetStage()->AddGameObject<Sprite>(L"TEX_LOADINGUI",true,Vec3(1024,256,0) * 0.01f, Vec3(0,0,0));
+		m_loading->SetDrawLayer(2);
 	}
 
 	void Load::OnUpdate()
@@ -42,6 +45,7 @@ namespace basecross {
 		m_time += delta;
 		if (m_time > 1.5f)
 		{
+			GetStage()->RemoveGameObject<Sprite>(m_loading);
 			//m_color.w = 0.0f;
 			gameStage->SetIsLoad(false);
 			m_color.w -= delta * 2.0f;
