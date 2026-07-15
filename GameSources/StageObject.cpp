@@ -73,7 +73,7 @@ namespace basecross
 
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		collision->SetDrawActive(true);
+		//collision->SetDrawActive(true);
 
 	}
 
@@ -180,7 +180,7 @@ namespace basecross
 		m_stage = GetStage();
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		collision->SetDrawActive(true);
+		//collision->SetDrawActive(true);
 	}
 
 	void SlopeCollisionObject::OnUpdate()
@@ -211,7 +211,7 @@ namespace basecross
 
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		collision->SetDrawActive(true);
+		//collision->SetDrawActive(true);
 
 	}
 
@@ -237,7 +237,7 @@ namespace basecross
 
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		collision->SetDrawActive(true);
+		//collision->SetDrawActive(true);
 
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_FOOTHOLD");
@@ -270,7 +270,7 @@ namespace basecross
 		);
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		collision->SetDrawActive(true);
+		//collision->SetDrawActive(true);
 
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_FIRTREE");
@@ -305,7 +305,7 @@ namespace basecross
 		);
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		collision->SetDrawActive(true);
+		//collision->SetDrawActive(true);
 
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_FALLENTREE");
@@ -336,7 +336,7 @@ namespace basecross
 		);
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		collision->SetDrawActive(true);
+		//collision->SetDrawActive(true);
 
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"MODEL_STONE");
@@ -362,7 +362,7 @@ namespace basecross
 
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
-		collision->SetDrawActive(true);
+		//collision->SetDrawActive(true);
 
 	}
 
