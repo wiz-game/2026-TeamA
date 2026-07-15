@@ -19,6 +19,7 @@ namespace basecross {
 		Col4 m_color;
 		float m_time;
 		shared_ptr<GameObject> m_anime;
+		shared_ptr<GameObject> m_loading;
 	public:
 		// 構築と破棄
 		Load(const shared_ptr<Stage>& stage) :
