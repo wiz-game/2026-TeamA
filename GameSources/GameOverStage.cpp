@@ -84,9 +84,6 @@ namespace basecross
 		m_cursol->GetComponent<Transform>()->SetPosition(cursolpositon);
 		m_prevLStick = LStick;
 
-
-
-
 	}
 
 	void GameOverStage::CreateUI()
@@ -98,6 +95,9 @@ namespace basecross
 		m_bt = AddGameObject<Sprite>(L"TEX_BACKTOTITLE", true, Vec3(1024, 256, 0) * 0.005f, Vec3(0, -180, 0));
 		m_re = AddGameObject<Sprite>(L"TEX_RESTART", true, Vec3(1024, 256, 0) * 0.005f, Vec3(0, -300, 0));
 		m_cursol = AddGameObject<Sprite>(L"TEX_POINTERUI", true, Vec3(200, 200, 0) * 0.01f, cursolpositon); //カーソル
+		m_bg = AddGameObject<Sprite>(L"TEX_GAMEOVERBG", true, Vec3(1920, 1080, 0) * 0.0069f, Vec3(0, 00, 0)); //背景
+
+		m_bg->SetDrawLayer(-1);
 	}
 
 	void GameOverStage::LoadTextures()
@@ -109,6 +109,8 @@ namespace basecross
 		app->RegisterTexture(L"TEX_GameOver", texPath + L"GameOver.png");
 		app->RegisterTexture(L"TEX_BACKTOTITLE", texPath + L"backtitle.png");
 		app->RegisterTexture(L"TEX_RESTART", texPath + L"restart.png");
+		app->RegisterTexture(L"TEX_GAMEOVERBG", texPath + L"gameover.jpg");
+
 	}
 
 	void GameOverStage::OnDestroy()
