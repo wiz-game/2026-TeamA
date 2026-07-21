@@ -34,7 +34,7 @@ namespace basecross
 
 	public:
 		//構築と破棄
-		GameOverStage() :Stage(),m_item(Item::BackToTitle),cursolpositon(-250,-180,0){}
+		GameOverStage() :Stage(),m_item(Item::BackToTitle){}
 		virtual ~GameOverStage() {}
 
 		virtual void OnCreate()override; //初期化
