@@ -80,6 +80,7 @@ namespace basecross {
 		auto scene = app->GetScene<Scene>();
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
+		auto key = input.GetKeyState();
 		//デバック用
 		wstringstream wss;
 
@@ -87,7 +88,7 @@ namespace basecross {
 		if (m_isActive)
 		{
 			// ゲーム中：STARTボタンでポーズ開始
-			if (pad.wPressedButtons & XINPUT_GAMEPAD_START)
+			if (pad.wPressedButtons & XINPUT_GAMEPAD_START || key.m_bPressedKeyTbl[VK_UP])
 			{
 				SetIsActive(false);       // 関数を使って停止させる
 				option->SetVisible(true); // メニュー表示
