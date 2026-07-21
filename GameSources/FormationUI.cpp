@@ -174,9 +174,8 @@ namespace basecross
 			drawL->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, 1.0f));
 		}
 
-		//int count = player->GetFormationManager()->GetFormationCharacterNum();
 
-		//int digit[2] = { (count / 10) % 10, count % 10 };
+		//隊列を組む際に必要な数のUI設定
 		for (int i = 0; i < m_counts.size(); i++)
 		{
 			auto sp = dynamic_pointer_cast<NumberSprite>(m_counts[i]);

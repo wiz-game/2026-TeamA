@@ -65,9 +65,8 @@ namespace basecross
 		float left = texW * m_number;//引数で指定した数字の左側を表す座標
 		float right = left + texW;
 
-		float gap = 0.00f; //隣の数字が映らないための隙間
-		float fixLeft = left + gap;
-		float fixRight = right - gap;
+		float fixLeft = left;
+		float fixRight = right;
 
 		m_vertices[0].textureCoordinate.x = (fixLeft);
 		m_vertices[1].textureCoordinate.x = (fixRight);

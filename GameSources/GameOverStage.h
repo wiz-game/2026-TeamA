@@ -30,10 +30,11 @@ namespace basecross
 		shared_ptr<GameObject> m_bt; //backtotitle用
 		shared_ptr<GameObject> m_re; //restart用
 		Vec2 m_prevLStick;
+		shared_ptr<GameObject> m_bg;
 
 	public:
 		//構築と破棄
-		GameOverStage() :Stage(),m_item(Item::BackToTitle),cursolpositon(-250,-180,0){}
+		GameOverStage() :Stage(),m_item(Item::BackToTitle){}
 		virtual ~GameOverStage() {}
 
 		virtual void OnCreate()override; //初期化

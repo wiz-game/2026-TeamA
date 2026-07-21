@@ -52,17 +52,9 @@ namespace basecross
 		m_other.push_back(AddGameObject<Sprite>(L"TEX_YZR", true, Vec3(2048, 2048, 0) * 0.001f, Vec3(550, 0, 0)));          //1:右矢印
 		m_other.push_back(AddGameObject<Sprite>(L"TEX_YZL", true, Vec3(2048, 2048, 0) * 0.001f, Vec3(-550, 0, 0)));         //2:左矢印
 		m_other.push_back(AddGameObject<Sprite>(L"TEX_STAGE1", true, Vec3(1536, 1024, 0) * 0.0025f, Vec3(0, 0, 0)));        //3:ステージ１文字
-		m_other.push_back(AddGameObject<Sprite>(L"TEX_STAGE2", true, Vec3(1264, 843, 0) * 0.0030f, Vec3(0, 0, 0)));        //4:ステージ２文字
+		m_other.push_back(AddGameObject<Sprite>(L"TEX_STAGE2", true, Vec3(1264, 843, 0) * 0.0030f, Vec3(0, 0, 0)));         //4:ステージ２文字
 
-		m_back[0]->SetDrawLayer(1);
-		m_back[1]->SetDrawLayer(1);
-		m_back[2]->SetDrawLayer(0);
-
-		m_other[0]->SetDrawLayer(2);
-		m_other[1]->SetDrawLayer(2);
-		m_other[2]->SetDrawLayer(2);
-		m_other[3]->SetDrawLayer(2);
-		m_other[4]->SetDrawLayer(2);
+		m_back[2]->SetDrawLayer(-1);
 	}
 
 	void SelectStage::OnUpdate()
