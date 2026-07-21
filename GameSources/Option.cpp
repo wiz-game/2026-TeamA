@@ -9,7 +9,7 @@ namespace basecross
 		m_prevLStick(0),
 		m_isActive(false),
 		m_optionItem(OptionItem::Return),
-		cursolpositon(-250,170,0),
+		cursolpositon(-250,150,0),
 		itemCount(static_cast<int>(OptionItem::Count))
 	{
 	}
@@ -25,7 +25,7 @@ namespace basecross
 	void Option::CreateUI()
 	{
 		auto stage = GetStage();
-		m_pauseUI.push_back(stage->AddGameObject<Sprite>(L"TEX_PAUSEUI", true, Vec3(1280, 800, 0) * 0.01f, Vec3(0, 0, 0))); //ポーズ背景
+		m_pauseUI.push_back(stage->AddGameObject<Sprite>(L"TEX_PAUSEUI", true, Vec3(1280, 800, 0) * 0.009f, Vec3(0, 0, 0))); //ポーズ背景
 		m_cursol = stage->AddGameObject<Sprite>(L"TEX_POINTERUI", true, Vec3(200, 200, 0) * 0.01f, cursolpositon); //カーソル
 		m_pauseUI.push_back(m_cursol);
 
@@ -49,9 +49,10 @@ namespace basecross
 		// 入力デバイスを取得する
 		auto input = app->GetInputDevice();
 		auto pad = input.GetControlerVec()[0];
+		auto key = input.GetKeyState();
 		auto stage = GetStage()->GetThis<GameStage>();
 		float lStickValue = 0.5f;
-		float cursolIndex = 117.0f; //カーソル移動用変数
+		float cursolIndex = 105.0f; //カーソル移動用変数
 		int wrapIndex = cursolIndex * (itemCount - 1); //一番上や下の時用の変数
 
 		// 左スティックの値取得
@@ -61,66 +62,66 @@ namespace basecross
 			switch (m_optionItem)
 			{
 			case OptionItem::Return:
-				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue || key.m_bPressedKeyTbl[VK_DOWN])
 				{
 					m_optionItem = OptionItem::Restart;
 					cursolpositon.y -= cursolIndex;
 				}
-				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue || key.m_bPressedKeyTbl[VK_UP])
 				{
 					m_optionItem = OptionItem::Title;
 					cursolpositon.y -= wrapIndex;
 				}
-				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+				if (pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 				{
 					stage->SetIsActive(true);
 					SetVisible(false);
 				}
 				break;
 			case OptionItem::Restart:
-				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue || key.m_bPressedKeyTbl[VK_DOWN])
 				{
 					m_optionItem = OptionItem::StageSelect;
 					cursolpositon.y -= cursolIndex;
 				}
-				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue || key.m_bPressedKeyTbl[VK_UP])
 				{
 					m_optionItem = OptionItem::Return;
 					cursolpositon.y += cursolIndex;
 				}
-				if(pad.wPressedButtons & XINPUT_GAMEPAD_A)
+				if(pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 				{
 					scene->PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToGameStage");
 				}
 				break;
 			case OptionItem::StageSelect:
-				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue || key.m_bPressedKeyTbl[VK_DOWN])
 				{
 					m_optionItem = OptionItem::SoundTest;
 					cursolpositon.y -= cursolIndex;
 				}
-				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue || key.m_bPressedKeyTbl[VK_UP])
 				{
 					m_optionItem = OptionItem::Restart;
 					cursolpositon.y += cursolIndex;
 				}
-				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+				if (pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 				{
 					PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToStageSelect");//ゲームシーンを移動する
 				}
 				break;
 			case OptionItem::SoundTest:
-				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue || key.m_bPressedKeyTbl[VK_DOWN])
 				{
 					m_optionItem = OptionItem::Title;
 					cursolpositon.y -= cursolIndex;
 				}
-				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue || key.m_bPressedKeyTbl[VK_UP])
 				{
 					m_optionItem = OptionItem::StageSelect;
 					cursolpositon.y += cursolIndex;
 				}
-				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+				if (pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 				{			
 					SetVisible(false);
 					stage->AddGameObject<SoundTest>();
@@ -128,17 +129,17 @@ namespace basecross
 				}
 				break;
 			case OptionItem::Title:
-				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue)
+				if (m_prevLStick.y <= -lStickValue && LStick.y >= -lStickValue || key.m_bPressedKeyTbl[VK_DOWN])
 				{
 					m_optionItem = OptionItem::Return;
 					cursolpositon.y += wrapIndex;
 				}
-				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue)
+				else if (m_prevLStick.y <= lStickValue && LStick.y >= lStickValue || key.m_bPressedKeyTbl[VK_UP])
 				{
 					m_optionItem = OptionItem::SoundTest;
 					cursolpositon.y += cursolIndex;
 				}
-				if (pad.wPressedButtons & XINPUT_GAMEPAD_A)
+				if (pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 				{
 					PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToTitleStage");//ゲームシーンを移動する
 				}
