@@ -33,9 +33,9 @@ namespace basecross
 		{
 			auto spCount = stage->AddGameObject<NumberSprite>();
 			m_formationCount.push_back(spCount);
-			m_formationCount[i]->GetThis<NumberSprite>()->m_transComp->SetPosition(Vec3((i * 50) + 420, -100, 0));
+			m_formationCount[i]->GetThis<NumberSprite>()->m_transComp->SetPosition(Vec3((i * 35) + 420, -110, 0));
 			m_formationCount[i]->GetComponent<PCTSpriteDraw>()->SetTextureResource(L"TEX_NUMBER");
-			m_formationCount[i]->GetComponent<Transform>()->SetScale(Vec3(0.4f));
+			m_formationCount[i]->GetComponent<Transform>()->SetScale(Vec3(0.3f));
 		}
 
 	}

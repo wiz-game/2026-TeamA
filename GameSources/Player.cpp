@@ -20,21 +20,21 @@ namespace basecross {
 		// ドローコンポーネントを追加
 		//m_draw = AddComponent<PNTDXModelDraw>();
 		m_drawComp = AddComponent<PNTBoneModelDraw>();
-		m_drawComp->SetMultiMeshResource(L"MODEL_REPURIN");
-		m_drawComp->AddAnimation(L"ANIM_IDLE", 0, 60, true);
-		m_drawComp->AddAnimation(L"ANIM_WALK", 80, 60, true);
+		m_drawComp->SetMultiMeshResource(L"MODEL_PON");
+		m_drawComp->AddAnimation(L"ANIM_IDLE", 0, 120, true);
+		m_drawComp->AddAnimation(L"ANIM_WALK", 140, 120, true);
 		m_drawComp->ChangeCurrentAnimation(L"ANIM_IDLE");
 
-		// モデルが少し浮いているので調整
-		Mat4x4 spanMat;
-		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f), // scale
-			Vec3(0.0f, 0.0f, 0.0f), // rotation
-			Vec3(0.0f, 0.0f, 0.0f), // rotation
-			Vec3(0.0f, -0.5f, 0.0f)  // position
-		);
+		//Mat4x4 spanMat;
 
-		m_drawComp->SetMeshToTransformMatrix(spanMat);
+		//spanMat.affineTransformation(
+		//	Vec3(1.0f, 1.0f, 1.0f), // scale
+		//	Vec3(0.0f, 0.0f, 0.0f), // rotation
+		//	Vec3(0.0f, 0.0f, 0.0f), // rotation
+		//	Vec3(0.0f, -0.3f, 0.0f)  // position
+		//);
+
+		//m_drawComp->SetMeshToTransformMatrix(spanMat);
 
 		//m_draw->SetTextureResource(L"TEX_PLAYER");
 		//m_draw->SetDiffuse(Col4(1, 0, 0, 1));
@@ -338,7 +338,7 @@ namespace basecross {
 		m_trackMng->UpdateTrack(m_position, m_roadWidth);
 
 		// アニメーションの更新
-		m_drawComp->UpdateAnimation(delta);
+		m_drawComp->UpdateAnimation(delta * 2.0f);
 		if (abs(m_velocity.x + m_velocity.z) < 0.1f)
 		{
 			if (m_drawComp->GetCurrentAnimation() != L"ANIM_IDLE")

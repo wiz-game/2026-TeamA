@@ -19,18 +19,6 @@ namespace basecross {
 		m_drawComp->AddAnimation(L"ANIM_WALK", 140, 120, true);
 		m_drawComp->ChangeCurrentAnimation(L"ANIM_IDLE");
 
-		// モデルが少し浮いているので調整
-		Mat4x4 spanMat;
-		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f), // scale
-			Vec3(0.0f, 0.0f, 0.0f), // rotation
-			Vec3(0.0f, 0.0f, 0.0f), // rotation
-			Vec3(0.0f, -0.5f, 0.0f)  // position
-		);
-
-		m_drawComp->SetMeshToTransformMatrix(spanMat);
-
-
 		m_transComp = GetComponent<Transform>();
 		//m_transComp->SetPosition(m_targetPos);
 		m_transComp->SetScale(Vec3(0.7f));

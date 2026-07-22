@@ -58,7 +58,7 @@ namespace basecross
 		switch (m_item)
 		{
 		case Item::BackToTitle:
-			if (m_prevLStick.x <= -lStickValue && LStick.x >= -lStickValue || key.m_bPressedKeyTbl[VK_RIGHT])
+			if (m_prevLStick.x <= lStickValue && LStick.x >= lStickValue || key.m_bPressedKeyTbl[VK_RIGHT])
 			{
 				m_item = Item::Restart;
 				cursolpositon = Vec3(rePos.x - 250, rePos.y, rePos.z);
@@ -70,7 +70,7 @@ namespace basecross
 
 			break;
 		case Item::Restart:
-			if (m_prevLStick.x <= lStickValue && LStick.x>= lStickValue || key.m_bPressedKeyTbl[VK_LEFT])
+			if (m_prevLStick.x <= -lStickValue && LStick.x>= -lStickValue || key.m_bPressedKeyTbl[VK_LEFT])
 			{
 				m_item = Item::BackToTitle;
 				cursolpositon = Vec3(btPos.x - 250, btPos.y, btPos.z);

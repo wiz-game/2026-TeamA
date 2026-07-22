@@ -142,12 +142,6 @@ namespace basecross{
 		ponModel->SetTextureResource(L"TEX_PON", 1);
 		app->RegisterResource(L"MODEL_PON", ponModel);
 
-		// レプリンの読み込み
-		app->RegisterTexture(L"TEX_REPURIN", modelPath + L"Repurin\\T_Repurin.png");
-		auto RepurinModel = MultiMeshResource::CreateBoneModelMultiMesh(modelPath + L"Repurin\\", L"M_Repurin.bmf");
-		RepurinModel->SetTextureResource(L"TEX_REPURIN", 1);
-		app->RegisterResource(L"MODEL_REPURIN", RepurinModel);
-
 	}
 
 
