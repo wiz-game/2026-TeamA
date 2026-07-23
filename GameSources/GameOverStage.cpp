@@ -57,11 +57,11 @@ namespace basecross
 
 		switch (m_item)
 		{
-		case Item::BackToTitle:
+		case OvStageItem::BackToTitle:
 			if (m_prevLStick.x <= lStickValue && LStick.x >= lStickValue || key.m_bPressedKeyTbl[VK_RIGHT])
 			{
-				m_item = Item::Restart;
-				cursolpositon = Vec3(rePos.x - 220, rePos.y, rePos.z);
+				m_item = OvStageItem::Restart;
+				cursolposition = Vec3(rePos.x - 220, rePos.y, rePos.z);
 			}
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 			{
@@ -69,11 +69,11 @@ namespace basecross
 			}
 
 			break;
-		case Item::Restart:
+		case OvStageItem::Restart:
 			if (m_prevLStick.x <= -lStickValue && LStick.x >= -lStickValue || key.m_bPressedKeyTbl[VK_LEFT])
 			{
-				m_item = Item::BackToTitle;
-				cursolpositon = Vec3(btPos.x - 220, btPos.y, btPos.z);
+				m_item = OvStageItem::BackToTitle;
+				cursolposition = Vec3(btPos.x - 220, btPos.y, btPos.z);
 			}
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 			{
@@ -82,7 +82,7 @@ namespace basecross
 
 			break;
 		}
-		m_cursol->GetComponent<Transform>()->SetPosition(cursolpositon);
+		m_cursol->GetComponent<Transform>()->SetPosition(cursolposition);
 		m_prevLStick = LStick;
 
 	}
@@ -97,9 +97,9 @@ namespace basecross
 		m_re = AddGameObject<Sprite>(L"TEX_RESTART", true, Vec3(1024, 256, 0) * 0.005f, Vec3(250, 50, 0));
 
 		Vec3 btPos = m_bt->GetComponent<Transform>()->GetPosition();
-		cursolpositon = Vec3(btPos.x - 220, btPos.y, btPos.z);
+		cursolposition = Vec3(btPos.x - 220, btPos.y, btPos.z);
 
-		m_cursol = AddGameObject<Sprite>(L"TEX_POINTERUI", true, Vec3(200, 200, 0) * 0.01f, cursolpositon); //カーソル
+		m_cursol = AddGameObject<Sprite>(L"TEX_POINTERUI", true, Vec3(200, 200, 0) * 0.01f, cursolposition); //カーソル
 		m_bg = AddGameObject<Sprite>(L"TEX_GAMEOVERBG", true, Vec3(1920, 1080, 0) * 0.0074f, Vec3(0, 0, 0)); //背景
 
 		m_bg->SetDrawLayer(-1);
