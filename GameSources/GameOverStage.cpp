@@ -61,7 +61,7 @@ namespace basecross
 			if (m_prevLStick.x <= lStickValue && LStick.x >= lStickValue || key.m_bPressedKeyTbl[VK_RIGHT])
 			{
 				m_item = Item::Restart;
-				cursolpositon = Vec3(rePos.x - 250, rePos.y, rePos.z);
+				cursolpositon = Vec3(rePos.x - 220, rePos.y, rePos.z);
 			}
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 			{
@@ -70,10 +70,10 @@ namespace basecross
 
 			break;
 		case Item::Restart:
-			if (m_prevLStick.x <= -lStickValue && LStick.x>= -lStickValue || key.m_bPressedKeyTbl[VK_LEFT])
+			if (m_prevLStick.x <= -lStickValue && LStick.x >= -lStickValue || key.m_bPressedKeyTbl[VK_LEFT])
 			{
 				m_item = Item::BackToTitle;
-				cursolpositon = Vec3(btPos.x - 250, btPos.y, btPos.z);
+				cursolpositon = Vec3(btPos.x - 220, btPos.y, btPos.z);
 			}
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_A || key.m_bPressedKeyTbl[VK_SPACE])
 			{
@@ -92,15 +92,15 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 
-		AddGameObject<Sprite>(L"TEX_GameOver", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 0, 0));
-		m_bt = AddGameObject<Sprite>(L"TEX_BACKTOTITLE", true, Vec3(1024, 256, 0) * 0.005f, Vec3(-300, -300, 0));
-		m_re = AddGameObject<Sprite>(L"TEX_RESTART", true, Vec3(1024, 256, 0) * 0.005f, Vec3(300, -300, 0));
+		AddGameObject<Sprite>(L"TEX_GameOver", true, Vec3(1024, 256, 0) * 0.01f, Vec3(0, 260, 0));
+		m_bt = AddGameObject<Sprite>(L"TEX_BACKTOTITLE", true, Vec3(1024, 256, 0) * 0.005f, Vec3(-250, 50, 0));
+		m_re = AddGameObject<Sprite>(L"TEX_RESTART", true, Vec3(1024, 256, 0) * 0.005f, Vec3(250, 50, 0));
 
 		Vec3 btPos = m_bt->GetComponent<Transform>()->GetPosition();
-		cursolpositon = Vec3(btPos.x - 250, btPos.y, btPos.z);
+		cursolpositon = Vec3(btPos.x - 220, btPos.y, btPos.z);
 
 		m_cursol = AddGameObject<Sprite>(L"TEX_POINTERUI", true, Vec3(200, 200, 0) * 0.01f, cursolpositon); //カーソル
-		m_bg = AddGameObject<Sprite>(L"TEX_GAMEOVERBG", true, Vec3(1920, 1080, 0) * 0.0069f, Vec3(0, 00, 0)); //背景
+		m_bg = AddGameObject<Sprite>(L"TEX_GAMEOVERBG", true, Vec3(1920, 1080, 0) * 0.0074f, Vec3(0, 0, 0)); //背景
 
 		m_bg->SetDrawLayer(-1);
 	}
