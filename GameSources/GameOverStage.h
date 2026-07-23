@@ -9,7 +9,7 @@
 
 namespace basecross
 {
-	enum class Item
+	enum class OvStageItem
 	{
 		BackToTitle,
 		Restart
@@ -25,8 +25,8 @@ namespace basecross
 		void LoadTextures();
 		shared_ptr<SoundItem> m_BGM; // サウンド用ポインタ
 		shared_ptr<GameObject> m_cursol; //カーソル用ポインタ
-		Vec3 cursolpositon; //カーソル位置更新用変数
-		Item m_item;
+		Vec3 cursolposition; //カーソル位置更新用変数
+		OvStageItem m_item;
 		shared_ptr<GameObject> m_bt; //backtotitle用
 		shared_ptr<GameObject> m_re; //restart用
 		Vec2 m_prevLStick;
@@ -34,7 +34,7 @@ namespace basecross
 
 	public:
 		//構築と破棄
-		GameOverStage() :Stage(),m_item(Item::BackToTitle){}
+		GameOverStage() :Stage(),m_item(OvStageItem::BackToTitle){}
 		virtual ~GameOverStage() {}
 
 		virtual void OnCreate()override; //初期化
