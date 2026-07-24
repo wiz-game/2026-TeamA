@@ -119,6 +119,7 @@ namespace basecross
 		);
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshToTransformMatrix(spanMat);
+		m_drawComp->SetOwnShadowActive(true);
 
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
