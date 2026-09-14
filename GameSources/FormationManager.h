@@ -15,7 +15,7 @@ namespace basecross {
 	{
 	private:
 		weak_ptr<CharacterFormation> m_formation[4];
-		int m_formationNum;
+		int m_formationNum = 1;
 
 	public:
 		void Init(const shared_ptr<Stage>& stage, const shared_ptr<GameObject> player);
@@ -27,8 +27,8 @@ namespace basecross {
 		void SetFormationNumber(int num)
 		{
 			m_formationNum = num;
-			if (m_formationNum < 0)m_formationNum = 3;
-			if (m_formationNum >= 4)m_formationNum = 0;
+			if (m_formationNum < 0)m_formationNum += 4;
+			if (m_formationNum >= 4)m_formationNum -= 4;
 		}
 		int GetFormationNumber() { return m_formationNum; }
 		int GetFormationCharacterNum();

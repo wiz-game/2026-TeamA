@@ -105,8 +105,6 @@ namespace basecross {
 		}
 		m_BGM->m_SourceVoice->SetVolume(scene->m_BGMVolume); //���ʕύX�̍X�V
 
-		wss << L"" << endl;
-		scene->SetDebugString(wss.str());
 	}
 
 	void GameStage::OnUpdate2()

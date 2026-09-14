@@ -317,7 +317,7 @@ namespace basecross {
 			{
 				m_formationMng->ResetDraw();
 			}
-			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() - 1);
+			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() - 2);
 		}
 		if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 		{
@@ -325,7 +325,7 @@ namespace basecross {
 			{
 				m_formationMng->ResetDraw();
 			}
-			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() + 1);
+			m_formationMng->SetFormationNumber(m_formationMng->GetFormationNumber() + 2);
 
 		}
 
