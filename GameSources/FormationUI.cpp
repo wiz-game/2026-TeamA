@@ -6,7 +6,7 @@ namespace basecross
 	FormationUI::FormationUI(const shared_ptr<Stage>& stage) :
 		UIManager(stage),
 		m_count(0),
-		m_formation(Formation::Hammer)
+		m_formation(Formation::Slope)
 	{
 	}
 	FormationUI::~FormationUI(){}
@@ -40,7 +40,7 @@ namespace basecross
 		m_formationUIs.push_back(m_formationUI = stage->AddGameObject<Sprite>(L"TEX_SPEARUI",  true, Vec3(2048, 2048, 0) * 0.0011f, pos)); //4:スピアー
 		m_formationUIs.push_back(m_formationUI = stage->AddGameObject<Sprite>(L"TEX_BRIDGEUI", true, Vec3(2048, 2048, 0) * 0.0011f, pos)); //5:橋
 
-		m_formationUIs[3]->SetDrawActive(false);
+		m_formationUIs[2]->SetDrawActive(false);
 		m_formationUIs[4]->SetDrawActive(false);
 		m_formationUIs[5]->SetDrawActive(false);
 
@@ -107,14 +107,14 @@ namespace basecross
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
 				m_formationUIs[3]->SetDrawActive(false);
-				m_formationUIs[4]->SetDrawActive(true);
-				m_formation = Formation::Spear;
+				m_formationUIs[5]->SetDrawActive(true);
+				m_formation = Formation::Bridge;
 			}
 			else if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 			{
 				m_formationUIs[3]->SetDrawActive(false);
-				m_formationUIs[2]->SetDrawActive(true);
-				m_formation = Formation::Hammer;
+				m_formationUIs[5]->SetDrawActive(true);
+				m_formation = Formation::Bridge;
 			}
 			break;
 		case Formation::Spear:
@@ -137,14 +137,14 @@ namespace basecross
 			if (pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 			{
 				m_formationUIs[5]->SetDrawActive(false);
-				m_formationUIs[2]->SetDrawActive(true);
-				m_formation = Formation::Hammer;
+				m_formationUIs[3]->SetDrawActive(true);
+				m_formation = Formation::Slope;
 			}
 			else if (pad.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)
 			{
 				m_formationUIs[5]->SetDrawActive(false);
-				m_formationUIs[4]->SetDrawActive(true);
-				m_formation = Formation::Spear;
+				m_formationUIs[3]->SetDrawActive(true);
+				m_formation = Formation::Slope;
 			}
 			break;
 		}

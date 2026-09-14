@@ -27,12 +27,6 @@ namespace basecross
 		//if (!player) return;
 		auto gameStage = m_gameStage.lock();
 		if (!gameStage) return;
-		for (int i = 0; i < gameStage->count; i++)
-		{
-			auto tp = gameStage->GetSharedGameObject<TurningPoint>(L"TurningPoint_" + std::to_wstring(i));
-			if (!tp)return;
-			m_tp.push_back(tp);
-		}
 
 	}
 
@@ -138,7 +132,8 @@ namespace basecross
 		if (On)
 			SetCameraToPlayerPos(); //通常時は普通のプレイヤー追従カメラ
 		else
-			ChangeAngle();          //切り替えオブジェクトに触れた場合はアングルを変える
+			//ChangeAngle();          //切り替えオブジェクトに触れた場合はアングルを変える
+			SetCameraToPlayerPos();
 
 	}
 
@@ -188,79 +183,79 @@ namespace basecross
 
 	void PlayerCamera::ChangeAngle()
 	{
-		auto gameStage = m_gameStage.lock();
-		if (!gameStage) return;
-		auto player = gameStage->GetSharedGameObject<Player>(L"Player");
-		if (!player) return;
-		auto playerTrans = player->GetComponent<Transform>();
-		Vec3 playerPos = playerTrans->GetPosition();
-		Vec3 forward = playerTrans->GetForward();
-		Vec3 up = Vec3(0.5f, 1, -0.5); // カメラをずらす方向
-		float distance = 15.0f; // カメラのz方向の距離
-		float height = 10.0f;   // upの補間
-		float delta = App::GetApp()->GetElapsedTime();
-		float fixedDelta = (std::min)(delta * 4.0f, 1.0f);
-		//float yaw = m_baseYaw + m_offsetYaw;
-		//float rad = XMConvertToRadians(yaw);
+		//auto gameStage = m_gameStage.lock();
+		//if (!gameStage) return;
+		//auto player = gameStage->GetSharedGameObject<Player>(L"Player");
+		//if (!player) return;
+		//auto playerTrans = player->GetComponent<Transform>();
+		//Vec3 playerPos = playerTrans->GetPosition();
+		//Vec3 forward = playerTrans->GetForward();
+		//Vec3 up = Vec3(0.5f, 1, -0.5); // カメラをずらす方向
+		//float distance = 15.0f; // カメラのz方向の距離
+		//float height = 10.0f;   // upの補間
+		//float delta = App::GetApp()->GetElapsedTime();
+		//float fixedDelta = (std::min)(delta * 4.0f, 1.0f);
+		////float yaw = m_baseYaw + m_offsetYaw;
+		////float rad = XMConvertToRadians(yaw);
 
-		//Vec3 rotatedForward = Vec3(sin(rad), 0, cos(rad));
+		////Vec3 rotatedForward = Vec3(sin(rad), 0, cos(rad));
 
-		if (m_changeAngle)
-		{
-			SetEye(m_nextEye);
-			SetAt(m_nextAt);
-			m_changeAngle = false;
-		}
-		else
-		{
-			//補間
-			float speed = (std::min)(delta * 6.0f, 1.0f); //目標を通り過ぎないために1.0fを超えないよう調整
-			SetEye(GetEye() + (m_nextEye - GetEye()) * speed);
-			SetAt(GetAt() + (m_nextAt - GetAt()) * speed * 2.0f);
-		}
+		//if (m_changeAngle)
+		//{
+		//	SetEye(m_nextEye);
+		//	SetAt(m_nextAt);
+		//	m_changeAngle = false;
+		//}
+		//else
+		//{
+		//	//補間
+		//	float speed = (std::min)(delta * 6.0f, 1.0f); //目標を通り過ぎないために1.0fを超えないよう調整
+		//	SetEye(GetEye() + (m_nextEye - GetEye()) * speed);
+		//	SetAt(GetAt() + (m_nextAt - GetAt()) * speed * 2.0f);
+		//}
 
 	}
 
 	void PlayerCamera::ClarifyMovementDirection()
 	{
-		auto gameStage = m_gameStage.lock();
-		if (!gameStage) return;
-		auto player = gameStage->GetSharedGameObject<Player>(L"Player");
-		auto goal = gameStage->GetSharedGameObject<Goal>(L"Goal");
+		//auto gameStage = m_gameStage.lock();
+		//if (!gameStage) return;
+		//auto player = gameStage->GetSharedGameObject<Player>(L"Player");
+		//auto goal = gameStage->GetSharedGameObject<Goal>(L"Goal");
 
-		if (!player && goal) return;
-		auto playerTrans = player->GetComponent<Transform>();
-		auto goalTrans = goal->GetComponent<Transform>();
-		Vec3 playerPos = playerTrans->GetPosition();
-		Vec3 goalPos = goalTrans->GetPosition();
+		//if (!player && goal) return;
+		//auto playerTrans = player->GetComponent<Transform>();
+		//auto goalTrans = goal->GetComponent<Transform>();
+		//Vec3 playerPos = playerTrans->GetPosition();
+		//Vec3 goalPos = goalTrans->GetPosition();
 
-		Vec3 toGoal = goalPos - playerPos;
-		float distanceToGoal = toGoal.length();
+		//Vec3 toGoal = goalPos - playerPos;
+		//float distanceToGoal = toGoal.length();
 
-		//ゴール方向に少しずらす
-		float bias = 0.25f;
+		////ゴール方向に少しずらす
+		//float bias = 0.25f;
 
-		Vec3 targetAt = playerPos + (toGoal * bias);
+		//Vec3 targetAt = playerPos + (toGoal * bias);
 
-		//補間
-		float delta = App::GetApp()->GetElapsedTime();
-		float fixedDelta = (std::min)(delta * 6.0f, 1.0f);
+		////補間
+		//float delta = App::GetApp()->GetElapsedTime();
+		//float fixedDelta = (std::min)(delta * 6.0f, 1.0f);
 
-		// 現在の注視点(GetAt)から目標の注視点(targetAt)へ徐々に近づける
-		Vec3 currentAt = GetAt();
-		Vec3 nextAt = currentAt + (targetAt - currentAt) * fixedDelta;
+		//// 現在の注視点(GetAt)から目標の注視点(targetAt)へ徐々に近づける
+		//Vec3 currentAt = GetAt();
+		//Vec3 nextAt = currentAt + (targetAt - currentAt) * fixedDelta;
 
-		SetAt(nextAt);
+		//SetAt(nextAt);
 
-		//Vec3 diff = goalPos - GetEye();
-		//float distance = diff.length();
-		//float lookAheadOffset = 5.0f;
-		//Vec3 dir = diff.normalize();
-		//Vec3 at = playerPos + Vec3(dir);
+		////Vec3 diff = goalPos - GetEye();
+		////float distance = diff.length();
+		////float lookAheadOffset = 5.0f;
+		////Vec3 dir = diff.normalize();
+		////Vec3 at = playerPos + Vec3(dir);
 
-		//if (distance < lookAheadOffset)
-		//{
-		//	SetAt(at);
-		//}
+		////if (distance < lookAheadOffset)
+		////{
+		////	SetAt(at);
+		////}
 	}
 }

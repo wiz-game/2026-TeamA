@@ -183,7 +183,7 @@ namespace basecross
 				auto goal = stage->AddGameObject<Goal>();
 				goal->SetPosition(pos);
 				goal->SetRotation(rot);
-				goal->SetScale(scale);
+				goal->SetScale(Vec3(15));
 				//m_stage->SetSharedGameObject(L"Goal", goal);
 				return;
 			}

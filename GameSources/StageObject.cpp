@@ -68,8 +68,10 @@ namespace basecross
 		m_stage = GetStage();
 		//auto grv = AddComponent<Gravity>();
 		m_drawComp = AddComponent<PNTStaticDraw>();
-		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
-		m_drawComp->SetDiffuse(Col4(1, 0, 1, 1));
+		m_drawComp->SetMeshResource(L"MODEL_MUSHROOM");
+		m_drawComp->SetTextureResource(L"TEX_MUSHROOM");
+		//m_drawComp->SetDiffuse(Col4(0, 1, 1, 1));
+		SetAlphaActive(true);
 
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);
@@ -87,14 +89,11 @@ namespace basecross
 	{
 		auto stage = GetStage();
 		auto player = stage->GetSharedGameObject<Player>(L"Player");
-		if (other && player)
+		if (other->FindTag(L"Player"))
 		{
 			auto& app = App::GetApp();
 			auto scene = app->GetScene<Scene>();
-			wstringstream wss(L"");
 
-			wss << L"GameClear" << endl;
-			scene->SetDebugString(wss.str());
 
 			PostEvent(0.0f, GetThis<ObjectInterface>(), scene, L"ToGameClearStage");//ゲームシーンを移動する
 
@@ -360,6 +359,7 @@ namespace basecross
 		StageObject::OnCreate();
 		m_stage = GetStage();
 		m_drawComp = AddComponent<PNTStaticDraw>();
+		m_drawComp->SetDiffuse(Col4(0, 1, 1, 1));
 
 		auto collision = AddComponent<CollisionObb>();
 		collision->SetFixed(true);

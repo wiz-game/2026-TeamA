@@ -18,9 +18,10 @@ namespace basecross
 		m_position = m_transComp->GetPosition();
 
 		auto col = AddComponent<CollisionObb>();
-		col->SetDrawActive(true);
+		col->SetDrawActive(false);
 		m_drawComp = AddComponent<PNTStaticDraw>();
 		m_drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		m_drawComp->SetDrawActive(false);
 		StageObject::OnCreate();
 
 	}

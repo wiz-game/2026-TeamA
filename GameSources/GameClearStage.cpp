@@ -34,7 +34,7 @@ namespace basecross
 		auto& app = App::GetApp();
 		auto scene = app->GetScene<Scene>();
 		auto XAPtr = app->GetXAudio2Manager();
-		m_BGM = XAPtr->Start(L"GameOverBGM", 0, scene->m_BGMVolume);
+		m_BGM = XAPtr->Start(L"GameClearBGM", 0, scene->m_BGMVolume);
 
 
 	}
